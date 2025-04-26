@@ -1,6 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
@@ -8,24 +10,42 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic;
+using Avalonia.Data;   // for Binding
+
 
 namespace AvaloniaPdbAccounts
 {
     public partial class MainWindow : Window
     {
-        private const string Infoconnect = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
+        private const string Infoconnect = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl21)));DBA Privilege=SYSDBA;";
         public MainWindow()
         {
             InitializeComponent();
         }
 
+      private async void LoadAccounts_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+{
+    try
+    {
+        string connectionString = Infoconnect;
 
-        //CRUD USER
-        private async void LoadAccounts_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        using (var conn = new OracleConnection(connectionString))
         {
-            var accounts = await GetAccountsAsync();
-            AccountsListBox.ItemsSource = accounts;
+            await conn.OpenAsync();
+
+            var users = await GetAllUsersAsync(conn);
+
+            
+
+
+            AccountsListBox.ItemsSource = users;
         }
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+    }
+}
 
         private async Task<ObservableCollection<string>> GetAccountsAsync()
         {
@@ -164,298 +184,160 @@ namespace AvaloniaPdbAccounts
             }
         }
 
-        //CRUD ROLE
-        private async void LoadRoles_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async Task LoadAccountsListAsync()
+{
+    try
+    {
+        string connectionString = Infoconnect;
+
+        using (var conn = new OracleConnection(connectionString))
         {
-            var accounts = await LoadRolesAsync();
-            AccountsListBox.ItemsSource = accounts;
+            await conn.OpenAsync();
+
+            var users = await GetAllUsersAsync(conn);
+            var roles = await GetAllRolesAsync(conn);
+
+            var all = new List<string>();
+            all.AddRange(users);
+            all.AddRange(roles);
+
+         
+
+
+            UserRoleComboBox.ItemsSource = all;
+            if (all.Count > 0)
+                UserRoleComboBox.SelectedIndex = 0;
+
+            
+        }
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+    }
+}
+      
+    private async void CheckPermission_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+{
+    try
+    {
+        await LoadAccountsListAsync(); // Load User + Role vào UserRoleComboBox
+
+        CheckArea.IsVisible = true;
+
+        await MessageBox.Show(this, "Vui lòng chọn User/Role và loại quyền, sau đó bấm 'Check'!", "Thông báo", MessageBox.MessageBoxButtons.Ok);
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+    }
+}
+private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+{
+    try
+    {
+        if (UserRoleComboBox.SelectedItem == null ||
+            PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
+        {
+            await MessageBox.Show(this,
+                "Vui lòng chọn User hoặc Role và loại quyền!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
         }
 
-        private async Task<ObservableCollection<string>> LoadRolesAsync()
+        var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
+        var selectedType = selectedTypeItem.Content!.ToString()!;
+
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+        var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
+
+        if (dataTable == null || dataTable.Rows.Count == 0)
         {
-            var accounts = new ObservableCollection<string>();
-
-            try
-            {
-                string connectionString = Infoconnect;
-
-                using (var conn = new OracleConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-
-                    using (var cmd = new OracleCommand("SELECT role FROM dba_roles GROUP BY role", conn))
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            accounts.Add(reader.GetString(0));
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                accounts.Add($"Error: {ex.Message}");
-            }
-
-            return accounts;
+            await MessageBox.Show(this,
+                "Không có dữ liệu quyền!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
         }
 
-        private async void ReloadRole()
+        // flatten each DataRow into a single string without LINQ/Cast
+        var lines = new List<string>(dataTable.Rows.Count);
+        foreach (DataRow row in dataTable.Rows)
         {
-            var accounts = await LoadRolesAsync();
-            AccountsListBox.ItemsSource = accounts;
+            var parts = new List<string>(dataTable.Columns.Count);
+            foreach (DataColumn col in dataTable.Columns)
+            {
+                parts.Add($"{col.ColumnName}:{row[col]}");
+            }
+            lines.Add(string.Join(" | ", parts));
         }
 
-        private async void DeleteRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        // bind to your ListBox
+        PermissionListBox.ItemsSource = lines;
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this,
+            $"Error: {ex.Message}",
+            "Lỗi",
+            MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+
+       private async Task<List<string>> GetAllUsersAsync(OracleConnection conn)
+{
+    var users = new List<string>();
+    using (var cmd = new OracleCommand("SELECT USERNAME FROM DBA_USERS WHERE ACCOUNT_STATUS = 'OPEN'", conn))
+    using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        while (await reader.ReadAsync())
         {
-            if (AccountsListBox.SelectedItem is string selectedAccount)
-            {
-                var confirm = await MessageBox.Show(this, $"Bạn có chắc muốn xóa role '{selectedAccount}'?", "Xác nhận", MessageBox.MessageBoxButtons.YesNo);
-
-                if (confirm == MessageBox.MessageBoxResult.Yes)
-                {
-                    try
-                    {
-                        string connectionString = Infoconnect;
-
-                        using (var conn = new OracleConnection(connectionString))
-                        {
-                            await conn.OpenAsync();
-                            using (var cmd = new OracleCommand($"DROP ROLE {selectedAccount}", conn))
-                            {
-                                await cmd.ExecuteNonQueryAsync();
-                            }
-                        }
-
-                        ReloadRole();
-                    }
-                    catch (Exception ex)
-                    {
-                        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-                    }
-                }
-            }
+            users.Add(reader.GetString(0));
         }
-        private async void EditRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    }
+    return users;
+}
+
+private async Task<List<string>> GetAllRolesAsync(OracleConnection conn)
+{
+    var roles = new List<string>();
+    using (var cmd = new OracleCommand("SELECT ROLE FROM DBA_ROLES", conn))
+    using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        while (await reader.ReadAsync())
         {
-            if (AccountsListBox.SelectedItem is string selectedAccount)
-            {
-                var role = selectedAccount;
-                var privileges = await GetRolePrivilegesAsync(role);
-                var selectedPrivileges = new ObservableCollection<PrivilegeItem>(privileges);
-
-                // Store the currently selected item
-                var previouslySelectedItem = AccountsListBox.SelectedItem;
-
-                var result = await ShowEditPrivilegesDialog(role, selectedPrivileges);
-                if (result)
-                {
-                    await UpdateRolePrivilegesAsync(role, selectedPrivileges);
-                    ReloadRole();
-                }
-
-                // Re-select the previously selected item
-                AccountsListBox.SelectedItem = previouslySelectedItem;
-            }
+            roles.Add(reader.GetString(0));
         }
+    }
+    return roles;
+}
 
-        private async Task<ObservableCollection<PrivilegeItem>> GetRolePrivilegesAsync(string role)
+private async Task<DataTable?> QueryPrivilegesAsync(OracleConnection conn, string selectedType, string selectedName)
+{
+    string query = selectedType switch
+    {
+        "ROLE" => "SELECT * FROM DBA_ROLE_PRIVS WHERE GRANTEE = :grantee",
+        "SYSTEM" => "SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE = :grantee",
+        "TABLE" => "SELECT * FROM DBA_TAB_PRIVS WHERE GRANTEE = :grantee",
+        "COL" => "SELECT * FROM DBA_COL_PRIVS WHERE GRANTEE = :grantee",
+        _ => throw new Exception("Loại quyền không hợp lệ")
+    };
+
+    var dt = new DataTable();
+    using (var cmd = new OracleCommand(query, conn))
+    {
+        cmd.Parameters.Add(new OracleParameter("grantee", selectedName));
+        using (var adapter = new OracleDataAdapter(cmd))
         {
-            var privileges = new ObservableCollection<PrivilegeItem>();
-
-            try
-            {
-                string connectionString = Infoconnect;
-
-                using (var conn = new OracleConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-
-                    // Define a list of basic system privileges
-                    var basicPrivileges = new List<string>
-                            {
-                                "SELECT",
-                                "INSERT",
-                                "UPDATE",
-                                "DELETE",
-                                "EXECUTE",
-                                "ALTER",
-                                "CREATE",
-                                "DROP",
-                                "GRANT",
-                                "REVOKE"
-                            };
-
-                    // Add basic privileges to the privileges collection
-                    foreach (var privilegeName in basicPrivileges)
-                    {
-                        if (!privileges.Any(p => p.Name == privilegeName))
-                        {
-                            privileges.Add(new PrivilegeItem { Name = privilegeName, IsGranted = false });
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-            }
-
-            return privileges;
+            adapter.Fill(dt);
         }
-
-
-        private async Task<bool> ShowEditPrivilegesDialog(string role, ObservableCollection<PrivilegeItem> privileges)
-        {
-            var dlg = new Window
-            {
-                Title = $"Chỉnh sửa quyền cho role '{role}'",
-                Width = 300,
-                Height = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-
-            var grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star)); // List chiếm phần lớn
-            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto)); // Button tự co nhỏ
-
-            var listBox = new ListBox
-            {
-                SelectionMode = SelectionMode.Multiple,
-                [ScrollViewer.VerticalScrollBarVisibilityProperty] = ScrollBarVisibility.Auto
-            };
-
-            foreach (var privilege in privileges)
-            {
-                var checkBox = new CheckBox
-                {
-                    Content = privilege.Name,
-                    IsChecked = privilege.IsGranted
-                };
-
-                listBox.Items.Add(checkBox);
-            }
-
-            var okButton = new Button
-            {
-                Content = "OK",
-                Width = 60,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
-            };
-
-            okButton.Click += (_, __) =>
-            {
-                for (int i = 0; i < listBox.Items.Count; i++)
-                {
-                    if (listBox.Items[i] is CheckBox checkBox && privileges.Count > i)
-                    {
-                        privileges[i].IsGranted = checkBox.IsChecked == true;
-                    }
-                }
-                dlg.Close();
-            };
-
-            // Add ListBox vào dòng 0
-            Grid.SetRow(listBox, 0);
-            grid.Children.Add(listBox);
-
-            // Add OK Button vào dòng 1
-            Grid.SetRow(okButton, 1);
-            grid.Children.Add(okButton);
-
-            dlg.Content = grid;
-
-            await dlg.ShowDialog(this);
-            return true;
-        }
-        private async Task UpdateRolePrivilegesAsync(string role, ObservableCollection<PrivilegeItem> privileges)
-        {
-            try
-            {
-                string connectionString = Infoconnect;
-
-                using (var conn = new OracleConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-
-                    using (var transaction = conn.BeginTransaction())
-                    {
-                        try
-                        {
-                            foreach (var privilege in privileges)
-                            {
-                                Console.WriteLine($"Privilege: {privilege.Name}");
-                                var sql = privilege.IsGranted
-                                    ? $"GRANT \"{privilege.Name}\" TO \"{role}\""
-                                    : $"REVOKE \"{privilege.Name}\" FROM \"{role}\"";
-
-                                using (var cmd = new OracleCommand(sql, conn))
-                                {
-                                    cmd.Transaction = transaction;
-                                    await cmd.ExecuteNonQueryAsync();
-                                }
-                            }
-
-                            await transaction.CommitAsync();
-                        }
-                        catch (Exception innerEx)
-                        {
-                            await transaction.RollbackAsync();
-                            throw new Exception($"Transaction failed: {innerEx.Message}", innerEx);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-            }
-        }
-
-
-        public class PrivilegeItem
-        {
-            public string? Name { get; set; }
-            public bool IsGranted { get; set; }
-        }
-        private async void AddRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        {
-            var role = await MessageBox.InputBox(this, "Nhập tên role mới", "Tạo Role");
-            if (string.IsNullOrWhiteSpace(role))
-                return;
-
-            try
-            {
-                string connectionString = Infoconnect;
-
-                using (var conn = new OracleConnection(connectionString))
-                {
-                    await conn.OpenAsync();
-
-                    // Tạo user
-                    using (var cmdCreate = new OracleCommand($"CREATE ROLE {role} ", conn))
-                    {
-                        await cmdCreate.ExecuteNonQueryAsync();
-                    }
-
-                    // Grant quyền kết nối
-                    using (var cmdGrant = new OracleCommand($"GRANT CONNECT, RESOURCE TO {role}", conn))
-                    {
-                        await cmdGrant.ExecuteNonQueryAsync();
-                    }
-                }
-
-                await MessageBox.Show(this, $"Tạo role '{role}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
-
-                // Reload danh sách
-                ReloadRole();
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-            }
-        }
+    }
+    await Task.CompletedTask;
+    return dt;
+}
 
 
         public static class MessageBox
