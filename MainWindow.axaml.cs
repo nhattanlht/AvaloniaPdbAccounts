@@ -1,8 +1,11 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic;
 
@@ -234,10 +237,188 @@ namespace AvaloniaPdbAccounts
                 }
             }
         }
-        // private void EditRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-        // {
+        private async void EditRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (AccountsListBox.SelectedItem is string selectedAccount)
+            {
+                var role = selectedAccount;
+                var privileges = await GetRolePrivilegesAsync(role);
+                var selectedPrivileges = new ObservableCollection<PrivilegeItem>(privileges);
 
-        // }
+                // Store the currently selected item
+                var previouslySelectedItem = AccountsListBox.SelectedItem;
+
+                var result = await ShowEditPrivilegesDialog(role, selectedPrivileges);
+                if (result)
+                {
+                    await UpdateRolePrivilegesAsync(role, selectedPrivileges);
+                    ReloadRole();
+                }
+
+                // Re-select the previously selected item
+                AccountsListBox.SelectedItem = previouslySelectedItem;
+            }
+        }
+
+        private async Task<ObservableCollection<PrivilegeItem>> GetRolePrivilegesAsync(string role)
+        {
+            var privileges = new ObservableCollection<PrivilegeItem>();
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Define a list of basic system privileges
+                    var basicPrivileges = new List<string>
+                            {
+                                "SELECT",
+                                "INSERT",
+                                "UPDATE",
+                                "DELETE",
+                                "EXECUTE",
+                                "ALTER",
+                                "CREATE",
+                                "DROP",
+                                "GRANT",
+                                "REVOKE"
+                            };
+
+                    // Add basic privileges to the privileges collection
+                    foreach (var privilegeName in basicPrivileges)
+                    {
+                        if (!privileges.Any(p => p.Name == privilegeName))
+                        {
+                            privileges.Add(new PrivilegeItem { Name = privilegeName, IsGranted = false });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+
+            return privileges;
+        }
+
+
+        private async Task<bool> ShowEditPrivilegesDialog(string role, ObservableCollection<PrivilegeItem> privileges)
+        {
+            var dlg = new Window
+            {
+                Title = $"Chỉnh sửa quyền cho role '{role}'",
+                Width = 300,
+                Height = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star)); // List chiếm phần lớn
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto)); // Button tự co nhỏ
+
+            var listBox = new ListBox
+            {
+                SelectionMode = SelectionMode.Multiple,
+                [ScrollViewer.VerticalScrollBarVisibilityProperty] = ScrollBarVisibility.Auto
+            };
+
+            foreach (var privilege in privileges)
+            {
+                var checkBox = new CheckBox
+                {
+                    Content = privilege.Name,
+                    IsChecked = privilege.IsGranted
+                };
+
+                listBox.Items.Add(checkBox);
+            }
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 60,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            };
+
+            okButton.Click += (_, __) =>
+            {
+                for (int i = 0; i < listBox.Items.Count; i++)
+                {
+                    if (listBox.Items[i] is CheckBox checkBox && privileges.Count > i)
+                    {
+                        privileges[i].IsGranted = checkBox.IsChecked == true;
+                    }
+                }
+                dlg.Close();
+            };
+
+            // Add ListBox vào dòng 0
+            Grid.SetRow(listBox, 0);
+            grid.Children.Add(listBox);
+
+            // Add OK Button vào dòng 1
+            Grid.SetRow(okButton, 1);
+            grid.Children.Add(okButton);
+
+            dlg.Content = grid;
+
+            await dlg.ShowDialog(this);
+            return true;
+        }
+        private async Task UpdateRolePrivilegesAsync(string role, ObservableCollection<PrivilegeItem> privileges)
+        {
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (var transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            foreach (var privilege in privileges)
+                            {
+                                Console.WriteLine($"Privilege: {privilege.Name}");
+                                var sql = privilege.IsGranted
+                                    ? $"GRANT \"{privilege.Name}\" TO \"{role}\""
+                                    : $"REVOKE \"{privilege.Name}\" FROM \"{role}\"";
+
+                                using (var cmd = new OracleCommand(sql, conn))
+                                {
+                                    cmd.Transaction = transaction;
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+                            }
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception innerEx)
+                        {
+                            await transaction.RollbackAsync();
+                            throw new Exception($"Transaction failed: {innerEx.Message}", innerEx);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+        }
+
+
+        public class PrivilegeItem
+        {
+            public string? Name { get; set; }
+            public bool IsGranted { get; set; }
+        }
         private async void AddRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var role = await MessageBox.InputBox(this, "Nhập tên role mới", "Tạo Role");
