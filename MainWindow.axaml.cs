@@ -284,8 +284,6 @@ private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivi
 }
 
 
-
-
        private async Task<List<string>> GetAllUsersAsync(OracleConnection conn)
 {
     var users = new List<string>();
