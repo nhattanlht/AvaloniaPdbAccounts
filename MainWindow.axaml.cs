@@ -442,69 +442,109 @@ namespace AvaloniaPdbAccounts
             }
         }
 
-        private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+       private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+{
+    try
+    {
+        if (UserRoleComboBox.SelectedItem == null ||
+            PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
         {
-            try
+            await MessageBox.Show(this,
+                "Vui lòng chọn User hoặc Role và loại quyền!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
+        var selectedType = selectedTypeItem.Content!.ToString()!;
+
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+        var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
+
+        var lines = new List<string>();
+
+        if (dataTable == null || dataTable.Rows.Count == 0)
+        {
+            lines.Add("Không có dữ liệu quyền!");
+        }
+        else
+        {
+            foreach (DataRow row in dataTable.Rows)
             {
-                if (UserRoleComboBox.SelectedItem == null ||
-                    PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
+                var parts = new List<string>(dataTable.Columns.Count);
+                foreach (DataColumn col in dataTable.Columns)
                 {
-                    await MessageBox.Show(this,
-                        "Vui lòng chọn User hoặc Role và loại quyền!",
-                        "Thông báo",
-                        MessageBox.MessageBoxButtons.Ok);
-                    return;
+                    parts.Add($"{col.ColumnName}:{row[col]}");
                 }
-
-                var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
-                var selectedType = selectedTypeItem.Content!.ToString()!;
-
-                using var conn = new OracleConnection(Infoconnect);
-                await conn.OpenAsync();
-                var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
-
-                var lines = new List<string>();
-
-                if (dataTable == null || dataTable.Rows.Count == 0)
-                {
-                    lines.Add("Không có dữ liệu quyền!");
-                }
-                else
-                {
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        var parts = new List<string>(dataTable.Columns.Count);
-                        foreach (DataColumn col in dataTable.Columns)
-                        {
-                            parts.Add($"{col.ColumnName}:{row[col]}");
-                        }
-                        lines.Add(string.Join(" | ", parts));
-                    }
-                }
-
-                // Bind vào ListBox
-                PermissionListBox.ItemsSource = lines;
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this,
-                    $"Error: {ex.Message}",
-                    "Lỗi",
-                    MessageBox.MessageBoxButtons.Ok);
+                lines.Add(string.Join(" | ", parts));
             }
         }
+
+        // Bind vào ListBox
+        PermissionListBox.ItemsSource = lines;
+
+        // Kiểm tra nếu loại quyền là ROLE thì show GrantRoleArea
+        if (selectedType == "ROLE")
+        {
+            GrantRoleArea.IsVisible = true;
+            await LoadRolesAsync();
+        }
+        else
+        {
+            GrantRoleArea.IsVisible = false;
+        }
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this,
+            $"Error: {ex.Message}",
+            "Lỗi",
+            MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+private async Task LoadRolesAsync()
+{
+    try
+    {
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+
+        var roles = new List<string>();
+        string sql = "SELECT role FROM dba_roles";
+
+        using var cmd = new OracleCommand(sql, conn);
+        using var reader = await cmd.ExecuteReaderAsync();
+        while (await reader.ReadAsync())
+        {
+            roles.Add(reader.GetString(0));
+        }
+
+        RoleComboBox.Items.Clear();
+        foreach (var role in roles)
+        {
+            RoleComboBox.Items.Add(new ComboBoxItem { Content = role });
+        }
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Error loading roles: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+    }
+}
 
 
         // Biến lưu lại đối tượng đã chọn
         private string _selectedObjectName = "";
 
+        
         private async void ObjectTypeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
             if (string.IsNullOrEmpty(selectedObjectType)) return;
 
             List<string> objectNames = new();
-            Debug.WriteLine("Selected Object Type: " + selectedObjectType);
 
             using var conn = new OracleConnection(Infoconnect);
             await conn.OpenAsync();
@@ -527,28 +567,43 @@ namespace AvaloniaPdbAccounts
                 objectNames.Add(reader.GetString(0));
             }
 
-            Debug.WriteLine("Object Names Count: " + objectNames.Count);
-
             ObjectNameComboBox.Items.Clear();
             foreach (var name in objectNames)
             {
                 ObjectNameComboBox.Items.Add(new ComboBoxItem { Content = name });
             }
 
-            if (objectNames.Count == 0)
+            ColumnNameComboBox.Items.Clear(); // Reset luôn cột
+        }
+
+        private async void ObjectNameComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            _selectedObjectName = (ObjectNameComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+            Debug.WriteLine("[LOG] Selected Object Name: " + _selectedObjectName);
+
+            // Nếu chọn TABLE thì load column
+            var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            if (selectedObjectType != "TABLE") return;
+
+            List<string> columns = new();
+            using var conn = new OracleConnection(Infoconnect);
+            await conn.OpenAsync();
+
+            string columnSql = "SELECT column_name FROM user_tab_columns WHERE table_name = :tableName";
+            using var columnCmd = new OracleCommand(columnSql, conn);
+            columnCmd.Parameters.Add(":tableName", _selectedObjectName);
+            using var columnReader = await columnCmd.ExecuteReaderAsync();
+            while (await columnReader.ReadAsync())
             {
-                await MessageBox.Show(this, "Không có đối tượng nào để chọn.", "Thông báo", MessageBox.MessageBoxButtons.Ok);
+                columns.Add(columnReader.GetString(0));
+            }
+
+            ColumnNameComboBox.Items.Clear();
+            foreach (var column in columns)
+            {
+                ColumnNameComboBox.Items.Add(new ComboBoxItem { Content = column });
             }
         }
-
-        // Mới: Lắng nghe khi chọn TÊN đối tượng
-        private void ObjectNameComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = ObjectNameComboBox.SelectedItem as ComboBoxItem;
-            _selectedObjectName = selectedItem?.Content?.ToString() ?? "";
-            Debug.WriteLine("[LOG] Selected Object Name: " + _selectedObjectName);
-        }
-
         private async void GrantPrivilege_Click(object? sender, RoutedEventArgs e)
         {
             var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
@@ -586,6 +641,38 @@ namespace AvaloniaPdbAccounts
                 withGrantOption: withGrantOption
             );
         }
+private async void GrantRoleToUser_Click(object? sender, RoutedEventArgs e)
+{
+    var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
+    var selectedRole = (RoleComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+
+    if (string.IsNullOrWhiteSpace(selectedUser))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn User!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    if (string.IsNullOrWhiteSpace(selectedRole))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn Role!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    try
+    {
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+
+        string grantRoleSql = $"GRANT \"{selectedRole}\" TO \"{selectedUser}\"";
+
+        using var cmd = new OracleCommand(grantRoleSql, conn);
+        await cmd.ExecuteNonQueryAsync();
+
+        await MessageBox.Show(this, $"Cấp Role '{selectedRole}' cho '{selectedUser}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Lỗi: {ex.Message}", "Error", MessageBox.MessageBoxButtons.Ok);
+    }
+}
 
 
 
@@ -594,31 +681,32 @@ namespace AvaloniaPdbAccounts
             string objectType,
             string objectName,
             string privilege,
-            bool withGrantOption)
+            bool withGrantOption,
+            string columnName = "")
         {
             using var conn = new OracleConnection(Infoconnect);
             await conn.OpenAsync();
 
-            // objectName = "HOCPHAN";
-            // Tạo câu lệnh GRANT
+            if ((privilege == "SELECT" || privilege == "UPDATE") && string.IsNullOrEmpty(columnName))
+                throw new Exception("Vui lòng chọn cột khi cấp quyền SELECT hoặc UPDATE.");
+
             string grantSql = objectType switch
             {
-                "TABLE" => $"GRANT {privilege} ON {objectName} TO {grantee}",
-                "VIEW" => $"GRANT {privilege} ON {objectName} TO {grantee}",
-                "PROCEDURE" => $"GRANT EXECUTE ON {objectName} TO {grantee}",
-                "FUNCTION" => $"GRANT EXECUTE ON {objectName} TO {grantee}",
+                "TABLE" or "VIEW" =>
+                    (privilege == "SELECT" || privilege == "UPDATE")
+                        ? $"GRANT {privilege} ({columnName}) ON {objectName} TO {grantee}"
+                        : $"GRANT {privilege} ON {objectName} TO {grantee}",
+                "PROCEDURE" or "FUNCTION" => $"GRANT EXECUTE ON {objectName} TO {grantee}",
                 _ => throw new Exception("Loại đối tượng không hợp lệ")
             };
 
             if (withGrantOption)
                 grantSql += " WITH GRANT OPTION";
 
-            // Thực hiện câu lệnh cấp quyền
             using var cmd = new OracleCommand(grantSql, conn);
             await cmd.ExecuteNonQueryAsync();
 
             await MessageBox.Show(this, $"Cấp quyền {privilege} thành công cho {grantee} trên {objectName}!", "Thành công", MessageBox.MessageBoxButtons.Ok);
         }
-
     }
 }

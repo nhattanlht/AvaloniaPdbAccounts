@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
         x:Class="AvaloniaPdbAccounts.MainWindow"
-        Width="800" Height="600">
+        Width="1000" Height="700">
 
     <Grid Margin="10" RowDefinitions="Auto,Auto,*,2*">
         <!-- Hàng 0: Các nút bấm -->
@@ -37,7 +37,7 @@
                         Margin="20,0,0,0"/>
             </StackPanel>
 
-            <!-- Dòng 2: ObjectType + ObjectName + Privilege + WithGrantOption + Grant -->
+            <!-- Dòng 2: ObjectType + ObjectName + Privilege + Column + WithGrantOption + Grant -->
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
                 <TextBlock Text="Chọn Đối tượng:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="ObjectTypeComboBox"
@@ -50,9 +50,12 @@
                 </ComboBox>
 
                 <TextBlock Text="Tên Đối tượng:" VerticalAlignment="Center" Margin="20,0,0,0"/>
-            <ComboBox x:Name="ObjectNameComboBox"
-                    Width="200"
-                    SelectionChanged="ObjectNameComboBox_SelectionChanged"/>
+                <ComboBox x:Name="ObjectNameComboBox"
+                          Width="200"
+                          SelectionChanged="ObjectNameComboBox_SelectionChanged"/>
+
+                <TextBlock Text="Chọn Cột:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                <ComboBox x:Name="ColumnNameComboBox" Width="150"/>
 
                 <TextBlock Text="Cấp quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
                 <ComboBox x:Name="PrivilegeComboBox" Width="150">
@@ -73,6 +76,19 @@
                         Click="GrantPrivilege_Click"
                         Margin="20,0,0,0"/>
             </StackPanel>
+
+<!-- Dòng 3: Cấp role cho user -->
+<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" x:Name="GrantRoleArea" IsVisible="False">
+    <TextBlock Text="Chọn Role:" VerticalAlignment="Center"/>
+    <ComboBox x:Name="RoleComboBox" Width="200"/>
+
+    <Button Name="GrantRoleButton"
+            Width="150"
+            Content="Grant Role to User"
+            Click="GrantRoleToUser_Click"
+            Margin="20,0,0,0"/>
+</StackPanel>
+
 
         </StackPanel>
 
