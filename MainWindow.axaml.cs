@@ -16,6 +16,8 @@ namespace AvaloniaPdbAccounts
             InitializeComponent();
         }
 
+
+        //CRUD USER
         private async void LoadAccounts_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var accounts = await GetAccountsAsync();
@@ -158,6 +160,122 @@ namespace AvaloniaPdbAccounts
                 await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
             }
         }
+
+        //CRUD ROLE
+        private async void LoadRoles_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var accounts = await LoadRolesAsync();
+            AccountsListBox.ItemsSource = accounts;
+        }
+
+        private async Task<ObservableCollection<string>> LoadRolesAsync()
+        {
+            var accounts = new ObservableCollection<string>();
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (var cmd = new OracleCommand("SELECT role FROM dba_roles GROUP BY role", conn))
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            accounts.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                accounts.Add($"Error: {ex.Message}");
+            }
+
+            return accounts;
+        }
+
+        private async void ReloadRole()
+        {
+            var accounts = await LoadRolesAsync();
+            AccountsListBox.ItemsSource = accounts;
+        }
+
+        private async void DeleteRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (AccountsListBox.SelectedItem is string selectedAccount)
+            {
+                var confirm = await MessageBox.Show(this, $"Bạn có chắc muốn xóa role '{selectedAccount}'?", "Xác nhận", MessageBox.MessageBoxButtons.YesNo);
+
+                if (confirm == MessageBox.MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        string connectionString = Infoconnect;
+
+                        using (var conn = new OracleConnection(connectionString))
+                        {
+                            await conn.OpenAsync();
+                            using (var cmd = new OracleCommand($"DROP ROLE {selectedAccount}", conn))
+                            {
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        ReloadRole();
+                    }
+                    catch (Exception ex)
+                    {
+                        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+                    }
+                }
+            }
+        }
+        // private void EditRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        // {
+
+        // }
+        private async void AddRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var role = await MessageBox.InputBox(this, "Nhập tên role mới", "Tạo Role");
+            if (string.IsNullOrWhiteSpace(role))
+                return;
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Tạo user
+                    using (var cmdCreate = new OracleCommand($"CREATE ROLE {role} ", conn))
+                    {
+                        await cmdCreate.ExecuteNonQueryAsync();
+                    }
+
+                    // Grant quyền kết nối
+                    using (var cmdGrant = new OracleCommand($"GRANT CONNECT, RESOURCE TO {role}", conn))
+                    {
+                        await cmdGrant.ExecuteNonQueryAsync();
+                    }
+                }
+
+                await MessageBox.Show(this, $"Tạo role '{role}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+
+                // Reload danh sách
+                ReloadRole();
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+        }
+
 
         public static class MessageBox
         {
