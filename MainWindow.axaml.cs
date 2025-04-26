@@ -4,11 +4,13 @@ using System.Collections.ObjectModel;
 using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
+using Microsoft.VisualBasic;
 
 namespace AvaloniaPdbAccounts
 {
     public partial class MainWindow : Window
     {
+        private const string Infoconnect = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
         public MainWindow()
         {
             InitializeComponent();
@@ -26,7 +28,7 @@ namespace AvaloniaPdbAccounts
 
             try
             {
-                string connectionString = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
+                string connectionString = Infoconnect;
 
                 using (var conn = new OracleConnection(connectionString))
                 {
@@ -65,7 +67,7 @@ namespace AvaloniaPdbAccounts
                 {
                     try
                     {
-                        string connectionString = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
+                        string connectionString = Infoconnect;
 
                         using (var conn = new OracleConnection(connectionString))
                         {
@@ -95,7 +97,7 @@ namespace AvaloniaPdbAccounts
                 {
                     try
                     {
-                        string connectionString = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
+                        string connectionString = Infoconnect;
 
                         using (var conn = new OracleConnection(connectionString))
                         {
@@ -127,7 +129,7 @@ namespace AvaloniaPdbAccounts
 
             try
             {
-                string connectionString = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
+                string connectionString = Infoconnect;
 
                 using (var conn = new OracleConnection(connectionString))
                 {
