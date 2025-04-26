@@ -1,22 +1,48 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
         x:Class="AvaloniaPdbAccounts.MainWindow"
-        Width="600" Height="400" Title="Danh sách tài khoản PDB">
-    
-    <Grid Margin="10" RowDefinitions="Auto,*">
+        Width="800" Height="600">
+
+
+    <Grid Margin="10" RowDefinitions="Auto,Auto,*,2*">
         <!-- Hàng 0: Các nút bấm -->
         <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="0">
             <Button Name="LoadAccountsButton" Click="LoadAccounts_Click">Load User</Button>
             <Button Name="AddAccountsButton" Click="AddUser_Click">Add User</Button>
             <Button Name="DeleteAccountsButton" Click="DeleteAccount_Click">Delete Selected</Button>
             <Button Name="EditAccountsButton" Click="EditAccount_Click">Edit Selected</Button>
+            <Button Name="CheckPermission" Click="CheckPermission_Click">Check Permission</Button>
         </StackPanel>
 
-        <!-- Hàng 1: ListBox (danh sách account) -->
+        <!-- Hàng 1: ComboBox chọn User/Role và loại quyền (ban đầu ẨN) -->
+        <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="1" Margin="0,10,0,0" x:Name="CheckArea" IsVisible="False">
+            <TextBlock Text="Chọn User/Role:" VerticalAlignment="Center"/>
+            <ComboBox x:Name="UserRoleComboBox" Width="250" />
+
+            <TextBlock Text="Chọn Loại quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+            <ComboBox x:Name="PrivilegeTypeComboBox" Width="150">
+                <ComboBoxItem Content="ROLE"/>
+                <ComboBoxItem Content="SYSTEM"/>
+                <ComboBoxItem Content="TABLE"/>
+                <ComboBoxItem Content="COL"/>
+            </ComboBox>
+
+            <!-- Nút Check xuất hiện khi bấm CheckPermission -->
+            <Button Name="ConfirmCheckButton" Width="100" Content="Check" Click="ConfirmCheckButton_Click" Margin="20,0,0,0"/>
+        </StackPanel>
+
+        <!-- Hàng 2: ListBox hiển thị User -->
         <ListBox x:Name="AccountsListBox" 
-                 Grid.Row="1"
+                 Grid.Row="2"
                  SelectionMode="Single"
                  ScrollViewer.VerticalScrollBarVisibility="Auto" />
+
+        <!-- Hàng 3: DataGrid hiển thị quyền -->
+<ListBox x:Name="PermissionListBox"
+         Grid.Row="3"
+         Margin="0,10,0,0"
+         MinHeight="200" />
+
     </Grid>
-    
 </Window>

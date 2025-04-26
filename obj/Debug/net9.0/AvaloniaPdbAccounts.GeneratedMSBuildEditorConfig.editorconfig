@@ -15,14 +15,14 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AvaloniaPdbAccounts
-build_property.ProjectDir = /Users/tantrannhat/Downloads/untitled folder/AvaloniaPdbAccounts/
+build_property.ProjectDir = D:\Đồ Án ATTT (1)\AvaloniaPdbAccounts\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[/Users/tantrannhat/Downloads/untitled folder/AvaloniaPdbAccounts/App.axaml]
+[D:/Đồ Án ATTT (1)/AvaloniaPdbAccounts/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/Users/tantrannhat/Downloads/untitled folder/AvaloniaPdbAccounts/MainWindow.axaml]
+[D:/Đồ Án ATTT (1)/AvaloniaPdbAccounts/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
