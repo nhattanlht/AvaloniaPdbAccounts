@@ -1,10 +1,13 @@
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.VisualBasic;
 using Avalonia.Data;   // for Binding
@@ -218,7 +221,6 @@ namespace AvaloniaPdbAccounts
                 await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
             }
         }
-
         //     private async void CheckPermission_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         // {
         //     try
@@ -345,7 +347,6 @@ namespace AvaloniaPdbAccounts
             await Task.CompletedTask;
             return dt;
         }
-
 
 
         public static class MessageBox
