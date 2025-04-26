@@ -2,8 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
         x:Class="AvaloniaPdbAccounts.MainWindow"
-        Width="800" Height="600">
-
+        Width="1000" Height="700">
 
     <Grid Margin="10" RowDefinitions="Auto,Auto,*,2*">
 
@@ -16,21 +15,82 @@
             <Button Name="CheckPermission" Click="CheckPermission_Click">Check Permission</Button>
         </StackPanel>
 
-        <!-- Hàng 1: ComboBox chọn User/Role và loại quyền (ban đầu ẨN) -->
-        <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="1" Margin="0,10,0,0" x:Name="CheckArea" IsVisible="False">
-            <TextBlock Text="Chọn User/Role:" VerticalAlignment="Center"/>
-            <ComboBox x:Name="UserRoleComboBox" Width="250" />
+        <!-- Hàng 1: Khu vực chọn quyền -->
+        <StackPanel Orientation="Vertical" Margin="0,10,0,0" x:Name="CheckArea" IsVisible="False" Grid.Row="1">
 
-            <TextBlock Text="Chọn Loại quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
-            <ComboBox x:Name="PrivilegeTypeComboBox" Width="150">
-                <ComboBoxItem Content="ROLE"/>
-                <ComboBoxItem Content="SYSTEM"/>
-                <ComboBoxItem Content="TABLE"/>
-                <ComboBoxItem Content="COL"/>
-            </ComboBox>
+            <!-- Dòng 1: User/Role + Loại quyền + Check -->
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Chọn User/Role:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="UserRoleComboBox" Width="200"/>
 
-            <!-- Nút Check xuất hiện khi bấm CheckPermission -->
-            <Button Name="ConfirmCheckButton" Width="100" Content="Check" Click="ConfirmCheckButton_Click" Margin="20,0,0,0"/>
+                <TextBlock Text="Chọn Loại quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                <ComboBox x:Name="PrivilegeTypeComboBox" Width="150">
+                    <ComboBoxItem Content="ROLE"/>
+                    <ComboBoxItem Content="SYSTEM"/>
+                    <ComboBoxItem Content="TABLE"/>
+                    <ComboBoxItem Content="COL"/>
+                </ComboBox>
+
+                <Button Name="ConfirmCheckButton"
+                        Width="100"
+                        Content="Check"
+                        Click="ConfirmCheckButton_Click"
+                        Margin="20,0,0,0"/>
+            </StackPanel>
+
+            <!-- Dòng 2: ObjectType + ObjectName + Privilege + Column + WithGrantOption + Grant -->
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                <TextBlock Text="Chọn Đối tượng:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="ObjectTypeComboBox"
+                          Width="150"
+                          SelectionChanged="ObjectTypeComboBox_SelectionChanged">
+                    <ComboBoxItem Content="TABLE"/>
+                    <ComboBoxItem Content="VIEW"/>
+                    <ComboBoxItem Content="PROCEDURE"/>
+                    <ComboBoxItem Content="FUNCTION"/>
+                </ComboBox>
+
+                <TextBlock Text="Tên Đối tượng:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                <ComboBox x:Name="ObjectNameComboBox"
+                          Width="200"
+                          SelectionChanged="ObjectNameComboBox_SelectionChanged"/>
+
+                <TextBlock Text="Chọn Cột:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                <ComboBox x:Name="ColumnNameComboBox" Width="150"/>
+
+                <TextBlock Text="Cấp quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                <ComboBox x:Name="PrivilegeComboBox" Width="150">
+                    <ComboBoxItem Content="SELECT"/>
+                    <ComboBoxItem Content="INSERT"/>
+                    <ComboBoxItem Content="UPDATE"/>
+                    <ComboBoxItem Content="DELETE"/>
+                </ComboBox>
+
+                <CheckBox x:Name="WithGrantOptionCheckBox"
+                          Content="WITH GRANT OPTION"
+                          VerticalAlignment="Center"
+                          Margin="20,0,0,0"/>
+
+                <Button Name="GrantPrivilegeButton"
+                        Width="100"
+                        Content="Grant"
+                        Click="GrantPrivilege_Click"
+                        Margin="20,0,0,0"/>
+            </StackPanel>
+
+<!-- Dòng 3: Cấp role cho user -->
+<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" x:Name="GrantRoleArea" IsVisible="False">
+    <TextBlock Text="Chọn Role:" VerticalAlignment="Center"/>
+    <ComboBox x:Name="RoleComboBox" Width="200"/>
+
+    <Button Name="GrantRoleButton"
+            Width="150"
+            Content="Grant Role to User"
+            Click="GrantRoleToUser_Click"
+            Margin="20,0,0,0"/>
+</StackPanel>
+
+
         </StackPanel>
 
         <!-- Hàng 2: ListBox hiển thị User -->
@@ -39,11 +99,10 @@
                  SelectionMode="Single"
                  ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-        <!-- Hàng 3: DataGrid hiển thị quyền -->
-<ListBox x:Name="PermissionListBox"
-         Grid.Row="3"
-         Margin="0,10,0,0"
-         MinHeight="200" />
-
+        <!-- Hàng 3: ListBox hiển thị quyền -->
+        <ListBox x:Name="PermissionListBox"
+                 Grid.Row="3"
+                 Margin="0,10,0,0"
+                 MinHeight="200" />
     </Grid>
 </Window>
