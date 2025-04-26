@@ -6,6 +6,7 @@
 
 
     <Grid Margin="10" RowDefinitions="Auto,Auto,*,2*">
+
         <!-- Hàng 0: Các nút bấm -->
         <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="0">
             <Button Name="LoadAccountsButton" Click="LoadAccounts_Click">Load User</Button>
