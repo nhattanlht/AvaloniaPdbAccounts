@@ -2,8 +2,21 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="AvaloniaPdbAccounts.MainWindow"
         Width="600" Height="400" Title="Danh sách tài khoản PDB">
-    <StackPanel Margin="10">
-        <Button Content="Load Accounts" Click="LoadAccounts_Click" Width="150" Margin="0,0,0,10"/>
-        <ListBox x:Name="AccountsListBox" />
-    </StackPanel>
+    
+    <Grid Margin="10" RowDefinitions="Auto,*">
+        <!-- Hàng 0: Các nút bấm -->
+        <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="0">
+            <Button Content="Load Accounts" Click="LoadAccounts_Click" Width="130" />
+            <Button Content="Add User" Click="AddUser_Click" Width="130" />
+            <Button Content="Delete Selected" Click="DeleteAccount_Click" Width="130" />
+            <Button Content="Edit Selected" Click="EditAccount_Click" Width="130" />
+        </StackPanel>
+
+        <!-- Hàng 1: ListBox (danh sách account) -->
+        <ListBox x:Name="AccountsListBox" 
+                 Grid.Row="1"
+                 SelectionMode="Single"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" />
+    </Grid>
+    
 </Window>
