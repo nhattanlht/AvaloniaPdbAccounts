@@ -24,7 +24,7 @@ namespace AvaloniaPdbAccounts
          private string _lastGrantee = "";
         private string _lastType = "";
         private List<Dictionary<string, object>> _lastPermissions = new();
-        private const string Infoconnect = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=orcl21)));DBA Privilege=SYSDBA;";
+        private const string Infoconnect = "User Id=AdminPdb;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)));";
         public MainWindow()
         {
             InitializeComponent();
@@ -67,7 +67,7 @@ namespace AvaloniaPdbAccounts
                 {
                     await conn.OpenAsync();
 
-                    using (var cmd = new OracleCommand("SELECT * FROM ALL_USERS", conn))
+                    using (var cmd = new OracleCommand("SELECT username FROM dba_users WHERE common = 'NO' ORDER BY username", conn))
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -247,7 +247,7 @@ namespace AvaloniaPdbAccounts
                 {
                     await conn.OpenAsync();
 
-                    using (var cmd = new OracleCommand("SELECT role FROM dba_roles GROUP BY role", conn))
+                    using (var cmd = new OracleCommand("SELECT role FROM dba_roles WHERE common = 'NO' GROUP BY role", conn))
                     using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         while (await reader.ReadAsync())
@@ -526,7 +526,7 @@ namespace AvaloniaPdbAccounts
         private async Task<List<string>> GetAllUsersAsync(OracleConnection conn)
         {
             var users = new List<string>();
-            using (var cmd = new OracleCommand("SELECT USERNAME FROM DBA_USERS WHERE ACCOUNT_STATUS = 'OPEN'", conn))
+            using (var cmd = new OracleCommand("SELECT username FROM dba_users WHERE common = 'NO' ORDER BY username", conn))
             using (var reader = await cmd.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
@@ -540,7 +540,7 @@ namespace AvaloniaPdbAccounts
         private async Task<List<string>> GetAllRolesAsync(OracleConnection conn)
         {
             var roles = new List<string>();
-            using (var cmd = new OracleCommand("SELECT ROLE FROM DBA_ROLES", conn))
+            using (var cmd = new OracleCommand("SELECT ROLE FROM DBA_ROLES WHERE common = 'NO'", conn))
             using (var reader = await cmd.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())
