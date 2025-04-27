@@ -4,9 +4,16 @@
         x:Class="AvaloniaPdbAccounts.MainWindow"
         Width="1000" Height="700">
 
-    <Grid Margin="10" RowDefinitions="Auto,Auto,*,2*">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Row 0: Button Panel -->
+            <RowDefinition Height="Auto"/> <!-- Row 1: Role Button Panel -->
+            <RowDefinition Height="*"/>    <!-- Row 2: User/Role Selection Area -->
+            <RowDefinition Height="*"/>    <!-- Row 3: Accounts ListBox -->
+            <RowDefinition Height="*"/>    <!-- Row 4: Permissions ListBox -->
+        </Grid.RowDefinitions>
 
-        <!-- Hàng 0: Các nút bấm -->
+        <!-- Row 0: Button Panel -->
         <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="0">
             <Button Name="LoadAccountsButton" Click="LoadAccounts_Click">Load User</Button>
             <Button Name="AddAccountsButton" Click="AddUser_Click">Add User</Button>
@@ -15,10 +22,18 @@
             <Button Name="CheckPermission" Click="CheckPermission_Click">Check Permission</Button>
         </StackPanel>
 
-        <!-- Hàng 1: Khu vực chọn quyền -->
-        <StackPanel Orientation="Vertical" Margin="0,10,0,0" x:Name="CheckArea" IsVisible="False" Grid.Row="1">
+        <!-- Row 1: Role Button Panel -->
+        <StackPanel Orientation="Horizontal" Spacing="5" Grid.Row="1">
+            <Button Name="LoadRolesButton" Click="LoadRoles_Click">Load Roles</Button>
+            <Button Name="AddRoleButton" Click="AddRole_Click">Add Role</Button>
+            <Button Name="DeleteRoleButton" Click="DeleteRole_Click">Delete Selected Role</Button>
+            <!-- <Button Name="EditRoleButton" Click="EditRole_Click">Edit Selected Role</Button> -->
+        </StackPanel>
 
-            <!-- Dòng 1: User/Role + Loại quyền + Check -->
+        <!-- Row 2: User/Role Selection Area -->
+        <StackPanel Orientation="Vertical" Margin="0,10,0,0" x:Name="CheckArea" IsVisible="False" Grid.Row="2">
+
+            <!-- Row 2.1: User/Role + Privilege Type -->
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <TextBlock Text="Chọn User/Role:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="UserRoleComboBox" Width="200"/>
@@ -38,7 +53,7 @@
                         Margin="20,0,0,0"/>
             </StackPanel>
 
-            <!-- Dòng 2: ObjectType + ObjectName + Privilege + Column + WithGrantOption + Grant -->
+            <!-- Row 2.2: Object Type + Name + Column + Privilege + Grant Option -->
             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
                 <TextBlock Text="Chọn Đối tượng:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="ObjectTypeComboBox"
@@ -78,30 +93,28 @@
                         Margin="20,0,0,0"/>
             </StackPanel>
 
-<!-- Dòng 3: Cấp role cho user -->
-<StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" x:Name="GrantRoleArea" IsVisible="False">
-    <TextBlock Text="Chọn Role:" VerticalAlignment="Center"/>
-    <ComboBox x:Name="RoleComboBox" Width="200"/>
+            <!-- Row 2.3: Grant Role to User -->
+            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" x:Name="GrantRoleArea" IsVisible="False">
+                <TextBlock Text="Chọn Role:" VerticalAlignment="Center"/>
+                <ComboBox x:Name="RoleComboBox" Width="200"/>
 
-    <Button Name="GrantRoleButton"
-            Width="150"
-            Content="Grant Role to User"
-            Click="GrantRoleToUser_Click"
-            Margin="20,0,0,0"/>
-</StackPanel>
-
-
+                <Button Name="GrantRoleButton"
+                        Width="150"
+                        Content="Grant Role to User"
+                        Click="GrantRoleToUser_Click"
+                        Margin="20,0,0,0"/>
+            </StackPanel>
         </StackPanel>
 
-        <!-- Hàng 2: ListBox hiển thị User -->
+        <!-- Row 3: Accounts ListBox -->
         <ListBox x:Name="AccountsListBox" 
-                 Grid.Row="2"
+                 Grid.Row="3"
                  SelectionMode="Single"
                  ScrollViewer.VerticalScrollBarVisibility="Auto" />
 
-        <!-- Hàng 3: ListBox hiển thị quyền -->
+        <!-- Row 4: Permissions ListBox -->
         <ListBox x:Name="PermissionListBox"
-                 Grid.Row="3"
+                 Grid.Row="4"
                  Margin="0,10,0,0"
                  MinHeight="200" />
     </Grid>

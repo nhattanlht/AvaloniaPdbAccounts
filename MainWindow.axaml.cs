@@ -21,7 +21,7 @@ namespace AvaloniaPdbAccounts
 {
     public partial class MainWindow : Window
     {
-        private const string Infoconnect = "User Id=system;Password=123456;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=QLNHANVIEN)));DBA Privilege=SYSDBA;";
+        private const string Infoconnect = "User Id=sys;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=AuditDB)));DBA Privilege=SYSDBA;";
         public MainWindow()
         {
             InitializeComponent();
@@ -292,7 +292,298 @@ namespace AvaloniaPdbAccounts
 
 
 
+        //CRUD ROLE
+        private async void LoadRoles_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var accounts = await RLoadRolesAsync();
+            AccountsListBox.ItemsSource = accounts;
+        }
 
+        private async Task<ObservableCollection<string>> RLoadRolesAsync()
+        {
+            var accounts = new ObservableCollection<string>();
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (var cmd = new OracleCommand("SELECT role FROM dba_roles GROUP BY role", conn))
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            accounts.Add(reader.GetString(0));
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                accounts.Add($"Error: {ex.Message}");
+            }
+
+            return accounts;
+        }
+
+        private async void ReloadRole()
+        {
+            var accounts = await RLoadRolesAsync();
+            AccountsListBox.ItemsSource = accounts;
+        }
+
+        private async void DeleteRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (AccountsListBox.SelectedItem is string selectedAccount)
+            {
+                var confirm = await MessageBox.Show(this, $"Bạn có chắc muốn xóa role '{selectedAccount}'?", "Xác nhận", MessageBox.MessageBoxButtons.YesNo);
+
+                if (confirm == MessageBox.MessageBoxResult.Yes)
+                {
+                    try
+                    {
+                        string connectionString = Infoconnect;
+
+                        using (var conn = new OracleConnection(connectionString))
+                        {
+                            await conn.OpenAsync();
+                            using (var cmd = new OracleCommand($"DROP ROLE {selectedAccount}", conn))
+                            {
+                                await cmd.ExecuteNonQueryAsync();
+                            }
+                        }
+
+                        ReloadRole();
+                    }
+                    catch (Exception ex)
+                    {
+                        await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+                    }
+                }
+            }
+        }
+        private async void EditRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            if (AccountsListBox.SelectedItem is string selectedAccount)
+            {
+                var role = selectedAccount;
+                var privileges = await GetRolePrivilegesAsync(role);
+                var selectedPrivileges = new ObservableCollection<PrivilegeItem>(privileges);
+
+                // Store the currently selected item
+                var previouslySelectedItem = AccountsListBox.SelectedItem;
+
+                var result = await ShowEditPrivilegesDialog(role, selectedPrivileges);
+                if (result)
+                {
+                    await UpdateRolePrivilegesAsync(role, selectedPrivileges);
+                    ReloadRole();
+                }
+
+                // Re-select the previously selected item
+                AccountsListBox.SelectedItem = previouslySelectedItem;
+            }
+        }
+
+        private async Task<ObservableCollection<PrivilegeItem>> GetRolePrivilegesAsync(string role)
+        {
+            var privileges = new ObservableCollection<PrivilegeItem>();
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Define a list of basic system privileges
+                    var basicPrivileges = new List<string>
+                            {
+                                "SELECT",
+                                "INSERT",
+                                "UPDATE",
+                                "DELETE",
+                                "EXECUTE",
+                                "ALTER",
+                                "CREATE",
+                                "DROP",
+                                "GRANT",
+                                "REVOKE"
+                            };
+
+                    // Add basic privileges to the privileges collection
+                    foreach (var privilegeName in basicPrivileges)
+                    {
+                        if (!privileges.Any(p => p.Name == privilegeName))
+                        {
+                            privileges.Add(new PrivilegeItem { Name = privilegeName, IsGranted = false });
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+
+            return privileges;
+        }
+
+
+        private async Task<bool> ShowEditPrivilegesDialog(string role, ObservableCollection<PrivilegeItem> privileges)
+        {
+            var dlg = new Window
+            {
+                Title = $"Chỉnh sửa quyền cho role '{role}'",
+                Width = 300,
+                Height = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Star)); // List chiếm phần lớn
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto)); // Button tự co nhỏ
+
+            var listBox = new ListBox
+            {
+                SelectionMode = SelectionMode.Multiple,
+                [ScrollViewer.VerticalScrollBarVisibilityProperty] = ScrollBarVisibility.Auto
+            };
+
+            foreach (var privilege in privileges)
+            {
+                var checkBox = new CheckBox
+                {
+                    Content = privilege.Name,
+                    IsChecked = privilege.IsGranted
+                };
+
+                listBox.Items.Add(checkBox);
+            }
+
+            var okButton = new Button
+            {
+                Content = "OK",
+                Width = 60,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+            };
+
+            okButton.Click += (_, __) =>
+            {
+                for (int i = 0; i < listBox.Items.Count; i++)
+                {
+                    if (listBox.Items[i] is CheckBox checkBox && privileges.Count > i)
+                    {
+                        privileges[i].IsGranted = checkBox.IsChecked == true;
+                    }
+                }
+                dlg.Close();
+            };
+
+            // Add ListBox vào dòng 0
+            Grid.SetRow(listBox, 0);
+            grid.Children.Add(listBox);
+
+            // Add OK Button vào dòng 1
+            Grid.SetRow(okButton, 1);
+            grid.Children.Add(okButton);
+
+            dlg.Content = grid;
+
+            await dlg.ShowDialog(this);
+            return true;
+        }
+        private async Task UpdateRolePrivilegesAsync(string role, ObservableCollection<PrivilegeItem> privileges)
+        {
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    using (var transaction = conn.BeginTransaction())
+                    {
+                        try
+                        {
+                            foreach (var privilege in privileges)
+                            {
+                                Console.WriteLine($"Privilege: {privilege.Name}");
+                                var sql = privilege.IsGranted
+                                    ? $"GRANT \"{privilege.Name}\" TO \"{role}\""
+                                    : $"REVOKE \"{privilege.Name}\" FROM \"{role}\"";
+
+                                using (var cmd = new OracleCommand(sql, conn))
+                                {
+                                    cmd.Transaction = transaction;
+                                    await cmd.ExecuteNonQueryAsync();
+                                }
+                            }
+
+                            await transaction.CommitAsync();
+                        }
+                        catch (Exception innerEx)
+                        {
+                            await transaction.RollbackAsync();
+                            throw new Exception($"Transaction failed: {innerEx.Message}", innerEx);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+        }
+
+
+        public class PrivilegeItem
+        {
+            public string? Name { get; set; }
+            public bool IsGranted { get; set; }
+        }
+        private async void AddRole_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var role = await MessageBox.InputBox(this, "Nhập tên role mới", "Tạo Role");
+            if (string.IsNullOrWhiteSpace(role))
+                return;
+
+            try
+            {
+                string connectionString = Infoconnect;
+
+                using (var conn = new OracleConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Tạo user
+                    using (var cmdCreate = new OracleCommand($"CREATE ROLE {role} ", conn))
+                    {
+                        await cmdCreate.ExecuteNonQueryAsync();
+                    }
+
+                    // Grant quyền kết nối
+                    using (var cmdGrant = new OracleCommand($"GRANT CONNECT, RESOURCE TO {role}", conn))
+                    {
+                        await cmdGrant.ExecuteNonQueryAsync();
+                    }
+                }
+
+                await MessageBox.Show(this, $"Tạo role '{role}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+
+                // Reload danh sách
+                ReloadRole();
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
+        }
 
 
 
@@ -443,103 +734,103 @@ namespace AvaloniaPdbAccounts
             }
         }
 
-       private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-{
-    try
-    {
-        if (UserRoleComboBox.SelectedItem == null ||
-            PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
+        private async void ConfirmCheckButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            await MessageBox.Show(this,
-                "Vui lòng chọn User hoặc Role và loại quyền!",
-                "Thông báo",
-                MessageBox.MessageBoxButtons.Ok);
-            return;
-        }
-
-        var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
-        var selectedType = selectedTypeItem.Content!.ToString()!;
-
-        using var conn = new OracleConnection(Infoconnect);
-        await conn.OpenAsync();
-        var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
-
-        var lines = new List<string>();
-
-        if (dataTable == null || dataTable.Rows.Count == 0)
-        {
-            lines.Add("Không có dữ liệu quyền!");
-        }
-        else
-        {
-            foreach (DataRow row in dataTable.Rows)
+            try
             {
-                var parts = new List<string>(dataTable.Columns.Count);
-                foreach (DataColumn col in dataTable.Columns)
+                if (UserRoleComboBox.SelectedItem == null ||
+                    PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
                 {
-                    parts.Add($"{col.ColumnName}:{row[col]}");
+                    await MessageBox.Show(this,
+                        "Vui lòng chọn User hoặc Role và loại quyền!",
+                        "Thông báo",
+                        MessageBox.MessageBoxButtons.Ok);
+                    return;
                 }
-                lines.Add(string.Join(" | ", parts));
+
+                var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
+                var selectedType = selectedTypeItem.Content!.ToString()!;
+
+                using var conn = new OracleConnection(Infoconnect);
+                await conn.OpenAsync();
+                var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
+
+                var lines = new List<string>();
+
+                if (dataTable == null || dataTable.Rows.Count == 0)
+                {
+                    lines.Add("Không có dữ liệu quyền!");
+                }
+                else
+                {
+                    foreach (DataRow row in dataTable.Rows)
+                    {
+                        var parts = new List<string>(dataTable.Columns.Count);
+                        foreach (DataColumn col in dataTable.Columns)
+                        {
+                            parts.Add($"{col.ColumnName}:{row[col]}");
+                        }
+                        lines.Add(string.Join(" | ", parts));
+                    }
+                }
+
+                // Bind vào ListBox
+                PermissionListBox.ItemsSource = lines;
+
+                // Kiểm tra nếu loại quyền là ROLE thì show GrantRoleArea
+                if (selectedType == "ROLE")
+                {
+                    GrantRoleArea.IsVisible = true;
+                    await RLoadRolesAsync();
+                }
+                else
+                {
+                    GrantRoleArea.IsVisible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this,
+                    $"Error: {ex.Message}",
+                    "Lỗi",
+                    MessageBox.MessageBoxButtons.Ok);
             }
         }
 
-        // Bind vào ListBox
-        PermissionListBox.ItemsSource = lines;
-
-        // Kiểm tra nếu loại quyền là ROLE thì show GrantRoleArea
-        if (selectedType == "ROLE")
+        private async Task LoadRolesAsync()
         {
-            GrantRoleArea.IsVisible = true;
-            await LoadRolesAsync();
-        }
-        else
-        {
-            GrantRoleArea.IsVisible = false;
-        }
-    }
-    catch (Exception ex)
-    {
-        await MessageBox.Show(this,
-            $"Error: {ex.Message}",
-            "Lỗi",
-            MessageBox.MessageBoxButtons.Ok);
-    }
-}
+            try
+            {
+                using var conn = new OracleConnection(Infoconnect);
+                await conn.OpenAsync();
 
-private async Task LoadRolesAsync()
-{
-    try
-    {
-        using var conn = new OracleConnection(Infoconnect);
-        await conn.OpenAsync();
+                var roles = new List<string>();
+                string sql = "SELECT role FROM dba_roles";
 
-        var roles = new List<string>();
-        string sql = "SELECT role FROM dba_roles";
+                using var cmd = new OracleCommand(sql, conn);
+                using var reader = await cmd.ExecuteReaderAsync();
+                while (await reader.ReadAsync())
+                {
+                    roles.Add(reader.GetString(0));
+                }
 
-        using var cmd = new OracleCommand(sql, conn);
-        using var reader = await cmd.ExecuteReaderAsync();
-        while (await reader.ReadAsync())
-        {
-            roles.Add(reader.GetString(0));
+                RoleComboBox.Items.Clear();
+                foreach (var role in roles)
+                {
+                    RoleComboBox.Items.Add(new ComboBoxItem { Content = role });
+                }
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Error loading roles: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+            }
         }
-
-        RoleComboBox.Items.Clear();
-        foreach (var role in roles)
-        {
-            RoleComboBox.Items.Add(new ComboBoxItem { Content = role });
-        }
-    }
-    catch (Exception ex)
-    {
-        await MessageBox.Show(this, $"Error loading roles: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-    }
-}
 
 
         // Biến lưu lại đối tượng đã chọn
         private string _selectedObjectName = "";
 
-        
+
         private async void ObjectTypeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
@@ -642,38 +933,38 @@ private async Task LoadRolesAsync()
                 withGrantOption: withGrantOption
             );
         }
-private async void GrantRoleToUser_Click(object? sender, RoutedEventArgs e)
-{
-    var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
-    var selectedRole = (RoleComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+        private async void GrantRoleToUser_Click(object? sender, RoutedEventArgs e)
+        {
+            var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
+            var selectedRole = (RoleComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
 
-    if (string.IsNullOrWhiteSpace(selectedUser))
-    {
-        await MessageBox.Show(this, "Vui lòng chọn User!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-        return;
-    }
-    if (string.IsNullOrWhiteSpace(selectedRole))
-    {
-        await MessageBox.Show(this, "Vui lòng chọn Role!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-        return;
-    }
-    try
-    {
-        using var conn = new OracleConnection(Infoconnect);
-        await conn.OpenAsync();
+            if (string.IsNullOrWhiteSpace(selectedUser))
+            {
+                await MessageBox.Show(this, "Vui lòng chọn User!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(selectedRole))
+            {
+                await MessageBox.Show(this, "Vui lòng chọn Role!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+                return;
+            }
+            try
+            {
+                using var conn = new OracleConnection(Infoconnect);
+                await conn.OpenAsync();
 
-        string grantRoleSql = $"GRANT \"{selectedRole}\" TO \"{selectedUser}\"";
+                string grantRoleSql = $"GRANT \"{selectedRole}\" TO \"{selectedUser}\"";
 
-        using var cmd = new OracleCommand(grantRoleSql, conn);
-        await cmd.ExecuteNonQueryAsync();
+                using var cmd = new OracleCommand(grantRoleSql, conn);
+                await cmd.ExecuteNonQueryAsync();
 
-        await MessageBox.Show(this, $"Cấp Role '{selectedRole}' cho '{selectedUser}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
-    }
-    catch (Exception ex)
-    {
-        await MessageBox.Show(this, $"Lỗi: {ex.Message}", "Error", MessageBox.MessageBoxButtons.Ok);
-    }
-}
+                await MessageBox.Show(this, $"Cấp Role '{selectedRole}' cho '{selectedUser}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+            }
+            catch (Exception ex)
+            {
+                await MessageBox.Show(this, $"Lỗi: {ex.Message}", "Error", MessageBox.MessageBoxButtons.Ok);
+            }
+        }
 
 
 
