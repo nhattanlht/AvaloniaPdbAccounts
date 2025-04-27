@@ -55,7 +55,7 @@
             </StackPanel>
 
             <!-- Row 2.2: Object Type + Name + Column + Privilege + Grant Option -->
-            <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+<StackPanel x:Name="GrantArea" IsVisible="False" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
                 <TextBlock Text="Chọn Đối tượng:" VerticalAlignment="Center"/>
                 <ComboBox x:Name="ObjectTypeComboBox"
                           Width="150"
@@ -75,12 +75,13 @@
                 <ComboBox x:Name="ColumnNameComboBox" Width="150"/>
 
                 <TextBlock Text="Cấp quyền:" VerticalAlignment="Center" Margin="20,0,0,0"/>
-                <ComboBox x:Name="PrivilegeComboBox" Width="150">
+                <ComboBox x:Name="PrivilegeComboBox" Width="150" SelectionChanged="PrivilegeComboBox_SelectionChanged">
                     <ComboBoxItem Content="SELECT"/>
                     <ComboBoxItem Content="INSERT"/>
                     <ComboBoxItem Content="UPDATE"/>
                     <ComboBoxItem Content="DELETE"/>
                 </ComboBox>
+
 
                 <CheckBox x:Name="WithGrantOptionCheckBox"
                           Content="WITH GRANT OPTION"
