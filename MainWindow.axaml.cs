@@ -4,13 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using Oracle.ManagedDataAccess.Client;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Microsoft.VisualBasic;
-using Avalonia.Data;   // for Binding
 using System.Linq;
 using Avalonia.Interactivity;
 using System.Diagnostics;
@@ -21,7 +16,7 @@ namespace AvaloniaPdbAccounts
 {
     public partial class MainWindow : Window
     {
-        private string _lastGrantee = "";
+         private string _lastGrantee = "";
         private string _lastType = "";
         private List<Dictionary<string, object>> _lastPermissions = new();
         private const string Infoconnect = "User Id=system;Password=123456;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=QLNHANVIEN)));";
@@ -29,10 +24,9 @@ namespace AvaloniaPdbAccounts
         public MainWindow()
         {
             InitializeComponent();
-            this.Opened += (s, e) =>
-            {
-                GrantArea.IsVisible = false;
-            };
+        this.Opened += (s, e) => {
+            GrantArea.IsVisible = false;
+        };
 
         }
 
@@ -59,7 +53,6 @@ namespace AvaloniaPdbAccounts
                 await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
             }
         }
-
         private async Task<ObservableCollection<string>> GetAccountsAsync()
         {
             var accounts = new ObservableCollection<string>();
@@ -196,7 +189,6 @@ namespace AvaloniaPdbAccounts
                 await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
             }
         }
-
         private async Task LoadAccountsListAsync()
         {
             try
@@ -229,9 +221,7 @@ namespace AvaloniaPdbAccounts
                 await MessageBox.Show(this, $"Error: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
             }
         }
-
-
-
+      
 
         //CRUD ROLE
         private async void LoadRoles_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -658,7 +648,7 @@ namespace AvaloniaPdbAccounts
         }
 
         //----------------------
-        private async void CheckPermission_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+ private async void CheckPermission_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             try
             {
@@ -675,246 +665,246 @@ namespace AvaloniaPdbAccounts
             }
         }
 
-        private async void ConfirmCheckButton_Click(object? sender, RoutedEventArgs e)
+private async void ConfirmCheckButton_Click(object? sender, RoutedEventArgs e)
+{
+    try
+    {
+        if (UserRoleComboBox.SelectedItem == null ||
+            PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
         {
-            try
-            {
-                if (UserRoleComboBox.SelectedItem == null ||
-                    PrivilegeTypeComboBox.SelectedItem is not ComboBoxItem selectedTypeItem)
-                {
-                    await MessageBox.Show(this,
-                        "Vui lòng chọn User hoặc Role và loại quyền!",
-                        "Thông báo",
-                        MessageBox.MessageBoxButtons.Ok);
-                    return;
-                }
-
-                var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
-                var selectedType = selectedTypeItem.Content!.ToString()!;
-
-                using var conn = new OracleConnection(Infoconnect);
-                await conn.OpenAsync();
-                var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
-
-                var lines = new List<string>();
-
-                if (dataTable == null || dataTable.Rows.Count == 0)
-                {
-                    lines.Add("Không có dữ liệu quyền!");
-                }
-                else
-                {
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        var parts = new List<string>(dataTable.Columns.Count);
-                        foreach (DataColumn col in dataTable.Columns)
-                        {
-                            parts.Add($"{col.ColumnName}:{row[col]}");
-                        }
-                        lines.Add(string.Join(" | ", parts));
-                    }
-                }
-
-                // Bind vào ListBox
-                PermissionListBox.ItemsSource = lines;
-
-                // Kiểm tra nếu loại quyền là ROLE thì show GrantRoleArea
-                if (selectedType == "ROLE")
-                {
-                    GrantRoleArea.IsVisible = true; // Hiển thị GrantRoleArea
-                    await LoadRolesAsync();
-                }
-                else
-                {
-                    GrantRoleArea.IsVisible = false; // Ẩn GrantRoleArea nếu không phải ROLE
-                }
-
-                // Kiểm tra loại quyền để hiển thị các ô Grant
-                if (selectedType == "ROLE" || selectedType == "SYSTEM")
-                {
-                    // Hiển thị Grant phần cột nếu loại quyền là ROLE hoặc SYSTEM
-                    ColumnNameComboBox.IsVisible = false;  // Ẩn cột
-                }
-                else
-                {
-                    ColumnNameComboBox.IsVisible = true;  // Hiển thị cột nếu không phải ROLE hoặc SYSTEM
-                }
-                GrantArea.IsVisible = true;
-
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this,
-                    $"Error: {ex.Message}",
-                    "Lỗi",
-                    MessageBox.MessageBoxButtons.Ok);
-            }
+            await MessageBox.Show(this,
+                "Vui lòng chọn User hoặc Role và loại quyền!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
         }
 
+        var selectedName = UserRoleComboBox.SelectedItem.ToString()!;
+        var selectedType = selectedTypeItem.Content!.ToString()!;
 
-        private async void Revoke_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+        var dataTable = await QueryPrivilegesAsync(conn, selectedType, selectedName);
+
+        var lines = new List<string>();
+
+        if (dataTable == null || dataTable.Rows.Count == 0)
         {
-            try
-            {
-                // 1. Kiểm tra xem đã Check Permission chưa
-                if (string.IsNullOrEmpty(_lastGrantee) || string.IsNullOrEmpty(_lastType))
-                {
-                    await MessageBox.Show(this,
-                        "Bạn cần phải bấm Check Permission trước!",
-                        "Thông báo",
-                        MessageBox.MessageBoxButtons.Ok);
-                    return;
-                }
-
-                // 2. Kiểm tra đã chọn dòng nào trong ListBox chưa
-                var idx = PermissionListBox.SelectedIndex;
-                if (idx < 0 || idx >= _lastPermissions.Count)
-                {
-                    await MessageBox.Show(this,
-                        "Vui lòng chọn 1 quyền để thu hồi!",
-                        "Thông báo",
-                        MessageBox.MessageBoxButtons.Ok);
-                    return;
-                }
-
-                // 3. Lấy dòng dữ liệu đã chọn
-                var selectedRow = _lastPermissions[idx];
-                string user = _lastGrantee;
-                string query = "";
-                string confirmMessage = "";
-                string privilege = "";
-
-                // 4. Tạo câu lệnh REVOKE tùy theo loại quyền
-                switch (_lastType)
-                {
-                    case "ROLE":
-                        privilege = selectedRow["GRANTED_ROLE"].ToString()!;
-                        query = $"REVOKE {privilege} FROM {user}";
-                        confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
-                        break;
-
-                    case "SYSTEM":
-                        privilege = selectedRow["PRIVILEGE"].ToString()!;
-                        query = $"REVOKE {privilege} FROM {user}";
-                        confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
-                        break;
-
-                    case "TABLE":
-                        var table = selectedRow["TABLE_NAME"].ToString()!;
-                        var owner = selectedRow["OWNER"].ToString()!;
-                        privilege = selectedRow["PRIVILEGE"].ToString()!;
-                        query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
-                        confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên bảng {owner}.{table} từ {user}?";
-                        break;
-
-                    case "COL":
-                        var column = selectedRow["COLUMN_NAME"].ToString()!;
-                        table = selectedRow["TABLE_NAME"].ToString()!;
-                        owner = selectedRow["OWNER"].ToString()!;
-                        privilege = selectedRow["PRIVILEGE"].ToString()!;
-                        query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
-                        confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên cột {column} của bảng {owner}.{table} từ {user}?";
-                        break;
-
-                    default:
-                        await MessageBox.Show(this,
-                            "Loại quyền không hợp lệ.",
-                            "Lỗi",
-                            MessageBox.MessageBoxButtons.Ok);
-                        return;
-                }
-
-                // 5. Xác nhận với người dùng
-                var confirm = await MessageBox.Show(this,
-                    confirmMessage,
-                    "Xác nhận thu hồi",
-                    MessageBox.MessageBoxButtons.YesNo);
-                if (confirm != MessageBox.MessageBoxResult.Yes)
-                    return;
-
-                // 6. Thực hiện thu hồi
-                using var conn = new OracleConnection(Infoconnect);
-                await conn.OpenAsync();
-                using var cmd = new OracleCommand(query, conn);
-                await cmd.ExecuteNonQueryAsync();
-
-                await MessageBox.Show(this,
-                    "Thu hồi quyền thành công!",
-                    "Thành công",
-                    MessageBox.MessageBoxButtons.Ok);
-
-                // 7. Refresh lại quyền mới
-                await ReloadPermissionsAsync();
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this,
-                    $"Lỗi khi thu hồi quyền: {ex.Message}",
-                    "Lỗi",
-                    MessageBox.MessageBoxButtons.Ok);
-            }
+            lines.Add("Không có dữ liệu quyền!");
         }
-
-        // Hàm reload permission sau khi Revoke
-        private async Task ReloadPermissionsAsync()
+        else
         {
-            if (string.IsNullOrEmpty(_lastGrantee) || string.IsNullOrEmpty(_lastType))
-                return;
-
-            // Gán lại selected vào ComboBox
-            UserRoleComboBox.SelectedItem = _lastGrantee;
-            PrivilegeTypeComboBox.SelectedIndex = GetPrivilegeTypeIndex(_lastType);
-
-            // Mở kết nối và query
-            using var conn = new OracleConnection(Infoconnect);
-            await conn.OpenAsync();
-
-            var dataTable = await QueryPrivilegesAsync(conn, _lastType, _lastGrantee);
-            if (dataTable == null || dataTable.Rows.Count == 0)
+            foreach (DataRow row in dataTable.Rows)
             {
-                PermissionListBox.ItemsSource = null;
-                return;
-            }
-
-            _lastPermissions = ConvertDataTableToList(dataTable);
-
-            var lines = new List<string>(_lastPermissions.Count);
-            foreach (var dict in _lastPermissions)
-            {
-                var parts = new List<string>();
-                foreach (var kv in dict)
-                    parts.Add($"{kv.Key}:{kv.Value}");
+                var parts = new List<string>(dataTable.Columns.Count);
+                foreach (DataColumn col in dataTable.Columns)
+                {
+                    parts.Add($"{col.ColumnName}:{row[col]}");
+                }
                 lines.Add(string.Join(" | ", parts));
             }
+        }
 
-            PermissionListBox.ItemsSource = lines;
-        }
-        private int GetPrivilegeTypeIndex(string type)
+        // Bind vào ListBox
+        PermissionListBox.ItemsSource = lines;
+
+        // Kiểm tra nếu loại quyền là ROLE thì show GrantRoleArea
+        if (selectedType == "ROLE")
         {
-            return type switch
-            {
-                "ROLE" => 0,
-                "SYSTEM" => 1,
-                "TABLE" => 2,
-                "COL" => 3,
-                _ => -1
-            };
+            GrantRoleArea.IsVisible = true; // Hiển thị GrantRoleArea
+            await LoadRolesAsync();
         }
-        // Convert DataTable thành List<Dictionary<string, object>>
-        private List<Dictionary<string, object>> ConvertDataTableToList(DataTable table)
+        else
         {
-            var list = new List<Dictionary<string, object>>(table.Rows.Count);
-            foreach (DataRow row in table.Rows)
-            {
-                var dict = new Dictionary<string, object>(table.Columns.Count);
-                foreach (DataColumn col in table.Columns)
-                {
-                    dict[col.ColumnName] = row[col];
-                }
-                list.Add(dict);
-            }
-            return list;
+            GrantRoleArea.IsVisible = false; // Ẩn GrantRoleArea nếu không phải ROLE
         }
+
+        // Kiểm tra loại quyền để hiển thị các ô Grant
+        if (selectedType == "ROLE" || selectedType == "SYSTEM")
+        {
+            // Hiển thị Grant phần cột nếu loại quyền là ROLE hoặc SYSTEM
+            ColumnNameComboBox.IsVisible = false;  // Ẩn cột
+        }
+        else
+        {
+            ColumnNameComboBox.IsVisible = true;  // Hiển thị cột nếu không phải ROLE hoặc SYSTEM
+        }
+        GrantArea.IsVisible = true;
+
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this,
+            $"Error: {ex.Message}",
+            "Lỗi",
+            MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+
+private async void Revoke_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+{
+    try
+    {
+        // 1. Kiểm tra xem đã Check Permission chưa
+        if (string.IsNullOrEmpty(_lastGrantee) || string.IsNullOrEmpty(_lastType))
+        {
+            await MessageBox.Show(this,
+                "Bạn cần phải bấm Check Permission trước!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        // 2. Kiểm tra đã chọn dòng nào trong ListBox chưa
+        var idx = PermissionListBox.SelectedIndex;
+        if (idx < 0 || idx >= _lastPermissions.Count)
+        {
+            await MessageBox.Show(this,
+                "Vui lòng chọn 1 quyền để thu hồi!",
+                "Thông báo",
+                MessageBox.MessageBoxButtons.Ok);
+            return;
+        }
+
+        // 3. Lấy dòng dữ liệu đã chọn
+        var selectedRow = _lastPermissions[idx];
+        string user = _lastGrantee;
+        string query = "";
+        string confirmMessage = "";
+        string privilege = "";
+
+        // 4. Tạo câu lệnh REVOKE tùy theo loại quyền
+        switch (_lastType)
+        {
+            case "ROLE":
+                privilege = selectedRow["GRANTED_ROLE"].ToString()!;
+                query = $"REVOKE {privilege} FROM {user}";
+                confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
+                break;
+
+            case "SYSTEM":
+                privilege = selectedRow["PRIVILEGE"].ToString()!;
+                query = $"REVOKE {privilege} FROM {user}";
+                confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
+                break;
+
+            case "TABLE":
+                var table = selectedRow["TABLE_NAME"].ToString()!;
+                var owner = selectedRow["OWNER"].ToString()!;
+                privilege = selectedRow["PRIVILEGE"].ToString()!;
+                query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
+                confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên bảng {owner}.{table} từ {user}?";
+                break;
+
+            case "COL":
+                var column = selectedRow["COLUMN_NAME"].ToString()!;
+                table = selectedRow["TABLE_NAME"].ToString()!;
+                owner = selectedRow["OWNER"].ToString()!;
+                privilege = selectedRow["PRIVILEGE"].ToString()!;
+                query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
+                confirmMessage = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên cột {column} của bảng {owner}.{table} từ {user}?";
+                break;
+
+            default:
+                await MessageBox.Show(this,
+                    "Loại quyền không hợp lệ.",
+                    "Lỗi",
+                    MessageBox.MessageBoxButtons.Ok);
+                return;
+        }
+
+        // 5. Xác nhận với người dùng
+        var confirm = await MessageBox.Show(this,
+            confirmMessage,
+            "Xác nhận thu hồi",
+            MessageBox.MessageBoxButtons.YesNo);
+        if (confirm != MessageBox.MessageBoxResult.Yes)
+            return;
+
+        // 6. Thực hiện thu hồi
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+        using var cmd = new OracleCommand(query, conn);
+        await cmd.ExecuteNonQueryAsync();
+
+        await MessageBox.Show(this,
+            "Thu hồi quyền thành công!",
+            "Thành công",
+            MessageBox.MessageBoxButtons.Ok);
+
+        // 7. Refresh lại quyền mới
+        await ReloadPermissionsAsync();
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this,
+            $"Lỗi khi thu hồi quyền: {ex.Message}",
+            "Lỗi",
+            MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+// Hàm reload permission sau khi Revoke
+private async Task ReloadPermissionsAsync()
+{
+    if (string.IsNullOrEmpty(_lastGrantee) || string.IsNullOrEmpty(_lastType))
+        return;
+
+    // Gán lại selected vào ComboBox
+    UserRoleComboBox.SelectedItem = _lastGrantee;
+    PrivilegeTypeComboBox.SelectedIndex = GetPrivilegeTypeIndex(_lastType);
+
+    // Mở kết nối và query
+    using var conn = new OracleConnection(Infoconnect);
+    await conn.OpenAsync();
+
+    var dataTable = await QueryPrivilegesAsync(conn, _lastType, _lastGrantee);
+    if (dataTable == null || dataTable.Rows.Count == 0)
+    {
+        PermissionListBox.ItemsSource = null;
+        return;
+    }
+
+    _lastPermissions = ConvertDataTableToList(dataTable);
+
+    var lines = new List<string>(_lastPermissions.Count);
+    foreach (var dict in _lastPermissions)
+    {
+        var parts = new List<string>();
+        foreach (var kv in dict)
+            parts.Add($"{kv.Key}:{kv.Value}");
+        lines.Add(string.Join(" | ", parts));
+    }
+
+    PermissionListBox.ItemsSource = lines;
+}
+private int GetPrivilegeTypeIndex(string type)
+{
+    return type switch
+    {
+        "ROLE" => 0,
+        "SYSTEM" => 1,
+        "TABLE" => 2,
+        "COL" => 3,
+        _ => -1
+    };
+}
+// Convert DataTable thành List<Dictionary<string, object>>
+private List<Dictionary<string, object>> ConvertDataTableToList(DataTable table)
+{
+    var list = new List<Dictionary<string, object>>(table.Rows.Count);
+    foreach (DataRow row in table.Rows)
+    {
+        var dict = new Dictionary<string, object>(table.Columns.Count);
+        foreach (DataColumn col in table.Columns)
+        {
+            dict[col.ColumnName] = row[col];
+        }
+        list.Add(dict);
+    }
+    return list;
+}
 
         private async Task LoadRolesAsync()
         {
@@ -947,12 +937,12 @@ namespace AvaloniaPdbAccounts
 
 
         // Biến lưu lại đối tượng đã chọn
-
+    
 
         // Biến lưu lại đối tượng đã chọn
         private string _selectedObjectName = "";
 
-
+        
         private async void ObjectTypeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
         {
             var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
@@ -1019,163 +1009,160 @@ namespace AvaloniaPdbAccounts
                 ColumnNameComboBox.Items.Add(new ComboBoxItem { Content = column });
             }
         }
-        private async void GrantPrivilege_Click(object? sender, RoutedEventArgs e)
+private async void GrantPrivilege_Click(object? sender, RoutedEventArgs e)
+{
+    var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
+    var selectedPrivilege = (PrivilegeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+    var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+    var selectedObjectName = _selectedObjectName;
+    var selectedColumnName = (ColumnNameComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+    var withGrantOption = WithGrantOptionCheckBox.IsChecked == true;
+
+    if (string.IsNullOrEmpty(selectedUser))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn user hoặc role!", "Error", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    if (string.IsNullOrEmpty(selectedPrivilege))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn quyền!", "Error", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    if (string.IsNullOrEmpty(selectedObjectType))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn loại đối tượng!", "Error", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    if (string.IsNullOrEmpty(selectedObjectName))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn tên đối tượng!", "Error", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+
+    // Kiểm tra ràng buộc quyền với loại đối tượng
+    if ((selectedPrivilege == "SELECT" || selectedPrivilege == "INSERT" || selectedPrivilege == "UPDATE" || selectedPrivilege == "DELETE")
+        && selectedObjectType != "TABLE")
+    {
+        await MessageBox.Show(this, $"Quyền {selectedPrivilege} chỉ áp dụng cho TABLE!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+
+    if (selectedPrivilege == "EXECUTE" && (selectedObjectType != "PROCEDURE" && selectedObjectType != "FUNCTION"))
+    {
+        await MessageBox.Show(this, "Quyền EXECUTE chỉ áp dụng cho PROCEDURE hoặc FUNCTION!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+
+    // Nếu không lỗi thì thực hiện cấp quyền
+    try
+    {
+        await GrantPrivilegeAsync(
+            grantee: selectedUser,
+            objectType: selectedObjectType,
+            objectName: selectedObjectName,
+            privilege: selectedPrivilege,
+            withGrantOption: withGrantOption,
+            columnName: selectedColumnName
+        );
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Lỗi khi cấp quyền: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+
+
+
+private async void GrantRoleToUser_Click(object? sender, RoutedEventArgs e)
+{
+    var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
+    var selectedRole = (RoleComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
+
+    if (string.IsNullOrWhiteSpace(selectedUser))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn User!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    if (string.IsNullOrWhiteSpace(selectedRole))
+    {
+        await MessageBox.Show(this, "Vui lòng chọn Role!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
+        return;
+    }
+    try
+    {
+        using var conn = new OracleConnection(Infoconnect);
+        await conn.OpenAsync();
+
+        string grantRoleSql = $"GRANT \"{selectedRole}\" TO \"{selectedUser}\"";
+
+        using var cmd = new OracleCommand(grantRoleSql, conn);
+        await cmd.ExecuteNonQueryAsync();
+
+        await MessageBox.Show(this, $"Cấp Role '{selectedRole}' cho '{selectedUser}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+    }
+    catch (Exception ex)
+    {
+        await MessageBox.Show(this, $"Lỗi: {ex.Message}", "Error", MessageBox.MessageBoxButtons.Ok);
+    }
+}
+
+
+    private async Task GrantPrivilegeAsync(
+    string grantee,
+    string objectType,
+    string objectName,
+    string privilege,
+    bool withGrantOption,
+    string columnName = "")
+{
+    using var conn = new OracleConnection(Infoconnect);
+    await conn.OpenAsync();
+
+string grantSql = objectType switch
+{
+    "TABLE" or "VIEW" =>
+        (!string.IsNullOrEmpty(columnName) &&
+         columnName != "Tất cả" &&
+         (privilege == "SELECT" || privilege == "UPDATE"))
+            ? $"GRANT {privilege} ({columnName}) ON {objectName} TO {grantee}"
+            : $"GRANT {privilege} ON {objectName} TO {grantee}",
+
+    "PROCEDURE" or "FUNCTION" =>
+        $"GRANT EXECUTE ON {objectName} TO {grantee}",
+
+    _ => throw new Exception("Loại đối tượng không hợp lệ")
+};
+
+
+
+
+    if (withGrantOption)
+        grantSql += " WITH GRANT OPTION";
+
+    using var cmd = new OracleCommand(grantSql, conn);
+    await cmd.ExecuteNonQueryAsync();
+
+    await MessageBox.Show(this, $"Cấp quyền {privilege} thành công cho {grantee} trên {objectName}!", "Thành công", MessageBox.MessageBoxButtons.Ok);
+}
+
+private void PrivilegeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+{
+    if (PrivilegeComboBox.SelectedItem is ComboBoxItem selectedItem)
+    {
+        string privilege = selectedItem.Content?.ToString()?.ToUpper() ?? "";
+
+        // Chỉ hiển thị ColumnNameComboBox khi chọn SELECT hoặc UPDATE
+        if (privilege == "SELECT" || privilege == "UPDATE")
         {
-            var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
-            var selectedPrivilege = (PrivilegeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
-            var selectedObjectType = (ObjectTypeComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
-            var selectedObjectName = _selectedObjectName;
-            var selectedColumnName = (ColumnNameComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
-            var withGrantOption = WithGrantOptionCheckBox.IsChecked == true;
-
-            if (string.IsNullOrEmpty(selectedUser))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn user hoặc role!", "Error", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-            if (string.IsNullOrEmpty(selectedPrivilege))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn quyền!", "Error", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-            if (string.IsNullOrEmpty(selectedObjectType))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn loại đối tượng!", "Error", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-            if (string.IsNullOrEmpty(selectedObjectName))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn tên đối tượng!", "Error", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-
-            // Kiểm tra ràng buộc quyền với loại đối tượng
-            if ((selectedPrivilege == "SELECT" || selectedPrivilege == "INSERT" || selectedPrivilege == "UPDATE" || selectedPrivilege == "DELETE")
-                && selectedObjectType != "TABLE")
-            {
-                await MessageBox.Show(this, $"Quyền {selectedPrivilege} chỉ áp dụng cho TABLE!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-
-            if (selectedPrivilege == "EXECUTE" && (selectedObjectType != "PROCEDURE" && selectedObjectType != "FUNCTION"))
-            {
-                await MessageBox.Show(this, "Quyền EXECUTE chỉ áp dụng cho PROCEDURE hoặc FUNCTION!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-
-            // Nếu không lỗi thì thực hiện cấp quyền
-            try
-            {
-                await GrantPrivilegeAsync(
-                    grantee: selectedUser,
-                    objectType: selectedObjectType,
-                    objectName: selectedObjectName,
-                    privilege: selectedPrivilege,
-                    withGrantOption: withGrantOption,
-                    columnName: selectedColumnName
-                );
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this, $"Lỗi khi cấp quyền: {ex.Message}", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-            }
+            ColumnNameComboBox.IsVisible = true;
         }
-
-
-
-
-        private async void GrantRoleToUser_Click(object? sender, RoutedEventArgs e)
+        else
         {
-            var selectedUser = (UserRoleComboBox.SelectedItem as string) ?? "";
-            var selectedRole = (RoleComboBox.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "";
-
-            if (string.IsNullOrWhiteSpace(selectedUser))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn User!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(selectedRole))
-            {
-                await MessageBox.Show(this, "Vui lòng chọn Role!", "Lỗi", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
-            try
-            {
-                using var conn = new OracleConnection(Infoconnect);
-                await conn.OpenAsync();
-
-                string grantRoleSql = $"GRANT \"{selectedRole}\" TO \"{selectedUser}\"";
-
-                using var cmd = new OracleCommand(grantRoleSql, conn);
-                await cmd.ExecuteNonQueryAsync();
-
-                await MessageBox.Show(this, $"Cấp Role '{selectedRole}' cho '{selectedUser}' thành công!", "Thành công", MessageBox.MessageBoxButtons.Ok);
-            }
-            catch (Exception ex)
-            {
-                await MessageBox.Show(this, $"Lỗi: {ex.Message}", "Error", MessageBox.MessageBoxButtons.Ok);
-            }
+            ColumnNameComboBox.IsVisible = false;
         }
-
-
-
-        private async Task GrantPrivilegeAsync(
-     string grantee,
-     string objectType,
-     string objectName,
-     string privilege,
-     bool withGrantOption,
-     string columnName = "")
-        {
-            using var conn = new OracleConnection(Infoconnect);
-            await conn.OpenAsync();
-
-            string grantSql = objectType switch
-            {
-                "TABLE" or "VIEW" =>
-                    (!string.IsNullOrEmpty(columnName) &&
-                     columnName != "Tất cả" &&
-                     (privilege == "SELECT" || privilege == "UPDATE"))
-                        ? $"GRANT {privilege} ({columnName}) ON {objectName} TO {grantee}"
-                        : $"GRANT {privilege} ON {objectName} TO {grantee}",
-
-                "PROCEDURE" or "FUNCTION" =>
-                    $"GRANT EXECUTE ON {objectName} TO {grantee}",
-
-                _ => throw new Exception("Loại đối tượng không hợp lệ")
-            };
-
-
-
-
-            if (withGrantOption)
-                grantSql += " WITH GRANT OPTION";
-
-            using var cmd = new OracleCommand(grantSql, conn);
-            await cmd.ExecuteNonQueryAsync();
-
-            await MessageBox.Show(this, $"Cấp quyền {privilege} thành công cho {grantee} trên {objectName}!", "Thành công", MessageBox.MessageBoxButtons.Ok);
-        }
-
-        private void PrivilegeComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
-        {
-            if (PrivilegeComboBox.SelectedItem is ComboBoxItem selectedItem)
-            {
-                string privilege = selectedItem.Content?.ToString()?.ToUpper() ?? "";
-
-                // Chỉ hiển thị ColumnNameComboBox khi chọn SELECT hoặc UPDATE
-                if (privilege == "SELECT" || privilege == "UPDATE")
-                {
-                    ColumnNameComboBox.IsVisible = true;
-                }
-                else
-                {
-                    ColumnNameComboBox.IsVisible = false;
-                }
-            }
-        }
-
-
+    }
+}
 
     }
 }
