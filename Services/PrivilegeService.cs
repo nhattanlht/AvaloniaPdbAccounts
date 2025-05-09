@@ -88,4 +88,44 @@ public class PrivilegeService
         using var cmd = new OracleCommand(revokeSql, conn);
         await cmd.ExecuteNonQueryAsync();
     }
+     public (string Query, string ConfirmMessage) BuildRevokeQuery(string type, string user, Dictionary<string, string> row)
+    {
+        string privilege, query, message;
+        switch (type)
+        {
+            case "ROLE":
+                privilege = row.GetValueOrDefault("GRANTED_ROLE", "");
+                query = $"REVOKE {privilege} FROM {user}";
+                message = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
+                break;
+
+            case "SYSTEM":
+                privilege = row.GetValueOrDefault("PRIVILEGE", "");
+                query = $"REVOKE {privilege} FROM {user}";
+                message = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} từ {user}?";
+                break;
+
+            case "TABLE":
+                privilege = row.GetValueOrDefault("PRIVILEGE", "");
+                string table = row.GetValueOrDefault("TABLE_NAME", "");
+                string owner = row.GetValueOrDefault("OWNER", "");
+                query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
+                message = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên bảng {owner}.{table} từ {user}?";
+                break;
+
+            case "COL":
+                privilege = row.GetValueOrDefault("PRIVILEGE", "");
+                string column = row.GetValueOrDefault("COLUMN_NAME", "");
+                table = row.GetValueOrDefault("TABLE_NAME", "");
+                owner = row.GetValueOrDefault("OWNER", "");
+                query = $"REVOKE {privilege} ON {owner}.{table} FROM {user}";
+                message = $"Bạn có chắc chắn muốn thu hồi quyền {privilege} trên cột {column} của bảng {owner}.{table} từ {user}?";
+                break;
+
+            default:
+                return ("", "");
+        }
+
+        return (query, message);
+    }
 }

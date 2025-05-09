@@ -107,9 +107,8 @@ namespace AvaloniaPdbAccounts.ViewModels
             {
                 ObjectNames.Add(reader.GetString(0));
             }
-
-            ColumnNames.Clear(); // Reset column list
         }
+
 
         public async Task LoadColumnsAsync()
         {

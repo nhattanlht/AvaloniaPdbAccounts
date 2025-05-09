@@ -106,7 +106,14 @@ namespace AvaloniaPdbAccounts.Utilities;
             return list;
         }
 
+        public static Dictionary<string, string> ParseSelectedRow(string row)
+        {
+            return row.Split('|')
+                    .Select(part => part.Trim())
+                    .Where(part => part.Contains(':'))
+                    .Select(part => part.Split(':', 2))
+                    .ToDictionary(split => split[0].Trim(), split => split[1].Trim());
+        }
 
-
-
+        
     }
