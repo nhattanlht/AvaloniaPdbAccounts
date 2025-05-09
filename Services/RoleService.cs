@@ -48,7 +48,19 @@ public class RoleService
 
             return accounts;
     }
-    
+            public async Task<List<string>> GetAllRolesAsync(OracleConnection conn)
+        {
+            var roles = new List<string>();
+            using (var cmd = new OracleCommand("SELECT ROLE FROM DBA_ROLES WHERE common = 'NO'", conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    roles.Add(reader.GetString(0));
+                }
+            }
+            return roles;
+        }
     public async Task<ObservableCollection<PrivilegeItem>> GetRolePrivilegesAsync(string role)
         {
             var privileges = new ObservableCollection<PrivilegeItem>();
@@ -138,6 +150,79 @@ public class RoleService
             }
         }
 
+    public async Task GrantRoleToUserAsync(string role, string user)
+{
+    using var conn = new OracleConnection(DatabaseSettings.ConnectionString);
+    await conn.OpenAsync();
 
+    var sql = $"GRANT \"{role}\" TO \"{user}\"";
+    using var cmd = new OracleCommand(sql, conn);
+    await cmd.ExecuteNonQueryAsync();
+}
+
+            public async Task<bool> CreateRoleAsync(string roleName)
+        {
+            try
+            {
+                using (var conn = new OracleConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+                    
+                    // Tạo role mới
+                    using (var cmd = new OracleCommand($"CREATE ROLE \"{roleName}\"", conn))
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    
+                    // Cấp các quyền cơ bản
+                    using (var cmd = new OracleCommand($"GRANT CONNECT, RESOURCE TO \"{roleName}\"", conn))
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding role: {ex.Message}");
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteRoleAsync(string roleName)
+        {
+            try
+            {
+                using (var conn = new OracleConnection(_connectionString))
+                {
+                    await conn.OpenAsync();
+                    
+                    // Thu hồi tất cả quyền trước khi xóa role
+                    using (var cmd = new OracleCommand(
+                        $"BEGIN " +
+                        $"  FOR r IN (SELECT granted_role FROM dba_role_privs WHERE grantee = '{roleName}') LOOP " +
+                        $"    EXECUTE IMMEDIATE 'REVOKE ' || r.granted_role || ' FROM \"{roleName}\"'; " +
+                        $"  END LOOP; " +
+                        $"END;", conn))
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    
+                    // Xóa role
+                    using (var cmd = new OracleCommand($"DROP ROLE \"{roleName}\"", conn))
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                    
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting role: {ex.Message}");
+                return false;
+            }
+        }
 
 }

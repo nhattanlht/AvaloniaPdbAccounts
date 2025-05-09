@@ -61,25 +61,37 @@ public class UserService
         return new List<string>();
     }
 
-    public async Task CreateUserAsync(string username, string password)
+public async Task CreateUserAsync(string username, string password)
+{
+    using (var conn = new OracleConnection(_connectionString))
     {
-        using (var conn = new OracleConnection(_connectionString))
+        await conn.OpenAsync();
+        
+        // Use parameterized queries to prevent SQL injection
+        using (var cmdCreate = new OracleCommand(
+            "CREATE USER :username IDENTIFIED BY :password", conn))
         {
-            await conn.OpenAsync();
-            
-            using (var cmdCreate = new OracleCommand(
-                $"CREATE USER {username} IDENTIFIED BY \"{password}\"", conn))
-            {
-                await cmdCreate.ExecuteNonQueryAsync();
-            }
+            cmdCreate.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
+            cmdCreate.Parameters.Add("password", OracleDbType.Varchar2).Value = password;
+            await cmdCreate.ExecuteNonQueryAsync();
+        }
 
-            using (var cmdGrant = new OracleCommand(
-                $"GRANT CONNECT, RESOURCE TO {username}", conn))
-            {
-                await cmdGrant.ExecuteNonQueryAsync();
-            }
+        using (var cmdGrant = new OracleCommand(
+            "GRANT CONNECT, RESOURCE TO :username", conn))
+        {
+            cmdGrant.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
+            await cmdGrant.ExecuteNonQueryAsync();
+        }
+
+        // Optionally grant additional privileges if needed
+        using (var cmdQuota = new OracleCommand(
+            "ALTER USER :username QUOTA UNLIMITED ON USERS", conn))
+        {
+            cmdQuota.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
+            await cmdQuota.ExecuteNonQueryAsync();
         }
     }
+}
 
     public async Task DeleteUserAsync(string username)
     {
@@ -120,19 +132,7 @@ public class UserService
             return users;
         }
 
-        public async Task<List<string>> GetAllRolesAsync(OracleConnection conn)
-        {
-            var roles = new List<string>();
-            using (var cmd = new OracleCommand("SELECT ROLE FROM DBA_ROLES WHERE common = 'NO'", conn))
-            using (var reader = await cmd.ExecuteReaderAsync())
-            {
-                while (await reader.ReadAsync())
-                {
-                    roles.Add(reader.GetString(0));
-                }
-            }
-            return roles;
-        }
+
 
         public async Task<DataTable?> QueryPrivilegesAsync(OracleConnection conn, string selectedType, string selectedName)
         {
@@ -183,6 +183,8 @@ public class UserService
             return accounts;
         }
 
-    
-        
+    public static implicit operator UserService(UserManagementViewModel v)
+    {
+        throw new NotImplementedException();
+    }
 }
