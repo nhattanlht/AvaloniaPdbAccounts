@@ -14,9 +14,9 @@ public class PrivilegeService
     private List<Dictionary<string, object>> _lastPermissions = new();
     private readonly string _connectionString;
 
-    public PrivilegeService(string connectionString = DatabaseSettings.ConnectionString)
+    public PrivilegeService()
     {
-        _connectionString = connectionString;
+        _connectionString = DatabaseSettings.GetConnectionString();
     }
 
     public async Task GrantPrivilegeAsync(

@@ -24,7 +24,7 @@ namespace AvaloniaPdbAccounts.ViewModels
         public ObservableCollection<string> ColumnNames { get; set; } = new();
 
 
-        private string _selectedObjectType;
+        public string _selectedObjectType;
         public string SelectedObjectType
         {
             get => _selectedObjectType;
@@ -39,7 +39,7 @@ namespace AvaloniaPdbAccounts.ViewModels
             }
         }
 
-        private string _selectedObjectName;
+        public string _selectedObjectName;
         public string SelectedObjectName
         {
             get => _selectedObjectName;
@@ -54,7 +54,7 @@ namespace AvaloniaPdbAccounts.ViewModels
             }
         }
 
-        private string _selectedPrivilege;
+        public string _selectedPrivilege;
         public string SelectedPrivilege
         {
             get => _selectedPrivilege;
@@ -69,7 +69,7 @@ namespace AvaloniaPdbAccounts.ViewModels
             }
         }
 
-        private bool _isColumnComboBoxVisible;
+        public bool _isColumnComboBoxVisible;
         public bool IsColumnComboBoxVisible
         {
             get => _isColumnComboBoxVisible;
@@ -80,7 +80,7 @@ namespace AvaloniaPdbAccounts.ViewModels
             }
         }
 
-        private const string Infoconnect = DatabaseSettings.ConnectionString;
+        public static readonly string Infoconnect = DatabaseSettings.GetConnectionString();
 
         public async Task LoadObjectNamesAsync()
         {

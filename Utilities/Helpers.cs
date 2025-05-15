@@ -10,7 +10,11 @@ using System.Linq;
 using Avalonia.Interactivity;
 using System.Diagnostics;
 using AvaloniaPdbAccounts.Models; // Import model
-using AvaloniaPdbAccounts.Services; // Import service
+using AvaloniaPdbAccounts.Services;
+using System.Text.Json;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text; // Import service
 
 namespace AvaloniaPdbAccounts.Utilities;
 
@@ -115,5 +119,83 @@ namespace AvaloniaPdbAccounts.Utilities;
                     .ToDictionary(split => split[0].Trim(), split => split[1].Trim());
         }
 
-        
+                // Save account to JSON file
+        public static void SaveAccountsToJson(List<UserAccount> accounts)
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            string jsonString = JsonSerializer.Serialize(accounts, options);
+
+            string fileName = "accounts.json";
+            File.WriteAllText(fileName, jsonString);
+        }
+
+
+        public class SymmetricEncryptionService
+        {
+            // Khóa bí mật và IV (Initialization Vector)
+            private readonly byte[] _key; // 256-bit key
+            private readonly byte[] _iv;  // 128-bit IV
+
+            public SymmetricEncryptionService(string keyString = "YourSecretKey", string ivString = "YourInitVector")
+            {
+                // Trong thực tế, bạn nên lưu trữ khóa này an toàn
+                // và không hardcode trong ứng dụng
+                    using (var sha256 = SHA256.Create())
+                    {
+                        _key = sha256.ComputeHash(Encoding.UTF8.GetBytes(keyString));
+                    }
+
+                    // Tạo IV 16 bytes bằng MD5 hash từ chuỗi ivString
+                    using (var md5 = MD5.Create())
+                    {
+                        _iv = md5.ComputeHash(Encoding.UTF8.GetBytes(ivString));
+                    }            }
+
+            public string Encrypt(string plainText)
+            {
+                using (Aes aesAlg = Aes.Create())
+                {
+                    aesAlg.Key = _key;
+                    aesAlg.IV = _iv;
+
+                    ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+                    using (MemoryStream msEncrypt = new MemoryStream())
+                    {
+                        using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                        {
+                            using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                            {
+                                swEncrypt.Write(plainText);
+                            }
+                            return Convert.ToBase64String(msEncrypt.ToArray());
+                        }
+                    }
+                }
+            }
+
+            public string Decrypt(string cipherText)
+            {
+                byte[] buffer = Convert.FromBase64String(cipherText);
+
+                using (Aes aesAlg = Aes.Create())
+                {
+                    aesAlg.Key = _key;
+                    aesAlg.IV = _iv;
+
+                    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                    using (MemoryStream msDecrypt = new MemoryStream(buffer))
+                    {
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                        {
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                return srDecrypt.ReadToEnd();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }

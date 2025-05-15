@@ -13,7 +13,7 @@ public class UserManagementViewModel : ViewModelBase
 {
     private readonly UserService _userService = new();
     private readonly DialogService _dialogService = new();
-    private string _connectionString = DatabaseSettings.ConnectionString;
+    private string _connectionString = DatabaseSettings.GetConnectionString();
 
     // Properties
     public ObservableCollection<string> Users { get; } = new();
@@ -62,16 +62,19 @@ public class UserManagementViewModel : ViewModelBase
         try
         {
             using var conn = new OracleConnection(_connectionString);
-            await conn.OpenAsync();
-            var users = await _userService.GetAllUsersAsync(conn);
+            await conn.OpenAsync().ConfigureAwait(false);
+            var users = await _userService.GetAllUsersAsync(conn).ConfigureAwait(false);
             
             Users.Clear();
             foreach (var user in users)
+            {
                 Users.Add(user);
+            }
         }
         catch (Exception ex)
         {
-            // Handle error
+            Console.WriteLine($"Lỗi database: {ex.Message}");
+            throw; // Re-throw để caller có thể xử lý
         }
     }
 

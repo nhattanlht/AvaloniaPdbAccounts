@@ -17,7 +17,7 @@
         public ObservableCollection<PrivilegeItem> AvailablePrivileges { get; } = new();
         public string SelectedRole { get; set; }
 
-        private const string connectionString = DatabaseSettings.ConnectionString;
+        private readonly string connectionString = DatabaseSettings.GetConnectionString();
 
         // Commands
         public ICommand LoadRolesCommand { get; }
@@ -30,7 +30,7 @@
         public string NewRoleName
         {
             get => _newRoleName;
-            set => SetField(ref _newRoleName, value);
+            set => SetProperty(ref _newRoleName, value);
         }
         public RoleManagementViewModel()
         {
@@ -68,7 +68,7 @@
             Console.WriteLine($"Error loading roles: {ex.Message}");
         }
     }
-        private async Task AddRoleAsync(string roleName)
+        public async Task AddRoleAsync(string roleName)
         {
             await _roleService.CreateRoleAsync(roleName);
             await LoadRolesAsync();

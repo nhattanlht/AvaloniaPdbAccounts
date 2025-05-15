@@ -1,23 +1,25 @@
 
 
 using System.Threading.Tasks;
-using Oracle.ManagedDataAccess.Client;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using AvaloniaPdbAccounts.Models; // Import model
 
 using System.Data;
 using System;
-using System.Linq;
+using Oracle.ManagedDataAccess.Client;
 
 namespace AvaloniaPdbAccounts.Services;
+
+
+
 public class UserService
 {
     private readonly string _connectionString;
 
-    public UserService(string connectionString= DatabaseSettings.ConnectionString)
+    public UserService()
     {
-        _connectionString = connectionString;
+        _connectionString = DatabaseSettings.GetConnectionString();
     }
 
     public async Task<ObservableCollection<string>> GetUsersAndRolesAsync()
@@ -129,6 +131,7 @@ public async Task CreateUserAsync(string username, string password)
                     users.Add(reader.GetString(0));
                 }
             }
+            Console.WriteLine(users);
             return users;
         }
 
@@ -187,4 +190,61 @@ public async Task CreateUserAsync(string username, string password)
     {
         throw new NotImplementedException();
     }
+
+
+public async Task<List<Employee>> GetEmployeeDataAsync()
+{
+    var employees = new List<Employee>();
+    
+    using (var conn = new OracleConnection(_connectionString))
+    {
+        await conn.OpenAsync();
+        
+        string query = "SELECT MANV, VAITRO FROM NHANVIEN";
+        
+        using (var cmd = new OracleCommand(query, conn))
+        using (var reader = await cmd.ExecuteReaderAsync())
+        {
+            while (await reader.ReadAsync())
+            {
+                employees.Add(new Employee
+                {
+                    MANV = reader.GetString(0),
+                    Role = reader.GetString(1)
+                });
+            }
+        }
+    }
+    
+    return employees;
+}
+
+
+    public async Task<List<Student>> GetStudentDataAsync()
+    {
+        var students = new List<Student>();
+        
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            
+            // Query to get student data (MASV)
+            string query = "SELECT MASV FROM SINHVIEN";
+            
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    students.Add(new Student
+                    {
+                        MASV = reader.GetString(0)
+                    });
+                }
+            }
+        }
+        
+        return students;
+    }
+    
 }

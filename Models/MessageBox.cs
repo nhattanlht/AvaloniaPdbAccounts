@@ -3,13 +3,14 @@ using Avalonia.Layout;
 using Avalonia;
 using System.Threading.Tasks;
 
-namespace AvaloniaPdbAccounts.Services
+namespace AvaloniaPdbAccounts.Models
 {
     public static class MessageBox
     {
         public enum MessageBoxButtons { Ok, YesNo }
         public enum MessageBoxResult { Ok, Yes, No }
 
+        
         public static async Task<MessageBoxResult> Show(Window owner, string text, string caption, MessageBoxButtons buttons)
         {
             var dlg = new Window

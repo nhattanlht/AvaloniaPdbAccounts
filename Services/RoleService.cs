@@ -15,9 +15,9 @@ public class RoleService
 {
     private readonly string _connectionString;
 
-    public RoleService(string connectionString= DatabaseSettings.ConnectionString)
+    public RoleService()
     {
-        _connectionString = connectionString;
+        _connectionString = DatabaseSettings.GetConnectionString();
     }
     public async Task<ObservableCollection<string>> RLoadRolesAsync()
         {

@@ -1,10 +1,21 @@
+
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="AvaloniaPdbAccounts.App"
+                xmlns:views="clr-namespace:AvaloniaPdbAccounts.Views"
+                xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+                             x:Class="AvaloniaPdbAccounts.App"
+
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
+    <Application.DataTemplates>
+        <DataTemplate DataType="vm:LoginViewModel">
+            <views:LoginView/>
+        </DataTemplate>
+    </Application.DataTemplates>
+  
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+    
 </Application>

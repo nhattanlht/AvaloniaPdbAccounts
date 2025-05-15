@@ -13,9 +13,9 @@ namespace AvaloniaPdbAccounts.ViewModels
 {
     public class PrivilegeManagementViewModel : ViewModelBase
     {
-        private const string ConnectionString = DatabaseSettings.ConnectionString;
-        private readonly UserService userService = new UserService();
-        private readonly RoleService roleService = new RoleService();
+        public static readonly string ConnectionString = DatabaseSettings.GetConnectionString();
+        public readonly UserService userService = new UserService();
+        public readonly RoleService roleService = new RoleService();
         // Danh sách các items
         public ObservableCollection<string> Grantees { get; } = new ObservableCollection<string>();
         public ObservableCollection<string> Privileges { get; } = new ObservableCollection<string>();

@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="https://github.com/avaloniaui"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+             x:Class="AvaloniaPdbAccounts.Views.LoginView"
+             x:DataType="vm:LoginViewModel">
+
+    <Panel Background="#f5f7fa">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="350" Spacing="20">
+            <!-- Header with logo and title -->
+            <StackPanel HorizontalAlignment="Center" Spacing="10">
+                <Border Width="80" Height="80" CornerRadius="40" Background="#4a6cf7"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <PathIcon Data="M20,12A8,8 0 0,1 28,20A8,8 0 0,1 20,28A8,8 0 0,1 12,20A8,8 0 0,1 20,12M20,14A6,6 0 0,0 14,20A6,6 0 0,0 20,26A6,6 0 0,0 26,20A6,6 0 0,0 20,14M10,4A4,4 0 0,1 14,8A4,4 0 0,1 10,12A4,4 0 0,1 6,8A4,4 0 0,1 10,4M30,4A4,4 0 0,1 34,8A4,4 0 0,1 30,12A4,4 0 0,1 26,8A4,4 0 0,1 30,4M10,16A4,4 0 0,1 14,20A4,4 0 0,1 10,24A4,4 0 0,1 6,20A4,4 0 0,1 10,16M30,16A4,4 0 0,1 34,20A4,4 0 0,1 30,24A4,4 0 0,1 26,20A4,4 0 0,1 30,16Z"
+                                Foreground="White" Width="40" Height="40"/>
+                </Border>
+                <TextBlock Text="Welcome Back" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Please login to your account" FontSize="14" Foreground="#64748b" HorizontalAlignment="Center"/>
+            </StackPanel>
+
+            <!-- Form -->
+            <StackPanel Spacing="15">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Username" FontSize="14" Foreground="#334155"/>
+                    <TextBox Text="{Binding Username, Mode=TwoWay}" 
+                             Watermark="Enter your username" Padding="10"
+                             Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
+                </StackPanel>
+
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Password" FontSize="14" Foreground="#334155"/>
+                    <TextBox Text="{Binding Password, Mode=TwoWay}" 
+                             Watermark="Enter your password" PasswordChar="●" Padding="10"
+                             Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
+                </StackPanel>
+
+                <Button Content="Login" Command="{Binding LoginCommand}" 
+                        Height="45" FontSize="16"
+                        Background="#4a6cf7" Foreground="White" CornerRadius="8" FontWeight="SemiBold"
+                        BorderThickness="0"/>
+
+                <TextBlock Text="{Binding ErrorMessage}" Foreground="#ef4444" FontSize="13" 
+                           TextWrapping="Wrap" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </StackPanel>
+    </Panel>
+</UserControl>
