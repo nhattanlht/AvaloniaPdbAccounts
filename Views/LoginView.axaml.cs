@@ -13,7 +13,7 @@ namespace AvaloniaPdbAccounts.Views
 {
     public partial class LoginView : Window
     {
-        private bool systemRole = false;
+        private bool systemRole = true;
         private UserService _userService = new();
         public LoginView()
         {
@@ -33,13 +33,13 @@ namespace AvaloniaPdbAccounts.Views
                     mainWindow.Show();
                     this.Close();
                 }
-                else if (DatabaseService.CurrentRole.RoleName == "GV")
-                {
-                    var gvWindow = new GVView();
-                    gvWindow.Show();
-                    this.Close();
+                // else if (DatabaseService.CurrentRole.RoleName == "GV")
+                // {
+                //     var gvWindow = new GVView();
+                //     gvWindow.Show();
+                //     this.Close();
 
-                }
+                // }
             };
         }
 
