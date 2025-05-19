@@ -57,6 +57,9 @@ ALTER USER AdminPdb QUOTA UNLIMITED ON SYSTEM;
 -- Cấp quyền cho AdminPdb
 GRANT EXECUTE ON DBMS_FGA TO AdminPdb;
 GRANT SELECT ON DBA_FGA_AUDIT_TRAIL TO AdminPdb;
+-- CREATE OR REPLACE DIRECTORY DATA_DIR AS '/Users/jakepham/Documents/SourceCode/new/AvaloniaPdbAccounts/Script';
+-- GRANT READ, WRITE ON DIRECTORY DATA_DIR TO AdminPdb;
+
 
 --Đăng nhập PDB với tài khoản AdminPdb
 conn AdminPdb/123@localhost:1521/PDB;

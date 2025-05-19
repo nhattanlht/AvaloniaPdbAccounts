@@ -28,6 +28,8 @@ public static class RunSQLScriptUtility
     {
         RunSqlScript("script.sql");
         RunSqlScript("database.sql");
+        RunPythonScript("run_csv.py"); // Add Python script execution
+
     }
     public static void RunSqlScript(string fileName)
     {
@@ -75,5 +77,52 @@ public static class RunSQLScriptUtility
         Console.WriteLine($"Output for {Path.GetFileName(sqlFilePath)}:\n{output}");
         if (!string.IsNullOrWhiteSpace(error))
             Console.WriteLine($"Error for {Path.GetFileName(sqlFilePath)}:\n{error}");
+    }
+        public static void RunPythonScript(string fileName)
+    {
+        string projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"../../../"));
+        string scriptPath = Path.Combine(projectDir, "Scripts", fileName);
+
+        Console.WriteLine($"Running Python script: {scriptPath}");
+
+        // Get Oracle connection details from config
+        string connectionString = AppConfig.GetConnectionString();
+        
+        RunProcessPython(scriptPath, connectionString);
+    }
+
+    private static void RunProcessPython(string pythonScriptPath, string oracleConnectionString)
+    {
+        if (!File.Exists(pythonScriptPath))
+        {
+            Console.WriteLine($"Python file does not exist: {pythonScriptPath}");
+            return;
+        }
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "python3", // or "python3" on some systems
+                Arguments = $"{pythonScriptPath} \"{oracleConnectionString}\"",
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            }
+        };
+
+        Console.WriteLine($"Executing Python script: {Path.GetFileName(pythonScriptPath)}");
+
+        process.Start();
+
+        string output = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
+
+        process.WaitForExit();
+
+        Console.WriteLine($"Python Output:\n{output}");
+        if (!string.IsNullOrWhiteSpace(error))
+            Console.WriteLine($"Python Error:\n{error}");
     }
 }

@@ -1,0 +1,101 @@
+
+SQL*Loader: Release 19.0.0.0.0 - Production on Mon May 19 11:39:11 2025
+Version 19.8.0.0.0
+
+Copyright (c) 1982, 2020, Oracle and/or its affiliates.  All rights reserved.
+
+Control File:   sinhvien.ctl
+Character Set AL32UTF8 specified for all input.
+
+Data File:      data_sinhvien_4000.csv
+  Bad File:     sinhvien.bad
+  Discard File:  none specified
+ 
+ (Allow all discards)
+
+Number to load: ALL
+Number to skip: 0
+Errors allowed: 50
+Bind array:     250 rows, maximum of 1048576 bytes
+Continuation:    none specified
+Path used:      Conventional
+
+Table SINHVIEN, loaded from every logical record.
+Insert option in effect for this table: APPEND
+TRAILING NULLCOLS option in effect
+
+   Column Name                  Position   Len  Term Encl Datatype
+------------------------------ ---------- ----- ---- ---- ---------------------
+MASV                                FIRST     *   ,  O(") CHARACTER            
+HOTEN                                NEXT     *   ,  O(") CHARACTER            
+PHAI                                 NEXT     *   ,  O(") CHARACTER            
+NGSINH                               NEXT     *   ,  O(") DATE YYYY-MM-DD      
+DCHI                                 NEXT     *   ,  O(") CHARACTER            
+DT                                   NEXT     *   ,  O(") CHARACTER            
+KHOA                                 NEXT     *   ,  O(") CHARACTER            
+TINHTRANG                            NEXT     *   ,  O(") CHARACTER            
+
+Record 1: Rejected - Error on table SINHVIEN, column PHAI.
+ORA-12899: value too large for column "ADMINPDB"."SINHVIEN"."PHAI" (actual: 4, maximum: 1)
+
+Record 1035: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A546316') already exists
+
+Record 1718: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A949566') already exists
+
+Record 2062: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A859643') already exists
+
+Record 2142: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A337499') already exists
+
+Record 2240: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A562156') already exists
+
+Record 2344: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A423085') already exists
+
+Record 2646: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A298694') already exists
+
+Record 2658: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A813503') already exists
+
+Record 3194: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A826994') already exists
+
+Record 3406: Rejected - Error on table SINHVIEN.
+ORA-00001: unique constraint (ADMINPDB.SYS_C008443) violated on table ADMINPDB.SINHVIEN columns (MASV)
+ORA-03301: (ORA-00001 details) row with column values (MASV:'20A743262') already exists
+
+
+Table SINHVIEN:
+  3990 Rows successfully loaded.
+  11 Rows not loaded due to data errors.
+  0 Rows not loaded because all WHEN clauses were failed.
+  0 Rows not loaded because all fields were null.
+
+
+Space allocated for bind array:                 516000 bytes(250 rows)
+Read   buffer bytes: 1048576
+
+Total logical records skipped:          0
+Total logical records read:          4001
+Total logical records rejected:        11
+Total logical records discarded:        0
+
+Run began on Mon May 19 11:39:11 2025
+Run ended on Mon May 19 11:39:12 2025
+
+Elapsed time was:     00:00:00.73
+CPU time was:         00:00:00.08
