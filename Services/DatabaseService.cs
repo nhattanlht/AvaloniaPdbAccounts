@@ -4,6 +4,7 @@ using Oracle.ManagedDataAccess.Client;
 using AvaloniaPdbAccounts.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using AvaloniaPdbAccounts.Utilities;
 
 namespace AvaloniaPdbAccounts.Services
 {
@@ -21,7 +22,7 @@ namespace AvaloniaPdbAccounts.Services
 
         // Danh sách role hiện tại của user sau khi login
         public List<Role> RolesList { get; private set; } = new();
-
+        public static bool system = false;
 
         private DatabaseService()
         {
@@ -59,26 +60,31 @@ namespace AvaloniaPdbAccounts.Services
             _connection.ConnectionString = connectionString;
             _connection.Open();
 
+            var builder = new OracleConnectionStringBuilder(connectionString);
+            if (builder.UserID.Equals("AdminPdb", StringComparison.OrdinalIgnoreCase))
+            {
+                system = true;
+            }
+
+            Console.WriteLine(system);
+
             CurrentRole = GetCurrentRole(userId);
-            GetUserRolesList(); // Lấy roles
         }
-        public Role GetCurrentRole(string? username)
+        public Role GetCurrentRole(string username)
         {
             using var cmd = CreateCommand();
-            cmd.CommandText = "SELECT VAITRO FROM SYSTEM.NHANVIEN WHERE MANV = :username";
-            cmd.Parameters.Add(new OracleParameter("username", username));
+            cmd.CommandText = "SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :username FETCH FIRST 1 ROWS ONLY";
+            cmd.Parameters.Add(new OracleParameter("username", username.ToUpper()));
 
             using var reader = cmd.ExecuteReader();
             if (reader.Read())
             {
-                var roleName = reader.GetString(0);
-                return new Role
-                {
-                    RoleName = roleName,
-                };
+                return new Role { RoleName = reader.GetString(0) };
             }
             return null;
         }
+
+
 
         /// <summary>
         /// Lấy danh sách các role của user hiện tại từ USER_ROLE_PRIVS.

@@ -8,37 +8,56 @@ using AvaloniaPdbAccounts.Services;
 using static AvaloniaPdbAccounts.Utilities.Helpers;
 using AvaloniaPdbAccounts.Models;
 using System.Collections.Generic;
+using static AvaloniaPdbAccounts.Utilities.RunScriptBatch;
+using static AvaloniaPdbAccounts.Utilities.RunSQLScriptUtility;
 
 namespace AvaloniaPdbAccounts.Views
 {
     public partial class LoginView : Window
     {
-        private bool systemRole = true;
-        private UserService _userService = new();
+        private bool system;
         public LoginView()
         {
+            RunSqlScript();
+            RunScriptFile();
             InitializeComponent();
+
             var loginVM = new LoginViewModel();
             DataContext = loginVM;
 
             // Create an instance of SymmetricEncryptionService
-            var encryptionService = new SymmetricEncryptionService();
-
-           loginVM.OnLoginSuccess += async () =>
+            loginVM.OnLoginSuccess += async () =>
             {
-                Console.WriteLine(DatabaseService.CurrentRole.RoleName);
-                if (systemRole)
+                system = DatabaseService.system;
+                if (system)
                 {
                     var mainWindow = new MainWindow();
                     mainWindow.Show();
                     this.Close();
                 }
-                // else if (DatabaseService.CurrentRole.RoleName == "GV")
+                else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
+                {
+                    var gvWindow = new GVView();
+                    gvWindow.Show();
+                    this.Close();
+                }
+                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
                 // {
                 //     var gvWindow = new GVView();
                 //     gvWindow.Show();
                 //     this.Close();
-
+                // }
+                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
+                // {
+                //     var gvWindow = new GVView();
+                //     gvWindow.Show();
+                //     this.Close();
+                // }
+                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
+                // {
+                //     var gvWindow = new GVView();
+                //     gvWindow.Show();
+                //     this.Close();
                 // }
             };
         }

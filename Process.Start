@@ -1,0 +1,26 @@
+using System.Diagnostics;
+
+public static void RunSqlScript(string scriptPath, string connectionString)
+{
+    var process = new Process
+    {
+        StartInfo = new ProcessStartInfo
+        {
+            FileName = "sqlplus",
+            Arguments = $"{connectionString} @{scriptPath}",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        }
+    };
+
+    process.Start();
+    string output = process.StandardOutput.ReadToEnd();
+    string error = process.StandardError.ReadToEnd();
+    process.WaitForExit();
+
+    Console.WriteLine("Output:\n" + output);
+    if (!string.IsNullOrWhiteSpace(error))
+        Console.WriteLine("Error:\n" + error);
+}

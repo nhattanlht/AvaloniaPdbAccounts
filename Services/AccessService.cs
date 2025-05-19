@@ -12,7 +12,6 @@ namespace AvaloniaPdbAccounts.Services
         public static UserAccount CurrentUser => userAccount;
         public static bool IsLoggedIn => DatabaseService.Instance.IsConnected;
 
-
         public static async Task<bool> Login(string username, string password)
         {
             try
@@ -25,6 +24,7 @@ namespace AvaloniaPdbAccounts.Services
                 {
                     userAccount.Username = username;
                     userAccount.Password = password; // Lưu ý: Lưu password trong bộ nhớ không an toàn
+
                     Console.WriteLine("✅ Đăng nhập thành công vào Oracle DB");
                     return true;
                 }

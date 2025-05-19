@@ -2,7 +2,10 @@ namespace AvaloniaPdbAccounts.Models;
 
 public class DatabaseSettings
 {
-    public static string ConnectionString = "User Id=SYSTEM;Password=123456;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=QLNHANVIEN)));";
+    // public static string ConnectionString = "User Id=SYSTEM;Password=123456;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=QLNHANVIEN)));";
+    public const string ConnectSystem = "User Id=AdminPdb;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)));";
+
+    public static string ConnectionString = "User Id=AdminPdb;Password=123;Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)));";
 
     public static string GetConnectionString()
     {
@@ -16,7 +19,7 @@ public class DatabaseSettings
     }
     public string GetConnectionString(string userId, string password)
     {
-        ConnectionString = $"User Id={userId};Password={password};Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=QLNHANVIEN)));";
+        ConnectionString = $"User Id={userId};Password={password};Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)));";
         return ConnectionString;
     }
     
