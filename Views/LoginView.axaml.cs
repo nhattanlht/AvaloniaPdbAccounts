@@ -8,7 +8,6 @@ using AvaloniaPdbAccounts.Services;
 using static AvaloniaPdbAccounts.Utilities.Helpers;
 using AvaloniaPdbAccounts.Models;
 using System.Collections.Generic;
-using static AvaloniaPdbAccounts.Utilities.RunScriptBatch;
 using static AvaloniaPdbAccounts.Utilities.RunSQLScriptUtility;
 
 namespace AvaloniaPdbAccounts.Views
@@ -18,8 +17,7 @@ namespace AvaloniaPdbAccounts.Views
         private bool system;
         public LoginView()
         {
-            RunSqlScript();
-            RunScriptFile();
+            RunAllSql();
             InitializeComponent();
 
             var loginVM = new LoginViewModel();

@@ -24,29 +24,38 @@ public static class AppConfig
 
 public static class RunSQLScriptUtility
 {
-    public static void RunSqlScript()
-    {   
-        Console.WriteLine("Starting run script file...");
-
+    public static void RunAllSql()
+    {
+        RunSqlScript("script.sql");
+        RunSqlScript("database.sql");
+    }
+    public static void RunSqlScript(string fileName)
+    {
         string projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"../../../"));
-        string scriptPath = Path.Combine(projectDir, "Script", "script.sql");
-        Console.WriteLine($"Script path: {scriptPath}");
+        string scriptPath = Path.Combine(projectDir, "Script", fileName);
 
-        if (string.IsNullOrEmpty(scriptPath))
+        Console.WriteLine($"Running script: {scriptPath}");
+
+        string connectionString = AppConfig.GetConnectionString();
+        Console.WriteLine("Using connection string: " + connectionString);
+
+        RunProcessSqlPlus(connectionString, scriptPath);
+    }
+
+    private static void RunProcessSqlPlus(string connectionString, string sqlFilePath)
+    {
+        if (!File.Exists(sqlFilePath))
         {
-            Console.WriteLine("Script path is null or empty.");
+            Console.WriteLine($"SQL file does not exist: {sqlFilePath}");
             return;
         }
-        string connectionString = AppConfig.GetConnectionString(); // sửa lại cho đúng
-
-        Console.WriteLine("Getting the connection string successfully" + connectionString);
 
         var process = new Process
         {
             StartInfo = new ProcessStartInfo
             {
                 FileName = "sqlplus",
-                Arguments = $"{connectionString} as sysdba @{scriptPath}",
+                Arguments = $"{connectionString} as sysdba @{sqlFilePath}",
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
@@ -54,23 +63,17 @@ public static class RunSQLScriptUtility
             }
         };
 
-        process.Start();
-        Console.WriteLine($"Started sqlplus process (PID: {process.Id})");
+        Console.WriteLine($"Running sqlplus for file: {sqlFilePath}");
 
-        Console.WriteLine("Processing connect sqlplus...");
+        process.Start();
 
         string output = process.StandardOutput.ReadToEnd();
-        Console.WriteLine("Read file successfully");
-
-
         string error = process.StandardError.ReadToEnd();
-        Console.WriteLine("Loading error");
 
         process.WaitForExit();
-        Console.WriteLine("Exitting process");
 
-        Console.WriteLine("Output:\n" + output);
+        Console.WriteLine($"Output for {Path.GetFileName(sqlFilePath)}:\n{output}");
         if (!string.IsNullOrWhiteSpace(error))
-            Console.WriteLine("Error:\n" + error);
+            Console.WriteLine($"Error for {Path.GetFileName(sqlFilePath)}:\n{error}");
     }
 }
