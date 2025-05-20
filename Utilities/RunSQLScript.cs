@@ -26,13 +26,74 @@ public static class RunSQLScriptUtility
 {
     public static void RunAllSql()
     {
+        if (CheckIfDatabaseInitialized())
+        {
+            Console.WriteLine("✅ Database already initialized. Skipping script execution.");
+            return;
+        }
         RunSqlScript("script.sql");
         RunSqlScript("database.sql");
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution
-
     }
+     private static bool CheckIfDatabaseInitialized()
+    {
+        string connectionString = AppConfig.GetConnectionString();
+
+        var process = new Process
+        {
+            StartInfo = new ProcessStartInfo
+            {
+                FileName = "sqlplus",
+                Arguments = $"{connectionString} as sysdba",
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                EnvironmentVariables = { ["NLS_LANG"] = "AMERICAN_AMERICA.AL32UTF8" }
+            }
+        };
+
+        process.Start();
+
+        using (var writer = process.StandardInput)
+        {
+            writer.WriteLine("SET HEADING OFF");
+            writer.WriteLine("SET FEEDBACK OFF");
+            writer.WriteLine("SELECT COUNT(*) FROM DONVI;");
+            writer.WriteLine("EXIT");
+        }
+
+        string output = process.StandardOutput.ReadToEnd();
+        string error = process.StandardError.ReadToEnd();
+        process.WaitForExit();
+
+        if (!string.IsNullOrWhiteSpace(error))
+        {
+            Console.WriteLine("Error during DB check:\n" + error);
+            return false; // assume not initialized if error
+        }
+
+        // Check if the output contains any number > 0
+        if (output.Contains("ORA-") || string.IsNullOrWhiteSpace(output))
+        {
+            return false;
+        }
+
+        var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+        foreach (var line in lines)
+        {
+            if (int.TryParse(line.Trim(), out int count))
+            {
+                return count > 0;
+            }
+        }
+
+        return false;
+    }
+
     public static void RunSqlScript(string fileName)
     {
         string projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"../../../"));
