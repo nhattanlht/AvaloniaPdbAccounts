@@ -63,7 +63,9 @@ public static class RunSQLScriptUtility
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                                EnvironmentVariables = { ["NLS_LANG"] = "AMERICAN_AMERICA.AL32UTF8" }
+
             }
         };
 
