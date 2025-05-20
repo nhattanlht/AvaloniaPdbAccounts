@@ -28,7 +28,9 @@ public static class RunSQLScriptUtility
     {
         RunSqlScript("script.sql");
         RunSqlScript("database.sql");
-        RunPythonScript("run_csv.py"); // Add Python script execution
+        // RunSqlScript("sinhvien.sql");
+
+        // RunPythonScript("run_csv.py"); // Add Python script execution
 
     }
     public static void RunSqlScript(string fileName)
@@ -108,7 +110,9 @@ public static class RunSQLScriptUtility
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                EnvironmentVariables = { ["NLS_LANG"] = "AMERICAN_AMERICA.AL32UTF8" }
+
             }
         };
 
