@@ -16,16 +16,19 @@ public partial class App : Application
         AvaloniaXamlLoader.Load(this);
     }
 
-        public override void OnFrameworkInitializationCompleted()
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = new LoginView();
-            }
-
-            base.OnFrameworkInitializationCompleted();
+            DisableAvaloniaDataAnnotationValidation();
+            desktop.MainWindow = new LoginView();
+            //{
+            //    DataContext = new MainWindowModel()
+            //};
         }
+
+        base.OnFrameworkInitializationCompleted();
+    }
 
     private void DisableAvaloniaDataAnnotationValidation()
     {

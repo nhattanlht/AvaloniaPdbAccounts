@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
@@ -30,13 +30,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="MainWindow.axaml.cs">
+      <DependentUpon>MainWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\StudentsPKTView.axaml.cs">
+      <DependentUpon>StudentsPKTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\EmployeesPKTView.axaml.cs">
+      <DependentUpon>EmployeesPKTView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
   <None Update="appSettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-
-
-  <ItemGroup>
   </ItemGroup>
 </Project>

@@ -22,5 +22,5 @@ public class DatabaseSettings
         ConnectionString = $"User Id={userId};Password={password};Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=PDB)));";
         return ConnectionString;
     }
-    
+
 }

@@ -1,0 +1,17 @@
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\AvaloniaPdbAccounts.pdb
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\appSettings.json
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\database.sql
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\data_sinhvien.log
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\data_sinhvien_4000.csv
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\huong_dan_chay_data.txt
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\run_all.bat
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\run_all.sh
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\run_csv.py
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\script.sql
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\sinhvien.bad
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\sinhvien.ctl
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\Script\sinhvien.sql
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\av_libglesv2.dll
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\libHarfBuzzSharp.dll
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\libSkiaSharp.dll
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\publish\AvaloniaPdbAccounts.exe

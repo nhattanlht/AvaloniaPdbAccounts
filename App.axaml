@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                 xmlns:views="clr-namespace:AvaloniaPdbAccounts.Views"
                 xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+                xmlns:local="clr-namespace:AvaloniaPdbAccounts"
                              x:Class="AvaloniaPdbAccounts.App"
 
              RequestedThemeVariant="Default">
@@ -12,10 +13,18 @@
         <DataTemplate DataType="vm:LoginViewModel">
             <views:LoginView/>
         </DataTemplate>
+		
+		<local:ViewLocator></local:ViewLocator>
     </Application.DataTemplates>
   
     <Application.Styles>
         <FluentTheme />
+		<StyleInclude Source="Styles/AppDefaultStyles.axaml"></StyleInclude>
     </Application.Styles>
     
+	<Application.Resources>
+		<SolidColorBrush x:Key="PrimaryHoverBackground">#cccaca</SolidColorBrush>
+		<SolidColorBrush x:Key="PrimaryActiveBackground">#cccaca</SolidColorBrush>
+	</Application.Resources>
+	
 </Application>

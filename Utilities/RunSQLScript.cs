@@ -26,18 +26,18 @@ public static class RunSQLScriptUtility
 {
     public static void RunAllSql()
     {
-        if (CheckIfDatabaseInitialized())
-        {
-            Console.WriteLine("✅ Database already initialized. Skipping script execution.");
-            return;
-        }
+        //if (CheckIfDatabaseInitialized())
+        //{
+        //    Console.WriteLine("✅ Database already initialized. Skipping script execution.");
+        //    return;
+        //}
         RunSqlScript("script.sql");
         RunSqlScript("database.sql");
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution
     }
-     private static bool CheckIfDatabaseInitialized()
+    private static bool CheckIfDatabaseInitialized()
     {
         string connectionString = AppConfig.GetConnectionString();
 
@@ -56,42 +56,50 @@ public static class RunSQLScriptUtility
             }
         };
 
-        process.Start();
-
-        using (var writer = process.StandardInput)
+        try
         {
-            writer.WriteLine("SET HEADING OFF");
-            writer.WriteLine("SET FEEDBACK OFF");
-            writer.WriteLine("SELECT COUNT(*) FROM DONVI;");
-            writer.WriteLine("EXIT");
-        }
+            process.Start();
 
-        string output = process.StandardOutput.ReadToEnd();
-        string error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
+            using (var writer = process.StandardInput)
+            {
+                writer.WriteLine("SET HEADING OFF");
+                writer.WriteLine("SET FEEDBACK OFF");
+                writer.WriteLine("SELECT COUNT(*) FROM v$pdbs WHERE name = 'PDB';");
+                writer.WriteLine("EXIT");
+            }
 
-        if (!string.IsNullOrWhiteSpace(error))
-        {
-            Console.WriteLine("Error during DB check:\n" + error);
-            return false; // assume not initialized if error
-        }
+            string output = process.StandardOutput.ReadToEnd();
+            string error = process.StandardError.ReadToEnd();
+            process.WaitForExit();
 
-        // Check if the output contains any number > 0
-        if (output.Contains("ORA-") || string.IsNullOrWhiteSpace(output))
-        {
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                Console.WriteLine("Error during PDB check:\n" + error);
+                return false; // Assume PDB does not exist if error
+            }
+
+            // Check if the output contains any number > 0
+            if (output.Contains("ORA-") || string.IsNullOrWhiteSpace(output))
+            {
+                return false;
+            }
+
+            var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var line in lines)
+            {
+                if (int.TryParse(line.Trim(), out int count))
+                {
+                    return count > 0; // PDB exists if count > 0
+                }
+            }
+
             return false;
         }
-
-        var lines = output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        foreach (var line in lines)
+        catch (Exception ex)
         {
-            if (int.TryParse(line.Trim(), out int count))
-            {
-                return count > 0;
-            }
+            Console.WriteLine($"Exception during PDB check: {ex.Message}");
+            return false;
         }
-
-        return false;
     }
 
     public static void RunSqlScript(string fileName)
@@ -125,7 +133,7 @@ public static class RunSQLScriptUtility
                 RedirectStandardError = true,
                 UseShellExecute = false,
                 CreateNoWindow = true,
-                                EnvironmentVariables = { ["NLS_LANG"] = "AMERICAN_AMERICA.AL32UTF8" }
+                EnvironmentVariables = { ["NLS_LANG"] = "AMERICAN_AMERICA.AL32UTF8" }
 
             }
         };
@@ -143,7 +151,7 @@ public static class RunSQLScriptUtility
         if (!string.IsNullOrWhiteSpace(error))
             Console.WriteLine($"Error for {Path.GetFileName(sqlFilePath)}:\n{error}");
     }
-        public static void RunPythonScript(string fileName)
+    public static void RunPythonScript(string fileName)
     {
         string projectDir = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"../../../"));
         string scriptPath = Path.Combine(projectDir, "Scripts", fileName);
@@ -152,7 +160,7 @@ public static class RunSQLScriptUtility
 
         // Get Oracle connection details from config
         string connectionString = AppConfig.GetConnectionString();
-        
+
         RunProcessPython(scriptPath, connectionString);
     }
 
