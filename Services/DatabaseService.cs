@@ -33,7 +33,7 @@ namespace AvaloniaPdbAccounts.Services
         /// <summary>
         /// Đăng nhập với user/password, kết nối và tải thông tin role hiện tại.
         /// </summary>
-        public static Role? CurrentRole { get; private set; }
+public static List<Role> CurrentRoles { get; set; } = new List<Role>();
 
         public void Login(string? userId = null, string? password = null)
         {
@@ -68,21 +68,26 @@ namespace AvaloniaPdbAccounts.Services
 
             Console.WriteLine(system);
 
-            CurrentRole = GetCurrentRole(userId);
+            List<Role> CurrentRoles = GetCurrentRoles();
         }
-        public Role GetCurrentRole(string username)
+        public List<Role> GetCurrentRoles()
         {
+            var roles = new List<Role>();
+
             using var cmd = CreateCommand();
-            cmd.CommandText = "SELECT GRANTED_ROLE FROM DBA_ROLE_PRIVS WHERE GRANTEE = :username FETCH FIRST 1 ROWS ONLY";
-            cmd.Parameters.Add(new OracleParameter("username", username.ToUpper()));
+            cmd.CommandText = "SELECT GRANTED_ROLE FROM USER_ROLE_PRIVS";
 
             using var reader = cmd.ExecuteReader();
-            if (reader.Read())
+            while (reader.Read())
             {
-                return new Role { RoleName = reader.GetString(0) };
+                string roleName = reader.GetString(0);
+                Console.WriteLine(roleName); // In ra role
+                roles.Add(new Role { RoleName = roleName });
             }
-            return null;
+
+            return roles;
         }
+
 
 
 

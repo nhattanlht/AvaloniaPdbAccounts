@@ -65,35 +65,41 @@ public class UserService
 
 public async Task CreateUserAsync(string username, string password)
 {
+    // Validate username
+    // if (string.IsNullOrWhiteSpace(username) || 
+    //     !Regex.IsMatch(username, @"^[A-Za-z][A-Za-z0-9_]{1,29}$"))
+    //     throw new ArgumentException("Invalid username. Only letters, digits, underscore, starting with a letter, max 30 chars.");
+
+    Console.WriteLine($"Creating user: {username}");
+    Console.WriteLine($"With password: {password}");
+
     using (var conn = new OracleConnection(_connectionString))
     {
         await conn.OpenAsync();
-        
-        // Use parameterized queries to prevent SQL injection
+
+        // Escape identifiers with double quotes to preserve case (optional)
+        string quotedUsername = $"\"{username.ToUpper()}\"";
+
         using (var cmdCreate = new OracleCommand(
-            "CREATE USER :username IDENTIFIED BY :password", conn))
+            $"CREATE USER {quotedUsername} IDENTIFIED BY \"{password}\"", conn))
         {
-            cmdCreate.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
-            cmdCreate.Parameters.Add("password", OracleDbType.Varchar2).Value = password;
             await cmdCreate.ExecuteNonQueryAsync();
         }
 
         using (var cmdGrant = new OracleCommand(
-            "GRANT CONNECT, RESOURCE TO :username", conn))
+            $"GRANT CONNECT, RESOURCE TO {quotedUsername}", conn))
         {
-            cmdGrant.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
             await cmdGrant.ExecuteNonQueryAsync();
         }
 
-        // Optionally grant additional privileges if needed
-        using (var cmdQuota = new OracleCommand(
-            "ALTER USER :username QUOTA UNLIMITED ON USERS", conn))
-        {
-            cmdQuota.Parameters.Add("username", OracleDbType.Varchar2).Value = username;
-            await cmdQuota.ExecuteNonQueryAsync();
-        }
+        // using (var cmdQuota = new OracleCommand(
+        //     $"ALTER USER {quotedUsername} QUOTA UNLIMITED ON USERS", conn))
+        // {
+        //     await cmdQuota.ExecuteNonQueryAsync();
+        // }
     }
 }
+
 
     public async Task DeleteUserAsync(string username)
     {

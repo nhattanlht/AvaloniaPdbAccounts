@@ -9,6 +9,7 @@ using static AvaloniaPdbAccounts.Utilities.Helpers;
 using AvaloniaPdbAccounts.Models;
 using System.Collections.Generic;
 using static AvaloniaPdbAccounts.Utilities.RunSQLScriptUtility;
+using System.Linq;
 
 namespace AvaloniaPdbAccounts.Views
 {
@@ -17,7 +18,16 @@ namespace AvaloniaPdbAccounts.Views
         private bool system;
         public LoginView()
         {
-            RunAllSql();
+            try
+            {
+                RunAllSql();
+                Console.WriteLine("Runned script");
+
+            }
+            catch
+            {
+                Console.WriteLine("Run script error");
+            }
             InitializeComponent();
 
             var loginVM = new LoginViewModel();
@@ -27,18 +37,23 @@ namespace AvaloniaPdbAccounts.Views
             loginVM.OnLoginSuccess += async () =>
             {
                 system = DatabaseService.system;
-                if (system)
-                {
-                    var mainWindow = new MainWindow();
-                    mainWindow.Show();
-                    this.Close();
-                }
-                else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
+                // if (true)
+                // {
+                //     var gvWindow = new GVView();
+                //     gvWindow.Show();
+                //     this.Close();
+                // }
+                // else 
+                if (DatabaseService.CurrentRoles != null && 
+                    DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "GV", StringComparison.OrdinalIgnoreCase)))
                 {
                     var gvWindow = new GVView();
                     gvWindow.Show();
                     this.Close();
                 }
+
+
+
                 // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
                 // {
                 //     var gvWindow = new GVView();

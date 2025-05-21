@@ -80,6 +80,9 @@ public class UserManagementViewModel : ViewModelBase
 
 public async Task AddUserAsync(string username, string password)
 {
+        Console.WriteLine(username);
+        Console.WriteLine(password);
+
         if (string.IsNullOrWhiteSpace(username))
         {
             throw new ArgumentException("Username cannot be empty or whitespace");
