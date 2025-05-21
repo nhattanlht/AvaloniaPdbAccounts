@@ -68,7 +68,7 @@ public static List<Role> CurrentRoles { get; set; } = new List<Role>();
 
             Console.WriteLine(system);
 
-            List<Role> CurrentRoles = GetCurrentRoles();
+            CurrentRoles = GetCurrentRoles();
         }
         public List<Role> GetCurrentRoles()
         {

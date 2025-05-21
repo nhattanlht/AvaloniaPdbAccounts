@@ -37,41 +37,20 @@ namespace AvaloniaPdbAccounts.Views
             loginVM.OnLoginSuccess += async () =>
             {
                 system = DatabaseService.system;
-                // if (true)
-                // {
-                //     var gvWindow = new GVView();
-                //     gvWindow.Show();
-                //     this.Close();
-                // }
-                // else 
-                if (DatabaseService.CurrentRoles != null && 
-                    DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "GV", StringComparison.OrdinalIgnoreCase)))
+                if (system)
                 {
-                    var gvWindow = new GVView();
-                    gvWindow.Show();
-                    this.Close();
+                        var mainWindow = new MainWindow();
+                        mainWindow.Show();
+                        this.Close();
                 }
+                else if (DatabaseService.CurrentRoles != null &&
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "GV", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        var gvWindow = new GVView();
+                        gvWindow.Show();
+                        this.Close();
+                      }
 
-
-
-                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
-                // {
-                //     var gvWindow = new GVView();
-                //     gvWindow.Show();
-                //     this.Close();
-                // }
-                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
-                // {
-                //     var gvWindow = new GVView();
-                //     gvWindow.Show();
-                //     this.Close();
-                // }
-                // else if (DatabaseService.CurrentRole != null && DatabaseService.CurrentRole.RoleName == "GV")
-                // {
-                //     var gvWindow = new GVView();
-                //     gvWindow.Show();
-                //     this.Close();
-                // }
             };
         }
 

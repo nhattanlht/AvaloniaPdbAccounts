@@ -9,9 +9,9 @@ public partial class GVView : Window
             InitializeComponent();
         }
     
-        private void InitializeComponent()
-        {
-            Avalonia.Markup.Xaml.AvaloniaXamlLoader.Load(this);
-        }
+        // private void InitializeComponent()
+        // {
+        //     Avalonia.Markup.Xaml.AvaloniaXamlLoader.Load(this);
+        // }
 }
 }
