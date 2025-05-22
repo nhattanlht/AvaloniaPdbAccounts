@@ -1,6 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace AvaloniaPdbAccounts.ViewModels
+namespace AvaloniaPdbAccounts.ViewModels.PKT
 {
     public class PKTViewModel : ViewModelBase
     {

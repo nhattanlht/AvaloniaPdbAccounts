@@ -53,7 +53,7 @@ namespace AvaloniaPdbAccounts.Views
                 else if (DatabaseService.CurrentRoles != null &&
                 DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPKT", StringComparison.OrdinalIgnoreCase)))
                     {
-                        var pktWindow = new PKTView();
+                        var pktWindow = new PKT.PKTView();
                         pktWindow.Show();
                         this.Close();
                       }

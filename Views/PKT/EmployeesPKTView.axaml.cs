@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace AvaloniaPdbAccounts.Views;
+namespace AvaloniaPdbAccounts.Views.PKT;
 
 public partial class EmployeesPKTView : UserControl
 {

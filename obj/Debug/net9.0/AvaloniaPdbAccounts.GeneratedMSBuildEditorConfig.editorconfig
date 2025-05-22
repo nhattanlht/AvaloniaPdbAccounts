@@ -35,23 +35,23 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Styles/AppDefaultStyles.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/CoursesPKTView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/EmployeesPKTView.axaml]
-build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
-
 [C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/GVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
 [C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/LoginView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKTView.axaml]
+[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/CoursesPKTView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/RegistrationsPKTView.axaml]
+[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/EmployeesPKTView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/StudentsPKTView.axaml]
+[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/PKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/RegistrationsPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/StudentsPKTView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

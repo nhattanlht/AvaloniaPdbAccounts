@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AvaloniaPdbAccounts.ViewModels
+namespace AvaloniaPdbAccounts.ViewModels.PKT
 {
-    public partial class RegistrationsPKTViewModel : ViewModelBase
+    public partial class CoursesPKTViewModel : ViewModelBase
     {
         public string Test { get; set; } = "Employees";
     }

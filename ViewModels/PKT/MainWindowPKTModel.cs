@@ -7,9 +7,9 @@ using AvaloniaPdbAccounts.ViewModels.PKT;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
-namespace AvaloniaPdbAccounts.ViewModels
+namespace AvaloniaPdbAccounts.ViewModels.PKT
 {
-    public partial class MainWindowModel : ViewModelBase
+    public partial class MainWindowPKTModel : ViewModelBase
     {
 
         [ObservableProperty]
@@ -30,7 +30,7 @@ namespace AvaloniaPdbAccounts.ViewModels
         private readonly CoursesPKTViewModel _coursesPKT = new();
         private readonly RegistrationsPKTViewModel _registrationsPKT = new();
 
-        public MainWindowModel()
+        public MainWindowPKTModel()
         {
             CurrentPage = _studentsPKT;
         }

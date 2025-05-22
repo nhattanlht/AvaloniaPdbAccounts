@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AvaloniaPdbAccounts.ViewModels
+namespace AvaloniaPdbAccounts.ViewModels.PKT
 {
     public partial class StudentsPKTViewModel : ViewModelBase
     {

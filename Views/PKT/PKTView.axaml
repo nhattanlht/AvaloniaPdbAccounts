@@ -1,15 +1,15 @@
 <!-- Views/PKTView.axaml -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
-		xmlns:view="clr-namespace:AvaloniaPdbAccounts.Views"
+        xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PKT"
+		xmlns:view="clr-namespace:AvaloniaPdbAccounts.Views.PKT"
 		xmlns:local="clr-namespace:AvaloniaPdbAccounts.Utilities"
-        x:Class="AvaloniaPdbAccounts.Views.PKTView"
-		x:DataType="vm:MainWindowModel"
+        x:Class="AvaloniaPdbAccounts.Views.PKT.PKTView"
+		x:DataType="vm:MainWindowPKTModel"
         Title="PKT Window" Width="800" Height="600" Foreground="Black">
 
 	<Design.DataContext>
-		<vm:MainWindowModel></vm:MainWindowModel>
+		<vm:MainWindowPKTModel></vm:MainWindowPKTModel>
 	</Design.DataContext>
 	
 	<Grid RowDefinitions="70,*" Background="White">
