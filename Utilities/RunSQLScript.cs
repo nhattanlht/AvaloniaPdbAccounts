@@ -31,7 +31,7 @@ public static class RunSQLScriptUtility
         //    Console.WriteLine("✅ Database already initialized. Skipping script execution.");
         //    return;
         //}
-        RunSqlScript("script.sql");
+        RunSqlScript("init_db.sql");
         RunSqlScript("database.sql");
         // RunSqlScript("sinhvien.sql");
 
