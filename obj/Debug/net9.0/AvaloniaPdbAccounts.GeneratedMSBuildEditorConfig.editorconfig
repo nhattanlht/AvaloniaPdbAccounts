@@ -20,38 +20,83 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = AvaloniaPdbAccounts
-build_property.ProjectDir = C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\
+build_property.ProjectDir = C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/App.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/MainWindow.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Styles/AppDefaultStyles.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Styles/AppDefaultStyles.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/GVView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/LoginView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GV/CoursesGVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/CoursesPKTView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GV/EmployeesGVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/EmployeesPKTView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GV/GVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/PKTView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GV/RegistrationsGVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/RegistrationsPKTView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/GV/StudentsGVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/ADMIN/source/repos/nhattanlht/AvaloniaPdbAccounts/Views/PKT/StudentsPKTView.axaml]
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/PKT/CoursesPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/PKT/EmployeesPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/PKT/PKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/PKT/RegistrationsPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/PKT/StudentsPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/SV/CoursesSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/SV/EmployeesSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/SV/RegistrationsSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/SV/StudentsSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/SV/SVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/TRGDV/CoursesTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/TRGDV/EmployeesTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/TRGDV/RegistrationsTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/TRGDV/StudentsTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[C:/Users/admin/Desktop/Nam moi/AvaloniaPdbAccounts/Views/TRGDV/TRGDVView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml

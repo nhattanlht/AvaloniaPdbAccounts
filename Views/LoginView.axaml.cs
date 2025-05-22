@@ -39,25 +39,38 @@ namespace AvaloniaPdbAccounts.Views
                 system = DatabaseService.system;
                 if (system)
                 {
-                        var mainWindow = new MainWindow();
-                        mainWindow.Show();
-                        this.Close();
+                    var mainWindow = new MainWindow();
+                    mainWindow.Show();
+                    this.Close();
                 }
                 else if (DatabaseService.CurrentRoles != null &&
                 DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "GV", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        var gvWindow = new GVView();
-                        gvWindow.Show();
-                        this.Close();
-                      }
+                {
+                    var gvWindow = new GV.GVView();
+                    gvWindow.Show();
+                    this.Close();
+                }
                 else if (DatabaseService.CurrentRoles != null &&
                 DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPKT", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        var pktWindow = new PKT.PKTView();
-                        pktWindow.Show();
-                        this.Close();
-                      }
-
+                {
+                    var pktWindow = new PKT.PKTView();
+                    pktWindow.Show();
+                    this.Close();
+                }
+                else if (DatabaseService.CurrentRoles != null &&
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "SV", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var svWindow = new SV.SVView();
+                    svWindow.Show();
+                    this.Close();
+                }
+                else if (DatabaseService.CurrentRoles != null &&
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "TRGDV", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var trgdvWindow = new TRGDV.TRGDVView();
+                    trgdvWindow.Show();
+                    this.Close();
+                }
             };
         }
 

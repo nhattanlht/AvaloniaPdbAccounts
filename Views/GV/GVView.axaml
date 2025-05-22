@@ -1,0 +1,28 @@
+<!-- Views/GV/GVView.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.GV"
+		xmlns:view="clr-namespace:AvaloniaPdbAccounts.Views.GV"
+		xmlns:local="clr-namespace:AvaloniaPdbAccounts.Utilities"
+        x:Class="AvaloniaPdbAccounts.Views.GV.GVView"
+		x:DataType="vm:MainWindowGVModel"
+        Title="GV Window" Width="800" Height="600" Foreground="Black">
+
+	<Design.DataContext>
+		<vm:MainWindowGVModel></vm:MainWindowGVModel>
+	</Design.DataContext>
+	
+	<Grid RowDefinitions="70,*" Background="White">
+
+		<ContentControl Grid.Row="1" Content="{Binding CurrentPage}" Margin="10" />
+
+		<Border Grid.Row="0" Background="#F2EFEF">
+			<StackPanel Background="#F2EFEF" Orientation="Horizontal" Spacing="10" Grid.Row="0" HorizontalAlignment="Center">
+				<Button Classes.active="{Binding EmployeesButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Employees" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowEmployeesPageCommand}"></Button>
+				<Button Classes.active="{Binding CoursesButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Courses" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowCoursesPageCommand}"></Button>
+				<Button Classes.active="{Binding StudentsButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Students" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowStudentsPageCommand}"></Button>
+				<Button Classes.active="{Binding RegistrationsButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Registrations" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowRegistrationsPageCommand}"></Button>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window> 
