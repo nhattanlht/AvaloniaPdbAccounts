@@ -110,7 +110,7 @@
 
             <!-- User/Role Selection Area -->
             <Border Grid.Row="0" 
-                    Background="White" 
+                    Background="Black" 
                     CornerRadius="8"
                     Margin="0,0,0,10"
                     Padding="15">
@@ -141,7 +141,7 @@
                                 Click="ConfirmCheckButton_Click"
                                 Margin="20,0,0,0"
                                 Background="#3498DB"
-                                Foreground="White"/>
+                                Foreground="Black"/>
                                 
                         <Button Name="RevokeButton" 
                                 Width="100" 
@@ -263,7 +263,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#F8F9FA" CornerRadius="4" Margin="2" Padding="8">
-                                <TextBlock Text="{Binding}" FontSize="14"/>
+                                <TextBlock Text="{Binding}" FontSize="14" Foreground="Black"/>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

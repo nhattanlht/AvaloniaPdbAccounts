@@ -1,5 +1,6 @@
 C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.Base.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.controls.colorpicker\11.3.0\lib\net8.0\Avalonia.Controls.ColorPicker.dll
+C:\Users\ADMIN\.nuget\packages\avalonia.controls.datagrid\11.3.0\lib\net8.0\Avalonia.Controls.DataGrid.dll
 C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.Controls.dll
 C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.DesignerSupport.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.desktop\11.3.0\lib\net8.0\Avalonia.Desktop.dll
@@ -14,6 +15,7 @@ C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.Metal.dll
 C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.MicroCom.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.native\11.3.0\lib\net8.0\Avalonia.Native.dll
 C:\Users\ADMIN\.nuget\packages\avalonia\11.3.0\ref\net8.0\Avalonia.OpenGL.dll
+C:\Users\ADMIN\.nuget\packages\avalonia.reactiveui\11.3.0\lib\net8.0\Avalonia.ReactiveUI.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.remote.protocol\11.3.0\lib\net8.0\Avalonia.Remote.Protocol.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.skia\11.3.0\lib\net8.0\Avalonia.Skia.dll
 C:\Users\ADMIN\.nuget\packages\avalonia.themes.fluent\11.3.0\lib\net8.0\Avalonia.Themes.Fluent.dll

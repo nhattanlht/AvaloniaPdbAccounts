@@ -324,9 +324,4 @@ EXCEPTION
 END;
 /
 
--- Tạo user và gán role
-CREATE USER nam IDENTIFIED BY 123;
-GRANT NVPKT TO nam;
-GRANT CONNECT TO nam;
-
 QUIT;

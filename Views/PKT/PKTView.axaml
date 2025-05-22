@@ -6,7 +6,7 @@
 		xmlns:local="clr-namespace:AvaloniaPdbAccounts.Utilities"
         x:Class="AvaloniaPdbAccounts.Views.PKT.PKTView"
 		x:DataType="vm:MainWindowPKTModel"
-        Title="PKT Window" Width="800" Height="600" Foreground="Black">
+        Title="PKT Window" Width="1200" Height="600" Foreground="Black">
 
 	<Design.DataContext>
 		<vm:MainWindowPKTModel></vm:MainWindowPKTModel>

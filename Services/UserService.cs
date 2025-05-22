@@ -252,5 +252,55 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         
         return students;
     }
-    
+
+    public async Task<List<EmployeeModel>> GetEmployeeModelDataAsync()
+    {
+        var employees = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "SELECT MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    employees.Add(new EmployeeModel
+                    {
+                        EmployeeID = reader.GetString(0),
+                        FullName = reader.GetString(1),
+                        Gender = reader.GetString(2),
+                        BirthDate = reader.GetDateTime(3),
+                        Salary = reader.GetDecimal(4),
+                        Allowance = reader.GetDecimal(5),
+                        Phone = reader.GetString(6),
+                        Role = reader.GetString(7),
+                        Department = reader.GetString(8),
+                    });
+                }
+            }
+        }
+
+        return employees;
+    }
+    public async Task UpdateEmployeePhoneNumberAsync(string employeeId, string newPhone)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "UPDATE adminpdb.NHANVIEN SET DT = :phone WHERE MANV = :id";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("phone", newPhone));
+                cmd.Parameters.Add(new OracleParameter("id", employeeId));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
 }

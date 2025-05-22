@@ -9,9 +9,11 @@
       "AvaloniaPdbAccounts/1.0.0": {
         "dependencies": {
           "Avalonia": "11.3.0",
+          "Avalonia.Controls.DataGrid": "11.3.0",
           "Avalonia.Desktop": "11.3.0",
           "Avalonia.Diagnostics": "11.3.0",
           "Avalonia.Fonts.Inter": "11.3.0",
+          "Avalonia.ReactiveUI": "11.3.0",
           "Avalonia.Themes.Fluent": "11.3.0",
           "Avalonia.Xaml.Interactivity": "11.3.0",
           "CommunityToolkit.Mvvm": "8.4.0",
@@ -109,6 +111,17 @@
           }
         }
       },
+      "Avalonia.Controls.DataGrid/11.3.0": {
+        "dependencies": {
+          "Avalonia": "11.3.0"
+        },
+        "runtime": {
+          "lib/net8.0/Avalonia.Controls.DataGrid.dll": {
+            "assemblyVersion": "11.3.0.0",
+            "fileVersion": "11.3.0.0"
+          }
+        }
+      },
       "Avalonia.Desktop/11.3.0": {
         "dependencies": {
           "Avalonia": "11.3.0",
@@ -175,6 +188,19 @@
             "rid": "osx",
             "assetType": "native",
             "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Avalonia.ReactiveUI/11.3.0": {
+        "dependencies": {
+          "Avalonia": "11.3.0",
+          "ReactiveUI": "20.2.45",
+          "System.Reactive": "6.0.1"
+        },
+        "runtime": {
+          "lib/net8.0/Avalonia.ReactiveUI.dll": {
+            "assemblyVersion": "11.3.0.0",
+            "fileVersion": "11.3.0.0"
           }
         }
       },
@@ -722,6 +748,13 @@
       "path": "avalonia.controls.colorpicker/11.3.0",
       "hashPath": "avalonia.controls.colorpicker.11.3.0.nupkg.sha512"
     },
+    "Avalonia.Controls.DataGrid/11.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-adUf0W2omXcmXOqcVfZLchtJUkuSO3WAEutzN4xDGP74wS5q9pGigc2yKCZOhKvYBDY6Yfcu5sIe5Avb8V9X4w==",
+      "path": "avalonia.controls.datagrid/11.3.0",
+      "hashPath": "avalonia.controls.datagrid.11.3.0.nupkg.sha512"
+    },
     "Avalonia.Desktop/11.3.0": {
       "type": "package",
       "serviceable": true,
@@ -756,6 +789,13 @@
       "sha512": "sha512-1KFRYgxY9IVxceXB+/jRH0zCrhcKDOs/mTxLexZGd5MT8oKs0NTnAHP8R09bCQOw9aGcYLpzXVzKzhpGulxxWQ==",
       "path": "avalonia.native/11.3.0",
       "hashPath": "avalonia.native.11.3.0.nupkg.sha512"
+    },
+    "Avalonia.ReactiveUI/11.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C8MNZlEV5Pu0Kp9U0uaOUW2dVXV6lbIEe1shlBkwizsgi48CaRvsP7VZNPjZ/KkIM7/RVTQhSJcEdFCSjdR4nQ==",
+      "path": "avalonia.reactiveui/11.3.0",
+      "hashPath": "avalonia.reactiveui.11.3.0.nupkg.sha512"
     },
     "Avalonia.Remote.Protocol/11.3.0": {
       "type": "package",

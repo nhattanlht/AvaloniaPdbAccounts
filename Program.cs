@@ -1,5 +1,7 @@
 ﻿using Avalonia;
 using System;
+using ReactiveUI;
+using Avalonia.ReactiveUI;
 
 namespace AvaloniaPdbAccounts;
 
@@ -16,6 +18,7 @@ class Program
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
+            .UseReactiveUI()
             .WithInterFont()
             .LogToTrace();
 }

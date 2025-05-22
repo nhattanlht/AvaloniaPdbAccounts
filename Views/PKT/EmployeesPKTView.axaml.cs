@@ -9,5 +9,6 @@ public partial class EmployeesPKTView : UserControl
     public EmployeesPKTView()
     {
         InitializeComponent();
+        DataContext = new AvaloniaPdbAccounts.ViewModels.PKT.EmployeesPKTViewModel();
     }
 }

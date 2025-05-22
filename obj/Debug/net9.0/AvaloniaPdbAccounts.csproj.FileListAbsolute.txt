@@ -105,3 +105,5 @@ C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\refi
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\AvaloniaPdbAccounts.pdb
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\AvaloniaPdbAccounts.genruntimeconfig.cache
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\ref\AvaloniaPdbAccounts.dll
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Avalonia.Controls.DataGrid.dll
+C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Avalonia.ReactiveUI.dll
