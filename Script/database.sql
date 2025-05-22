@@ -208,7 +208,7 @@ INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV)
 INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV) VALUES ('NV00011', 'Quan Vũ', '1', TO_DATE('1972-02-28', 'YYYY-MM-DD'), 9000000, 1000000, '0929456789', 'GV', 'TOAN');
 INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV) VALUES ('NV00012', 'Triệu Tử Long', '1', TO_DATE('1975-10-10', 'YYYY-MM-DD'), 11000000, 500000, '0923956789', 'GV', 'CNTT');
 INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV) VALUES ('NV00013', 'Hà Nhân', '1', TO_DATE('1960-07-17', 'YYYY-MM-DD'), 13000000, 1500000, '0923496789', 'GV', 'CNTT');
-INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV) VALUES ('NV00014', 'Nam', '1', TO_DATE('1960-07-17', 'YYYY-MM-DD'), 13000000, 1500000, '0923496789', 'PKT', 'CNTT');
+INSERT INTO NHANVIEN(MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV) VALUES ('NV00014', 'Nam', '1', TO_DATE('1960-07-17', 'YYYY-MM-DD'), 13000000, 1500000, '0923496789', 'NVPKT', 'CNTT');
 
 DECLARE
   ho  SYS.ODCIVARCHAR2LIST := SYS.ODCIVARCHAR2LIST('Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng');
@@ -1010,50 +1010,51 @@ DECLARE
     v_count NUMBER; -- Biến đếm để kiểm tra sự tồn tại của user
 BEGIN
     -- Duyệt qua tất cả nhân viên trong bảng NHANVIEN
-    FOR nv IN (SELECT MANV, DT, VAITRO FROM NHANVIEN) LOOP
-        -- Kiểm tra xem user (số điện thoại) có tồn tại không
-        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = nv.DT;
+    FOR nv IN (SELECT MANV, VAITRO FROM NHANVIEN) LOOP
+        -- Kiểm tra xem user (MANV) có tồn tại không
+        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = UPPER(nv.MANV);
 
         IF v_count > 0 THEN
             -- Gán role tương ứng với VAITRO
             CASE nv.VAITRO
                 WHEN 'NVCB' THEN
-                    EXECUTE IMMEDIATE 'GRANT NVCB TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCB cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NVCB TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCB cho ' || nv.MANV);
                 WHEN 'GV' THEN
-                    EXECUTE IMMEDIATE 'GRANT GV TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role GV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT GV TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role GV cho ' || nv.MANV);
                 WHEN 'NVPDT' THEN
-                    EXECUTE IMMEDIATE 'GRANT NVPDT TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPDT cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NVPDT TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPDT cho ' || nv.MANV);
                 WHEN 'NVPKT' THEN
-                    EXECUTE IMMEDIATE 'GRANT NVPKT TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPKT cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NVPKT TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPKT cho ' || nv.MANV);
                 WHEN 'NVTCHC' THEN
-                    EXECUTE IMMEDIATE 'GRANT NVTCHC TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVTCHC cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NVTCHC TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVTCHC cho ' || nv.MANV);
                 WHEN 'NVCTSV' THEN
-                    EXECUTE IMMEDIATE 'GRANT NVCTSV TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCTSV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NVCTSV TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCTSV cho ' || nv.MANV);
                 WHEN 'TRGDV' THEN
-                    EXECUTE IMMEDIATE 'GRANT TRGDV TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role TRGDV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT TRGDV TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role TRGDV cho ' || nv.MANV);
                 ELSE
                     -- Mặc định gán role NHANVIEN nếu không khớp với vai trò nào
-                    EXECUTE IMMEDIATE 'GRANT NHANVIEN TO "' || nv.DT || '"';
-                    DBMS_OUTPUT.PUT_LINE('Đã gán role NHANVIEN (mặc định) cho ' || nv.MANV || ' (' || nv.DT || ')');
+                    EXECUTE IMMEDIATE 'GRANT NHANVIEN TO "' || nv.MANV || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NHANVIEN (mặc định) cho ' || nv.MANV);
             END CASE;
         ELSE
-            DBMS_OUTPUT.PUT_LINE('User ' || nv.DT || ' không tồn tại, bỏ qua nhân viên ' || nv.MANV);
+            DBMS_OUTPUT.PUT_LINE('User "' || nv.MANV || '" không tồn tại, bỏ qua.');
         END IF;
     END LOOP;
 
-    DBMS_OUTPUT.PUT_LINE('Hoàn thành gán role cho tất cả nhân viên');
+    DBMS_OUTPUT.PUT_LINE('✅ Hoàn thành gán role cho tất cả nhân viên.');
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Lỗi: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('❌ Lỗi: ' || SQLERRM);
 END;
 /
+
 
 -- ---------------------------------------------------------
 -- Gán role SV cho tất cả sinh viên
@@ -1062,24 +1063,25 @@ DECLARE
     v_count NUMBER; -- Biến đếm để kiểm tra sự tồn tại của user
 BEGIN
     -- Duyệt qua tất cả sinh viên trong bảng SINHVIEN
-    FOR sv IN (SELECT MASV, DT FROM SINHVIEN) LOOP
-        -- Kiểm tra xem user (số điện thoại) có tồn tại không
-        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = sv.DT;
+    FOR sv IN (SELECT MASV FROM SINHVIEN) LOOP
+        -- Kiểm tra xem user (MASV) có tồn tại không
+        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = UPPER(sv.MASV);
 
         IF v_count > 0 THEN
             -- Gán role SV
-            EXECUTE IMMEDIATE 'GRANT SV TO "' || sv.DT || '"';
-            DBMS_OUTPUT.PUT_LINE('Đã gán role SV cho sinh viên ' || sv.MASV || ' (' || sv.DT || ')');
+            EXECUTE IMMEDIATE 'GRANT SV TO "' || sv.MASV || '"';
+            DBMS_OUTPUT.PUT_LINE('Đã gán role SV cho sinh viên ' || sv.MASV);
         ELSE
-            DBMS_OUTPUT.PUT_LINE('User ' || sv.DT || ' không tồn tại, bỏ qua sinh viên ' || sv.MASV);
+            DBMS_OUTPUT.PUT_LINE('User "' || sv.MASV || '" không tồn tại, bỏ qua.');
         END IF;
     END LOOP;
 
-    DBMS_OUTPUT.PUT_LINE('Hoàn thành gán role SV cho tất cả sinh viên');
+    DBMS_OUTPUT.PUT_LINE('✅ Hoàn thành gán role SV cho tất cả sinh viên.');
 EXCEPTION
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('Lỗi khi gán role SV: ' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('❌ Lỗi khi gán role SV: ' || SQLERRM);
 END;
 /
+
 
 QUIT;

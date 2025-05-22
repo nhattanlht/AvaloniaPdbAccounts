@@ -3,7 +3,6 @@
 --Lưu ý cần đổi FILE_NAME_CONVERT cho phù hợp trên máy để chạy local
 -- ---------------------------------------------------------
 
-
 -- Chuyển về CDB$ROOT trước khi xóa PDB
 ALTER SESSION SET CONTAINER = CDB$ROOT;
 
@@ -26,10 +25,12 @@ END;
 CREATE PLUGGABLE DATABASE PDB
   ADMIN USER AdminPdb IDENTIFIED BY 123
   ROLES = (DBA)
-  FILE_NAME_CONVERT = (
-    'C:\APP\ADMIN\PRODUCT\23AI\ORADATA\FREE\PDBSEED\', 
-    'C:\APP\ADMIN\PRODUCT\23AI\ORADATA\FREE\PDB\'
-);
+  FILE_NAME_CONVERT = ('/pdbseed/', '/PDB/');
+
+--   FILE_NAME_CONVERT = (
+--     'C:\APP\ADMIN\PRODUCT\23AI\ORADATA\FREE\PDBSEED\', 
+--     'C:\APP\ADMIN\PRODUCT\23AI\ORADATA\FREE\PDB\'
+-- );
 
 -- Mở PDB nếu chưa mở 
 CREATE OR REPLACE PROCEDURE Open_PDB_If_Closed(p_pdb_name IN VARCHAR2) 
