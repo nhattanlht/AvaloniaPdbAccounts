@@ -281,7 +281,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="#F8F9FA" CornerRadius="4" Margin="2" Padding="8">
-                                <TextBlock Text="{Binding}" FontSize="14"/>
+                                <TextBlock Text="{Binding}" Foreground="Black" FontSize="14"/>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

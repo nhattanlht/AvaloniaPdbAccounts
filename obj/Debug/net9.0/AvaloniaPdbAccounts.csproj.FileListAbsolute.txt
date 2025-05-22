@@ -1,13 +1,9 @@
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\appSettings.json
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\database.sql
-C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\data_sinhvien.log
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\data_sinhvien_4000.csv
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\huong_dan_chay_data.txt
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\run_all.bat
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\run_all.sh
-C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\run_csv.py
-C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\script.sql
-C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\sinhvien.bad
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\sinhvien.ctl
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\sinhvien.sql
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\AvaloniaPdbAccounts.exe
@@ -107,3 +103,4 @@ C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\Aval
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\obj\Debug\net9.0\ref\AvaloniaPdbAccounts.dll
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Avalonia.Controls.DataGrid.dll
 C:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Avalonia.ReactiveUI.dll
+c:\Users\ADMIN\source\repos\nhattanlht\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\init_db.sql

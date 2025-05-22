@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\views\\pkt\\employeespktview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
+      "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:views\\pkt\\employeespktview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\script\\database.sql||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:script\\database.sql||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -15,20 +19,12 @@
       "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:utilities\\runsqlscript.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\script\\script.sql||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:script\\script.sql||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\viewmodels\\pkt\\employeespktviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:viewmodels\\pkt\\employeespktviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\views\\pkt\\employeespktview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}",
-      "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:views\\pkt\\employeespktview.axaml||{6D5344A2-2FCD-49DE-A09D-6A14FD1B1224}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\app.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -207,6 +203,10 @@
     {
       "AbsoluteMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|c:\\users\\admin\\source\\repos\\nhattanlht\\avaloniapdbaccounts\\views\\gvview.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B1593DEE-ED37-F2E8-49CA-78B66DF8E363}|AvaloniaPdbAccounts.csproj|solutionrelative:views\\gvview.axaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Script\\script.sql||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Script\\script.sql||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -216,7 +216,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -240,24 +240,22 @@
               "RelativeToolTip": "Services\\UserService.cs",
               "ViewState": "AgIAAA8BAAAAAAAAAAAowC0BAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T15:07:29.553Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:07:29.553Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "App.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\App.axaml",
               "RelativeDocumentMoniker": "App.axaml",
               "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\App.axaml",
               "RelativeToolTip": "App.axaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-20T13:50:51.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T13:50:51.744Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 7,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -265,12 +263,11 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T13:11:52.875Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T13:11:52.875Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 8,
               "Title": "AvaloniaPdbAccounts.csproj",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
               "RelativeDocumentMoniker": "AvaloniaPdbAccounts.csproj",
@@ -278,12 +275,11 @@
               "RelativeToolTip": "AvaloniaPdbAccounts.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-05-21T15:12:42.315Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:12:42.315Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
               "Title": "EmployeesPKTView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\EmployeesPKTView.axaml",
               "RelativeDocumentMoniker": "Views\\PKT\\EmployeesPKTView.axaml",
@@ -295,7 +291,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 51,
               "Title": "script.sql",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Script\\script.sql",
               "RelativeDocumentMoniker": "Script\\script.sql",
@@ -303,25 +299,23 @@
               "RelativeToolTip": "Script\\script.sql",
               "ViewState": "AgIAADUBAAAAAAAAAAAAAEQBAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-05-21T15:03:29.485Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:03:29.485Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "database.sql",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Script\\database.sql",
               "RelativeDocumentMoniker": "Script\\database.sql",
               "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Script\\database.sql",
               "RelativeToolTip": "Script\\database.sql",
-              "ViewState": "AgIAAIYMAAAAAAAAAAAAAKQMAAAyAAAAAAAAAA==",
+              "ViewState": "AgIAAOoDAAAAAAAAAAAAAD4EAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-05-21T15:03:36.079Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:03:36.079Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "RunSQLScript.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Utilities\\RunSQLScript.cs",
               "RelativeDocumentMoniker": "Utilities\\RunSQLScript.cs",
@@ -329,12 +323,11 @@
               "RelativeToolTip": "Utilities\\RunSQLScript.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAmwCAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T15:16:11.67Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:16:11.67Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "App.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\App.axaml.cs",
               "RelativeDocumentMoniker": "App.axaml.cs",
@@ -342,8 +335,7 @@
               "RelativeToolTip": "App.axaml.cs",
               "ViewState": "AgIAABAAAAAAAAAAAAAQwA8AAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T13:48:35.532Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T13:48:35.532Z"
             },
             {
               "$type": "Document",
@@ -355,12 +347,11 @@
               "RelativeToolTip": "ViewModels\\PKT\\EmployeesPKTViewModel.cs",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAwCEAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T08:42:34.819Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T08:42:34.819Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 9,
               "Title": "Dispatcher.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\AppData\\Local\\Temp\\.vsdbgsrc\\cd4e9790a6079bb933ce359f927e691941d96186e887d51eede58bd6e0082f83\\Dispatcher.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Local\\Temp\\.vsdbgsrc\\cd4e9790a6079bb933ce359f927e691941d96186e887d51eede58bd6e0082f83\\Dispatcher.cs",
@@ -373,7 +364,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 10,
               "Title": "MainWindowPKTModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\PKT\\MainWindowPKTModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\PKT\\MainWindowPKTModel.cs",
@@ -381,12 +372,11 @@
               "RelativeToolTip": "ViewModels\\PKT\\MainWindowPKTModel.cs",
               "ViewState": "AgIAABQAAAAAAAAAAAAQwBAAAABCAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-22T01:36:56.295Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-22T01:36:56.295Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 11,
               "Title": "EmployeeModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Models\\EmployeeModel.cs",
               "RelativeDocumentMoniker": "Models\\EmployeeModel.cs",
@@ -394,12 +384,11 @@
               "RelativeToolTip": "Models\\EmployeeModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-22T08:23:28.881Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-22T08:23:28.881Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 16,
               "Title": "Commands.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Utilities\\Commands.cs",
               "RelativeDocumentMoniker": "Utilities\\Commands.cs",
@@ -407,12 +396,11 @@
               "RelativeToolTip": "Utilities\\Commands.cs",
               "ViewState": "AgIAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-22T07:19:08.382Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-22T07:19:08.382Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 13,
               "Title": "UserModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Models\\UserModel.cs",
               "RelativeDocumentMoniker": "Models\\UserModel.cs",
@@ -420,12 +408,11 @@
               "RelativeToolTip": "Models\\UserModel.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-22T07:21:53.567Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-22T07:21:53.567Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 12,
               "Title": "EmployeesPKTView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\EmployeesPKTView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\PKT\\EmployeesPKTView.axaml.cs",
@@ -433,12 +420,11 @@
               "RelativeToolTip": "Views\\PKT\\EmployeesPKTView.axaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T08:39:50.685Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T08:39:50.685Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 15,
               "Title": "DatabaseService.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Services\\DatabaseService.cs",
               "RelativeDocumentMoniker": "Services\\DatabaseService.cs",
@@ -446,12 +432,11 @@
               "RelativeToolTip": "Services\\DatabaseService.cs",
               "ViewState": "AgIAACwAAAAAAAAAAAAYwC4AAABRAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T15:16:05.378Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T15:16:05.378Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 14,
               "Title": "DatabaseSetting.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Models\\DatabaseSetting.cs",
               "RelativeDocumentMoniker": "Models\\DatabaseSetting.cs",
@@ -459,48 +444,44 @@
               "RelativeToolTip": "Models\\DatabaseSetting.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-21T14:04:45.682Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T14:04:45.682Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 17,
               "Title": "MainWindow.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\MainWindow.axaml",
               "RelativeDocumentMoniker": "MainWindow.axaml",
               "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\MainWindow.axaml",
               "RelativeToolTip": "MainWindow.axaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-21T08:54:01.185Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-21T08:54:01.185Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 18,
               "Title": "PKTView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\PKTView.axaml",
               "RelativeDocumentMoniker": "Views\\PKT\\PKTView.axaml",
               "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\PKTView.axaml",
               "RelativeToolTip": "Views\\PKT\\PKTView.axaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-20T13:49:22.506Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T13:49:22.506Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 20,
               "Title": "LoginView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\LoginView.axaml",
               "RelativeDocumentMoniker": "Views\\LoginView.axaml",
               "ToolTip": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\LoginView.axaml",
               "RelativeToolTip": "Views\\LoginView.axaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2025-05-20T13:51:49.361Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T13:51:49.361Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 19,
               "Title": "PKTView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\PKTView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\PKT\\PKTView.axaml.cs",
@@ -508,12 +489,11 @@
               "RelativeToolTip": "Views\\PKT\\PKTView.axaml.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-05-20T13:49:22.384Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-05-20T13:49:22.384Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 21,
               "Title": "PKTViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\PKT\\PKTViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\PKT\\PKTViewModel.cs",
@@ -525,7 +505,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 23,
               "Title": "MainWindowModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\MainWindowModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\MainWindowModel.cs",
@@ -537,7 +517,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 22,
               "Title": "readme.md",
               "DocumentMoniker": "C:\\Users\\ADMIN\\.nuget\\packages\\avalonia.controls.datagrid\\11.3.0\\readme.md",
               "RelativeDocumentMoniker": "..\\..\\..\\..\\.nuget\\packages\\avalonia.controls.datagrid\\11.3.0\\readme.md",
@@ -550,7 +530,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "CoursesPKTViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\PKT\\CoursesPKTViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\PKT\\CoursesPKTViewModel.cs",
@@ -562,7 +542,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 30,
               "Title": "StudentsPKTView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\StudentsPKTView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\PKT\\StudentsPKTView.axaml.cs",
@@ -574,7 +554,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 29,
               "Title": "StudentsPKTView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\StudentsPKTView.axaml",
               "RelativeDocumentMoniker": "Views\\PKT\\StudentsPKTView.axaml",
@@ -585,7 +565,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 28,
               "Title": "RegistrationsPKTView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\RegistrationsPKTView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\PKT\\RegistrationsPKTView.axaml.cs",
@@ -597,7 +577,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 27,
               "Title": "RegistrationsPKTView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\RegistrationsPKTView.axaml",
               "RelativeDocumentMoniker": "Views\\PKT\\RegistrationsPKTView.axaml",
@@ -608,7 +588,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 26,
               "Title": "CoursesPKTView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\CoursesPKTView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\PKT\\CoursesPKTView.axaml.cs",
@@ -620,7 +600,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 25,
               "Title": "CoursesPKTView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\PKT\\CoursesPKTView.axaml",
               "RelativeDocumentMoniker": "Views\\PKT\\CoursesPKTView.axaml",
@@ -631,7 +611,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 31,
               "Title": "RegistrationsPKTViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\PKT\\RegistrationsPKTViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\PKT\\RegistrationsPKTViewModel.cs",
@@ -643,7 +623,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 32,
               "Title": "StudentsPKTViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\PKT\\StudentsPKTViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\PKT\\StudentsPKTViewModel.cs",
@@ -655,7 +635,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 33,
               "Title": "MainWindow.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\MainWindow.axaml.cs",
               "RelativeDocumentMoniker": "MainWindow.axaml.cs",
@@ -667,7 +647,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 34,
               "Title": "LoginView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\LoginView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\LoginView.axaml.cs",
@@ -679,7 +659,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 35,
               "Title": "GVViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\GVViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\GVViewModel.cs",
@@ -691,7 +671,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 36,
               "Title": "LoginViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\LoginViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\LoginViewModel.cs",
@@ -703,7 +683,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 37,
               "Title": "RoleService.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Services\\RoleService.cs",
               "RelativeDocumentMoniker": "Services\\RoleService.cs",
@@ -715,7 +695,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 38,
               "Title": "AccessService.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Services\\AccessService.cs",
               "RelativeDocumentMoniker": "Services\\AccessService.cs",
@@ -727,7 +707,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 40,
+              "DocumentIndex": 39,
               "Title": "UserManagementViewModel.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\UserManagementViewModel.cs",
               "RelativeDocumentMoniker": "ViewModels\\UserManagementViewModel.cs",
@@ -739,7 +719,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 41,
+              "DocumentIndex": 40,
               "Title": "app.manifest",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\app.manifest",
               "RelativeDocumentMoniker": "app.manifest",
@@ -751,7 +731,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 42,
+              "DocumentIndex": 41,
               "Title": "ViewLocator.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewLocator.cs",
               "RelativeDocumentMoniker": "ViewLocator.cs",
@@ -763,7 +743,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 43,
+              "DocumentIndex": 42,
               "Title": "appSettings.json",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\appSettings.json",
               "RelativeDocumentMoniker": "appSettings.json",
@@ -775,7 +755,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 44,
+              "DocumentIndex": 43,
               "Title": "readme.md",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\readme.md",
               "RelativeDocumentMoniker": "readme.md",
@@ -787,7 +767,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 45,
+              "DocumentIndex": 44,
               "Title": "AppDefaultStyles.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Styles\\AppDefaultStyles.axaml",
               "RelativeDocumentMoniker": "Styles\\AppDefaultStyles.axaml",
@@ -798,7 +778,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 46,
+              "DocumentIndex": 45,
               "Title": "Helpers.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Utilities\\Helpers.cs",
               "RelativeDocumentMoniker": "Utilities\\Helpers.cs",
@@ -810,7 +790,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 47,
+              "DocumentIndex": 46,
               "Title": "ViewModelBase.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\ViewModels\\ViewModelBase.cs",
               "RelativeDocumentMoniker": "ViewModels\\ViewModelBase.cs",
@@ -822,7 +802,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 48,
+              "DocumentIndex": 47,
               "Title": "GVView.axaml",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\GVView.axaml",
               "RelativeDocumentMoniker": "Views\\GVView.axaml",
@@ -833,7 +813,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 49,
+              "DocumentIndex": 48,
               "Title": "IdialogService.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Services\\IdialogService.cs",
               "RelativeDocumentMoniker": "Services\\IdialogService.cs",
@@ -845,7 +825,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 50,
+              "DocumentIndex": 49,
               "Title": "DialogService.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Services\\DialogService.cs",
               "RelativeDocumentMoniker": "Services\\DialogService.cs",
@@ -857,7 +837,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 51,
+              "DocumentIndex": 50,
               "Title": "GVView.axaml.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\Views\\GVView.axaml.cs",
               "RelativeDocumentMoniker": "Views\\GVView.axaml.cs",
