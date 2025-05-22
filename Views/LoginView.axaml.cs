@@ -71,6 +71,13 @@ namespace AvaloniaPdbAccounts.Views
                     trgdvWindow.Show();
                     this.Close();
                 }
+                else if (DatabaseService.CurrentRoles != null &&
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVTCHC", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var tchcWindow = new TCHC.TCHCView();
+                    tchcWindow.Show();
+                    this.Close();
+                }
             };
         }
 

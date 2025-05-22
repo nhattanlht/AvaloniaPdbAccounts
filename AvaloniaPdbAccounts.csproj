@@ -41,6 +41,21 @@
     <Compile Update="Views\PKT\EmployeesPKTView.axaml.cs">
       <DependentUpon>EmployeesPKTView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\TCHC\CoursesTCHCView.axaml.cs">
+      <DependentUpon>CoursesTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\EmployeesTCHCView.axaml.cs">
+      <DependentUpon>EmployeesTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\RegistrationsTCHCView.axaml.cs">
+      <DependentUpon>RegistrationsTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\StudentsTCHCView.axaml.cs">
+      <DependentUpon>StudentsTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\TCHCView.axaml.cs">
+      <DependentUpon>TCHCView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
   <None Update="appSettings.json">

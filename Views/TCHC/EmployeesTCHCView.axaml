@@ -3,14 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PKT"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.TCHC"
              xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
-             x:Class="AvaloniaPdbAccounts.Views.PKT.EmployeesPKTView"
-             x:DataType="vm:EmployeesPKTViewModel"
+             x:Class="AvaloniaPdbAccounts.Views.TCHC.EmployeesTCHCView"
+             x:DataType="vm:EmployeesTCHCViewModel"
 			 x:Name="root">
 
 	<UserControl.DataContext>
-		<vm:EmployeesPKTViewModel />
+		<vm:EmployeesTCHCViewModel />
 	</UserControl.DataContext>
 
 	<Grid Margin="20" RowDefinitions="Auto,*">

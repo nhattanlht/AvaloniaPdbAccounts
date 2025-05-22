@@ -10,15 +10,15 @@ using AvaloniaPdbAccounts.Models;
 using AvaloniaPdbAccounts.Services;
 using ReactiveUI;
 
-namespace AvaloniaPdbAccounts.ViewModels.PKT
+namespace AvaloniaPdbAccounts.ViewModels.TCHC
 {
-    public partial class RegistrationsPKTViewModel : ViewModelBase
+    public partial class RegistrationsTCHCViewModel : ViewModelBase
     {
         public ObservableCollection<RegistrationModel> Registrations { get; }
         public ReactiveCommand<RegistrationModel, Unit> EditCommand { get; }
         private readonly UserService _userService;
 
-        public RegistrationsPKTViewModel()
+        public RegistrationsTCHCViewModel()
         {
             _userService = new UserService();
 
