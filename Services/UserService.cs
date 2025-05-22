@@ -303,4 +303,55 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
             }
         }
     }
+    public async Task<List<RegistrationModel>> GetRegistrationModelDataAsync()
+    {
+        var registrations = new List<RegistrationModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "SELECT MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK FROM adminpdb.DANGKY";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    registrations.Add(new RegistrationModel
+                    {
+                        StudentID = reader.GetString(0),
+                        CourseID = reader.GetString(1),
+                        PracticeScore = reader.GetDecimal(2),
+                        ProcessScore = reader.GetDecimal(3),
+                        FinalScore = reader.GetDecimal(4),
+                        TotalScore = reader.GetDecimal(5),
+                    });
+                }
+            }
+        }
+
+        return registrations;
+    }
+    public async Task UpdateRegistrationScoreAsync(string studentId,string courseId, decimal practiceScore, decimal processScore, decimal finalScore, decimal totalScore)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :practiceScore, DIEMQT = :processScore, DIEMCK = :finalScore, DIEMTK = :totalScore WHERE MASV = :studentId and MAMM = :courseId";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("practiceScore", practiceScore));
+                cmd.Parameters.Add(new OracleParameter("processScore", processScore));
+                cmd.Parameters.Add(new OracleParameter("finalScore", finalScore));
+                cmd.Parameters.Add(new OracleParameter("totalScore", totalScore));
+                cmd.Parameters.Add(new OracleParameter("studentId", studentId));
+                cmd.Parameters.Add(new OracleParameter("courseId", courseId));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
 }

@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.TCHC"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.TCHC.EmployeesTCHCView"
+             x:DataType="vm:EmployeesTCHCViewModel"
+			 x:Name="root">
+
+	<UserControl.DataContext>
+		<vm:EmployeesTCHCViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20" RowDefinitions="Auto,*">
+		<StackPanel>
+			<Grid ColumnDefinitions="*,*">
+		<TextBlock Grid.Column="0" Text="Employees" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+			</Grid>
+			</StackPanel>
+		<DataGrid ItemsSource="{Binding Employees}" AutoGenerateColumns="False" Grid.Row="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Employee ID" Binding="{Binding EmployeeID}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Gender" Binding="{Binding Gender}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Birth Date" Binding="{Binding BirthDate}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Salary" Binding="{Binding Salary}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Allowance" Binding="{Binding Allowance}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Phone" Binding="{Binding Phone}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Role" Binding="{Binding Role}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Department" Binding="{Binding Department}" IsReadOnly="True"/>
+				<DataGridTemplateColumn Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Content="Edit"
+									Command="{Binding DataContext.EditCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

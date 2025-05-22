@@ -3,6 +3,40 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.PKT.RegistrationsPKTView">
-	Welcome to RegistrationsPKT!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PKT"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.PKT.RegistrationsPKTView"
+             x:DataType="vm:RegistrationsPKTViewModel"
+			 x:Name="root">
+
+	<UserControl.DataContext>
+		<vm:RegistrationsPKTViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20" RowDefinitions="Auto,*">
+		<StackPanel>
+			<Grid ColumnDefinitions="*,*">
+				<TextBlock Grid.Column="0" Text="Registrations" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+			</Grid> 
+		</StackPanel>
+		<DataGrid ItemsSource="{Binding Registrations}" AutoGenerateColumns="False" Grid.Row="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Student ID" Binding="{Binding StudentID}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Course ID" Binding="{Binding CourseID}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Practice Score" Binding="{Binding PracticeScore}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Process Score" Binding="{Binding ProcessScore}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Final Score" Binding="{Binding FinalScore}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Total Score" Binding="{Binding TotalScore}" IsReadOnly="False"/>
+				<DataGridTemplateColumn Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<Button Content="Edit"
+									Command="{Binding DataContext.EditCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
 </UserControl>
