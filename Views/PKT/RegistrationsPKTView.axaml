@@ -2,7 +2,106 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.PKT.RegistrationsPKTView">
-	Welcome to RegistrationsPKT!
+             xmlns:vm="using:AvaloniaPdbAccounts.ViewModels.PKT"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" 
+             d:DesignHeight="600"
+             x:Class="AvaloniaPdbAccounts.Views.PKT.RegistrationsPKTView"
+             x:DataType="vm:RegistrationsPKTViewModel">
+
+    <Design.DataContext>
+        <vm:RegistrationsPKTViewModel/>
+    </Design.DataContext>
+
+    <Grid Margin="10">
+        <!-- Định nghĩa các Row, nhớ là giữa các giá trị cách nhau bằng dấu ';' -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Quản lý Đăng ký Học phần - Phòng Kế Toán" 
+                   FontSize="18" FontWeight="Bold" Margin="0,0,0,10"/>
+
+        <!-- Search and Refresh -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+            <TextBox Width="300" Watermark="Tìm kiếm theo MSSV, tên SV hoặc môn học..." Text="{Binding SearchText}"/>
+            <Button Content="Tìm kiếm" Command="{Binding SearchCommand}"/>
+            <Button Content="Làm mới" Command="{Binding LoadRegistrationsCommand}"/>
+        </StackPanel>
+
+        <!-- Data Grid -->
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+    <StackPanel>
+        <!-- Tiêu đề cột -->
+        <Grid Background="#DDD" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="MSSV" Grid.Column="0" FontWeight="Bold"/>
+            <TextBlock Text="Họ tên" Grid.Column="1" FontWeight="Bold"/>
+            <TextBlock Text="Mã môn" Grid.Column="2" FontWeight="Bold"/>
+            <TextBlock Text="Tên môn học" Grid.Column="3" FontWeight="Bold"/>
+            <TextBlock Text="Điểm TH" Grid.Column="4" FontWeight="Bold"/>
+            <TextBlock Text="Điểm QT" Grid.Column="5" FontWeight="Bold"/>
+            <TextBlock Text="Điểm CK" Grid.Column="6" FontWeight="Bold"/>
+            <TextBlock Text="Điểm TK" Grid.Column="7" FontWeight="Bold"/>
+        </Grid>
+
+        <!-- Danh sách -->
+        
+        <ItemsControl ItemsSource="{Binding Registrations}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="{Binding MaSV}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding HoTenSV}" Grid.Column="1"/>
+                        <TextBlock Text="{Binding MaMM}" Grid.Column="2"/>
+                        <TextBlock Text="{Binding TenMonHoc}" Grid.Column="3"/>
+
+                        <!-- Các điểm có thể sửa được -->
+                        <TextBox Text="{Binding DiemTH, Mode=TwoWay}" Grid.Column="4" HorizontalAlignment="Center"/>
+                        <TextBox Text="{Binding DiemQT, Mode=TwoWay}" Grid.Column="5" HorizontalAlignment="Center"/>
+                        <TextBox Text="{Binding DiemCK, Mode=TwoWay}" Grid.Column="6" HorizontalAlignment="Center"/>
+
+                        <!-- Điểm TK readonly -->
+                        <TextBlock Text="{Binding DiemTK}" Grid.Column="7" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+
+    </StackPanel>
+</ScrollViewer>
+
+
+        <!-- Action Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+        <Button Content="Cập nhật điểm" Command="{Binding UpdateScoresCommand}" Width="120"/>
+        </StackPanel>
+
+        <!-- Loading Indicator -->
+        <ProgressBar Grid.Row="0" Grid.RowSpan="4" IsIndeterminate="True" IsVisible="{Binding IsLoading}" Height="5" VerticalAlignment="Top"/>
+    </Grid>
 </UserControl>

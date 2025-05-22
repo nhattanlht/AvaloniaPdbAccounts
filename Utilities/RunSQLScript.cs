@@ -26,13 +26,14 @@ public static class RunSQLScriptUtility
 {
     public static void RunAllSql()
     {
-        // if (CheckIfDatabaseInitialized())
-        // {
-        //    Console.WriteLine("✅ Database already initialized. Skipping script execution.");
-        //    return;
-        // }
+        if (CheckIfDatabaseInitialized())
+        {
+           Console.WriteLine("✅ Database already initialized. Skipping script execution.");
+           return;
+        }
         RunSqlScript("init_db.sql");
         RunSqlScript("database.sql");
+        // RunSqlScript("dangky.sql");
 
         // RunSqlScript("sinhvien.sql");
 

@@ -136,7 +136,7 @@ CREATE TABLE MOMON (
 -- Bảng DANGKY
 CREATE TABLE DANGKY (
     MASV VARCHAR2(20),
-    MAMM VARCHAR2(10),
+    MAMM VARCHAR2(20),
     DIEMTH NUMBER,
     DIEMQT NUMBER,
     DIEMCK NUMBER,
@@ -930,6 +930,12 @@ Insert into "ADMINPDB"."SINHVIEN" (MASV,HOTEN,PHAI,NGSINH,DCHI,DT,KHOA,TINHTRANG
 Insert into "ADMINPDB"."SINHVIEN" (MASV,HOTEN,PHAI,NGSINH,DCHI,DT,KHOA,TINHTRANG) values ('20A715898','Vũ Gia Vy','1',to_date('07/01/03','DD/MM/RR'),'TP. Hà Nội','0908154931','SINH','Bảo lưu kết quả học tập');
 Insert into "ADMINPDB"."SINHVIEN" (MASV,HOTEN,PHAI,NGSINH,DCHI,DT,KHOA,TINHTRANG) values ('20A350280','Trần Thị An','1',to_date('12/07/01','DD/MM/RR'),'TP. Vũng Tàu','0659024405','KHKT','Đã thôi học');
 
+-- DANGKY
+
+
+
+INSERT INTO DANGKY(MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES('20A864352','MTH00003_1_2025', 3, 2, 5, 10 );
+INSERT INTO DANGKY(MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES('20A536166','MTH00003_2_2024', 3, 2, 5, 10 );
 -- ---------------------------------------------------------
 -- Tạo role
 -- ---------------------------------------------------------
