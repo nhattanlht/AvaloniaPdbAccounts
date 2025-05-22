@@ -1,23 +1,25 @@
-
---chuyển về CDB$ROOT trước khi xóa PDB
+-- ---------------------------------------------------------
+-- Quản lý PDB
+-- ---------------------------------------------------------
+-- Chuyển về CDB$ROOT trước khi xóa PDB
 ALTER SESSION SET CONTAINER = CDB$ROOT;
 
--- Xóa và tạo lại PDB nếu có
+-- Xóa PDB nếu có
 BEGIN
-  EXECUTE IMMEDIATE 'ALTER PLUGGABLE DATABASE PDB CLOSE IMMEDIATE';
+    EXECUTE IMMEDIATE 'ALTER PLUGGABLE DATABASE PDB CLOSE IMMEDIATE';
 EXCEPTION
-  WHEN OTHERS THEN NULL; -- Bỏ qua nếu PDB không tồn tại
+    WHEN OTHERS THEN NULL; -- Bỏ qua nếu PDB không tồn tại
 END;
 /
 
 BEGIN
-  EXECUTE IMMEDIATE 'DROP PLUGGABLE DATABASE PDB INCLUDING DATAFILES';
+    EXECUTE IMMEDIATE 'DROP PLUGGABLE DATABASE PDB INCLUDING DATAFILES';
 EXCEPTION
-  WHEN OTHERS THEN NULL; -- Bỏ qua nếu PDB không tồn tại
+    WHEN OTHERS THEN NULL; -- Bỏ qua nếu PDB không tồn tại
 END;
 /
 
---Tạo PDB
+-- Tạo PDB
 CREATE PLUGGABLE DATABASE PDB
 ADMIN USER AdminPdb IDENTIFIED BY 123
 ROLES = (DBA)
@@ -57,53 +59,52 @@ ALTER USER AdminPdb QUOTA UNLIMITED ON SYSTEM;
 -- Cấp quyền cho AdminPdb
 GRANT EXECUTE ON DBMS_FGA TO AdminPdb;
 GRANT SELECT ON DBA_FGA_AUDIT_TRAIL TO AdminPdb;
--- CREATE OR REPLACE DIRECTORY DATA_DIR AS '/Users/jakepham/Documents/SourceCode/new/AvaloniaPdbAccounts/Script';
--- GRANT READ, WRITE ON DIRECTORY DATA_DIR TO AdminPdb;
 
-
---Đăng nhập PDB với tài khoản AdminPdb
+-- Đăng nhập PDB với tài khoản AdminPdb
 conn AdminPdb/123@localhost:1521/PDB;
+
+-- Xóa các đối tượng nếu tồn tại
 -- Xóa View
 BEGIN
-  EXECUTE IMMEDIATE 'DROP VIEW vw_employee';
+    EXECUTE IMMEDIATE 'DROP VIEW vw_employee';
 EXCEPTION
-  WHEN OTHERS THEN
-    IF SQLCODE != -942 THEN -- -942: view không tồn tại
-      RAISE;
-    END IF;
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN -- -942: view không tồn tại
+            RAISE;
+        END IF;
 END;
 /
 
 -- Xóa Procedure
 BEGIN
-  EXECUTE IMMEDIATE 'DROP PROCEDURE sp_raise_salary';
+    EXECUTE IMMEDIATE 'DROP PROCEDURE sp_raise_salary';
 EXCEPTION
-  WHEN OTHERS THEN
-    IF SQLCODE != -4043 THEN -- -4043: object does not exist
-      RAISE;
-    END IF;
+    WHEN OTHERS THEN
+        IF SQLCODE != -4043 THEN -- -4043: object does not exist
+            RAISE;
+        END IF;
 END;
 /
 
 -- Xóa Function
 BEGIN
-  EXECUTE IMMEDIATE 'DROP FUNCTION fn_get_salary';
+    EXECUTE IMMEDIATE 'DROP FUNCTION fn_get_salary';
 EXCEPTION
-  WHEN OTHERS THEN
-    IF SQLCODE != -4043 THEN
-      RAISE;
-    END IF;
+    WHEN OTHERS THEN
+        IF SQLCODE != -4043 THEN
+            RAISE;
+        END IF;
 END;
 /
 
 -- Xóa Table
 BEGIN
-  EXECUTE IMMEDIATE 'DROP TABLE employee CASCADE CONSTRAINTS';
+    EXECUTE IMMEDIATE 'DROP TABLE employee CASCADE CONSTRAINTS';
 EXCEPTION
-  WHEN OTHERS THEN
-    IF SQLCODE != -942 THEN
-      RAISE;
-    END IF;
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN
+            RAISE;
+        END IF;
 END;
 /
 
@@ -175,9 +176,9 @@ BEGIN
 END;
 /
 
-
-
--- Tạo role KETOAN
+-- ---------------------------------------------------------
+-- Tạo role
+-- ---------------------------------------------------------
 CREATE ROLE KETOAN;
 CREATE ROLE QUANLY;
 CREATE ROLE HR;
@@ -191,9 +192,141 @@ CREATE ROLE NVCTSV;
 CREATE ROLE TRGDV;
 CREATE ROLE SV;
 
+-- ---------------------------------------------------------
+-- Tạo tài khoản cho nhân viên và sinh viên
+-- ---------------------------------------------------------
 
+DECLARE
+    v_count NUMBER; -- Biến đếm để kiểm tra sự tồn tại của user
+BEGIN
+    -- Tạo tài khoản cho nhân viên
+    FOR nv IN (SELECT MANV FROM NHANVIEN) LOOP
+        -- Kiểm tra xem username (mã nhân viên) đã tồn tại chưa
+        SELECT COUNT(*) INTO v_count 
+        FROM all_users 
+        WHERE username = nv.MANV;
+
+        IF v_count = 0 THEN
+            -- Tạo user với password là 123
+            EXECUTE IMMEDIATE 'CREATE USER "' || nv.MANV || '" IDENTIFIED BY 123';
+            -- Gán quyền kết nối
+            EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO "' || nv.MANV || '"';
+            -- Gán quyền đọc trên các bảng cần thiết
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.NHANVIEN TO "' || nv.MANV || '"';
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.DONVI TO "' || nv.MANV || '"';
+            DBMS_OUTPUT.PUT_LINE('Đã tạo tài khoản cho nhân viên ' || nv.MANV);
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Tài khoản ' || nv.MANV || ' đã tồn tại');
+        END IF;
+    END LOOP;
+
+    -- Tạo tài khoản cho sinh viên
+    FOR sv IN (SELECT MASV FROM SINHVIEN) LOOP
+        -- Kiểm tra xem username (mã sinh viên) đã tồn tại chưa
+        SELECT COUNT(*) INTO v_count 
+        FROM all_users 
+        WHERE username = sv.MASV;
+
+        IF v_count = 0 THEN
+            -- Tạo user với password là 123
+            EXECUTE IMMEDIATE 'CREATE USER "' || sv.MASV || '" IDENTIFIED BY 123';
+            -- Gán quyền kết nối
+            EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO "' || sv.MASV || '"';
+            -- Gán quyền đọc trên các bảng cần thiết
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.SINHVIEN TO "' || sv.MASV || '"';
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.DANGKY TO "' || sv.MASV || '"';
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.MOMON TO "' || sv.MASV || '"';
+            EXECUTE IMMEDIATE 'GRANT SELECT ON AdminPdb.HOCPHAN TO "' || sv.MASV || '"';
+            DBMS_OUTPUT.PUT_LINE('Đã tạo tài khoản cho sinh viên ' || sv.MASV);
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Tài khoản ' || sv.MASV || ' đã tồn tại');
+        END IF;
+    END LOOP;
+END;
+/
+
+-- ---------------------------------------------------------
+-- Gán role theo vai trò trong bảng NHANVIEN
+-- ---------------------------------------------------------
+DECLARE
+    v_count NUMBER; -- Biến đếm để kiểm tra sự tồn tại của user
+BEGIN
+    -- Duyệt qua tất cả nhân viên trong bảng NHANVIEN
+    FOR nv IN (SELECT MANV, DT, VAITRO FROM NHANVIEN) LOOP
+        -- Kiểm tra xem user (số điện thoại) có tồn tại không
+        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = nv.DT;
+
+        IF v_count > 0 THEN
+            -- Gán role tương ứng với VAITRO
+            CASE nv.VAITRO
+                WHEN 'NVCB' THEN
+                    EXECUTE IMMEDIATE 'GRANT NVCB TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCB cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'GV' THEN
+                    EXECUTE IMMEDIATE 'GRANT GV TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role GV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'NVPDT' THEN
+                    EXECUTE IMMEDIATE 'GRANT NVPDT TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPDT cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'NVPKT' THEN
+                    EXECUTE IMMEDIATE 'GRANT NVPKT TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVPKT cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'NVTCHC' THEN
+                    EXECUTE IMMEDIATE 'GRANT NVTCHC TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVTCHC cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'NVCTSV' THEN
+                    EXECUTE IMMEDIATE 'GRANT NVCTSV TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NVCTSV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                WHEN 'TRGDV' THEN
+                    EXECUTE IMMEDIATE 'GRANT TRGDV TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role TRGDV cho ' || nv.MANV || ' (' || nv.DT || ')');
+                ELSE
+                    -- Mặc định gán role NHANVIEN nếu không khớp với vai trò nào
+                    EXECUTE IMMEDIATE 'GRANT NHANVIEN TO "' || nv.DT || '"';
+                    DBMS_OUTPUT.PUT_LINE('Đã gán role NHANVIEN (mặc định) cho ' || nv.MANV || ' (' || nv.DT || ')');
+            END CASE;
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('User ' || nv.DT || ' không tồn tại, bỏ qua nhân viên ' || nv.MANV);
+        END IF;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Hoàn thành gán role cho tất cả nhân viên');
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Lỗi: ' || SQLERRM);
+END;
+/
+
+-- ---------------------------------------------------------
+-- Gán role SV cho tất cả sinh viên
+-- ---------------------------------------------------------
+DECLARE
+    v_count NUMBER; -- Biến đếm để kiểm tra sự tồn tại của user
+BEGIN
+    -- Duyệt qua tất cả sinh viên trong bảng SINHVIEN
+    FOR sv IN (SELECT MASV, DT FROM SINHVIEN) LOOP
+        -- Kiểm tra xem user (số điện thoại) có tồn tại không
+        SELECT COUNT(*) INTO v_count FROM all_users WHERE username = sv.DT;
+
+        IF v_count > 0 THEN
+            -- Gán role SV
+            EXECUTE IMMEDIATE 'GRANT SV TO "' || sv.DT || '"';
+            DBMS_OUTPUT.PUT_LINE('Đã gán role SV cho sinh viên ' || sv.MASV || ' (' || sv.DT || ')');
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('User ' || sv.DT || ' không tồn tại, bỏ qua sinh viên ' || sv.MASV);
+        END IF;
+    END LOOP;
+
+    DBMS_OUTPUT.PUT_LINE('Hoàn thành gán role SV cho tất cả sinh viên');
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Lỗi khi gán role SV: ' || SQLERRM);
+END;
+/
+
+-- Tạo user và gán role
 CREATE USER nam IDENTIFIED BY 123;
 GRANT NVPKT TO nam;
-Grant connect to nam;
+GRANT CONNECT TO nam;
 
 QUIT;
