@@ -33,6 +33,7 @@ public static class RunSQLScriptUtility
         }
         RunSqlScript("script.sql");
         RunSqlScript("database.sql");
+
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution
@@ -64,7 +65,7 @@ public static class RunSQLScriptUtility
             {
                 writer.WriteLine("SET HEADING OFF");
                 writer.WriteLine("SET FEEDBACK OFF");
-                writer.WriteLine("SELECT COUNT(*) FROM v$pdbs WHERE name = 'PDB';");
+                writer.WriteLine("SELECT COUNT(*) FROM v$pdbs WHERE open_mode = 'READ WRITE';");
                 writer.WriteLine("EXIT");
             }
 
