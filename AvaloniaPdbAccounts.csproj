@@ -35,6 +35,21 @@
     <Compile Update="MainWindow.axaml.cs">
       <DependentUpon>MainWindow.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PDT\CoursesPDTView.axaml.cs">
+      <DependentUpon>CoursesPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\EmployeesPDTView.axaml.cs">
+      <DependentUpon>EmployeesPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\RegistrationsPDTView.axaml.cs">
+      <DependentUpon>RegistrationsPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\StudentsPDTView.axaml.cs">
+      <DependentUpon>StudentsPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\PDTView.axaml.cs">
+      <DependentUpon>PDTView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\PKT\StudentsPKTView.axaml.cs">
       <DependentUpon>StudentsPKTView.axaml</DependentUpon>
     </Compile>

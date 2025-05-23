@@ -4,7 +4,7 @@ namespace AvaloniaPdbAccounts.Models
 {
     public class Employee
     {
-        public string? MANV { get; set; }
+        public string? MANLD { get; set; }
         public string? Role { get; set; }
     }
 

@@ -58,6 +58,13 @@ namespace AvaloniaPdbAccounts.Views
                     this.Close();
                 }
                 else if (DatabaseService.CurrentRoles != null &&
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPDT", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var pdtWindow = new PDT.PDTView();
+                    pdtWindow.Show();
+                    this.Close();
+                }
+                else if (DatabaseService.CurrentRoles != null &&
                 DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "SV", StringComparison.OrdinalIgnoreCase)))
                 {
                     var svWindow = new SV.SVView();

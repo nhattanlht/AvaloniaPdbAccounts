@@ -206,7 +206,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
     {
         await conn.OpenAsync();
         
-        string query = "SELECT MANV, VAITRO FROM NHANVIEN";
+        string query = "SELECT MANLD, VAITRO FROM NHANVIEN";
         
         using (var cmd = new OracleCommand(query, conn))
         using (var reader = await cmd.ExecuteReaderAsync())
@@ -215,7 +215,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
             {
                 employees.Add(new Employee
                 {
-                    MANV = reader.GetString(0),
+                    MANLD = reader.GetString(0),
                     Role = reader.GetString(1)
                 });
             }
@@ -252,7 +252,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         
         return students;
     }
-
+    //Xử lí cho trang employee
     public async Task<List<EmployeeModel>> GetEmployeeModelDataAsync()
     {
         var employees = new List<EmployeeModel>();
@@ -261,7 +261,40 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         {
             await conn.OpenAsync();
 
-            string query = "SELECT MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN";
+            string query = "SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN_NVCB";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    employees.Add(new EmployeeModel
+                    {
+                        EmployeeID = reader.GetString(0),
+                        FullName = reader.GetString(1),
+                        Gender = reader.GetString(2),
+                        BirthDate = reader.GetDateTime(3),
+                        Salary = reader.GetDecimal(4),
+                        Allowance = reader.GetDecimal(5),
+                        Phone = reader.GetString(6),
+                        Role = reader.GetString(7),
+                        Department = reader.GetString(8),
+                    });
+                }
+            }
+        }
+
+        return employees;
+    }
+    public async Task<List<EmployeeModel>> GetManagedEmployeeAsync()
+    {
+        var employees = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN_TRGDV";
 
             using (var cmd = new OracleCommand(query, conn))
             using (var reader = await cmd.ExecuteReaderAsync())
@@ -292,7 +325,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         {
             await conn.OpenAsync();
 
-            string query = "UPDATE adminpdb.NHANVIEN SET DT = :phone WHERE MANV = :id";
+            string query = "UPDATE adminpdb.NHANVIEN_NVCB SET DT = :phone WHERE MANLD = :id";
 
             using (var cmd = new OracleCommand(query, conn))
             {
@@ -303,6 +336,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
             }
         }
     }
+    //Xử lí cho trang registration
     public async Task<List<RegistrationModel>> GetRegistrationModelDataAsync()
     {
         var registrations = new List<RegistrationModel>();
@@ -349,6 +383,67 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
                 cmd.Parameters.Add(new OracleParameter("totalScore", totalScore));
                 cmd.Parameters.Add(new OracleParameter("studentId", studentId));
                 cmd.Parameters.Add(new OracleParameter("courseId", courseId));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+    //Xử lí cho trang course
+    public async Task<List<CourseOfferingModel>> GetCourseOfferingNVPDTAsync()
+    {
+        var courses = new List<CourseOfferingModel>();
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "SELECT MAMM, MAHP, MAGV, HK, NAM FROM adminpdb.MOMON_PDT";
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    courses.Add(new CourseOfferingModel
+                    {
+                        OfferingID = reader.GetString(0),
+                        ModuleID = reader.GetString(1),
+                        InstructorID = reader.GetString(2),
+                        Semester = reader.GetInt32(3),
+                        Year = reader.GetInt32(4),
+                    });
+                }
+            }
+        }
+        return courses;
+    }
+    public async Task UpdateCourseOfferingNVPDTAsync(CourseOfferingModel course)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "UPDATE adminpdb.MOMON_PDT SET MAHP  = :moduleId, MAGV = :instructorId, HK = :semester, NAM = :year WHERE MAMM = :offeringId";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("offeringId", course.OfferingID));
+                cmd.Parameters.Add(new OracleParameter("moduleId", course.ModuleID));
+                cmd.Parameters.Add(new OracleParameter("instructorId", course.InstructorID));
+                cmd.Parameters.Add(new OracleParameter("semester", course.Semester));
+                cmd.Parameters.Add(new OracleParameter("year", course.Year));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+
+    public async Task DeleteCourseOfferingNVPDTAsync(string offeringId)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "DELETE FROM adminpdb.MOMON_PDT WHERE MASV = :offeringId";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("offeringId", offeringId));
 
                 await cmd.ExecuteNonQueryAsync();
             }

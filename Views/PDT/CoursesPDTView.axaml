@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PDT"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.PDT.CoursesPDTView"
+             x:DataType="vm:CoursesPDTViewModel"
+			 x:Name="root">
+
+	<UserControl.DataContext>
+		<vm:CoursesPDTViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20" RowDefinitions="Auto,*">
+		<StackPanel>
+			<Grid ColumnDefinitions="*,*">
+				<TextBlock Grid.Column="0" Text="Courses" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+			</Grid>
+		</StackPanel>
+		<DataGrid ItemsSource="{Binding Courses}" AutoGenerateColumns="False" Grid.Row="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Offering ID" Binding="{Binding OfferingID}"/>
+				<DataGridTextColumn Header="Module ID" Binding="{Binding ModuleID}"/>
+				<DataGridTextColumn Header="Instructor ID" Binding="{Binding InstructorID}"/>
+				<DataGridTextColumn Header="Semester" Binding="{Binding Semester}"/>
+				<DataGridTextColumn Header="Year" Binding="{Binding Year}"/>
+				<DataGridTemplateColumn Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<Button Content="Edit"
+										Command="{Binding DataContext.EditCommand, ElementName=root}"
+										CommandParameter="{Binding}" />
+
+								<Button Content="Delete"
+										Command="{Binding DataContext.DeleteCommand, ElementName=root}"
+										CommandParameter="{Binding}" />
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>
