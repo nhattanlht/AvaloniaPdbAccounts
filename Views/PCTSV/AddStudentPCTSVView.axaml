@@ -1,0 +1,58 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PCTSV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.PCTSV.AddStudentPCTSVView"
+             x:DataType="vm:AddStudentPCTSVViewModel"
+			 x:Name="root">
+
+	        <UserControl.DataContext>
+		        <vm:AddStudentPCTSVViewModel />
+	        </UserControl.DataContext>
+
+	        <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"  RowSpacing="8">
+            <TextBlock Text="Add New Employee" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Full Name:" Width="100"/>
+                <TextBox Width="200" Text="{Binding NewStudent.NAME}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Gender (0/1):" Width="100"/>
+                <TextBox Width="50" Text="{Binding NewStudent.GENDER}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Birth Date:" Width="170"/>
+              <DatePicker SelectedDate="{Binding UiBirthday, Mode=TwoWay}" Width="200"/>
+
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Address:" Width="100"/>
+                <TextBox Width="300" Text="{Binding NewStudent.ADDRESS}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Phone:" Width="100"/>
+                <TextBox Width="150" Text="{Binding NewStudent.PHONE}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="6" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Department:" Width="100"/>
+                <TextBox Width="100" Text="{Binding NewStudent.DEPARTMENT }" />
+            </StackPanel>
+
+           
+
+            <Button Grid.Row="8" Content="➕ Add Student" Width="150"
+                    HorizontalAlignment="Left"
+                    Command="{Binding AddCommand}" />
+        </Grid>
+</UserControl>

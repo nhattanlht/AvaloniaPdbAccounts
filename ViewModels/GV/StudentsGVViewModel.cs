@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AvaloniaPdbAccounts.ViewModels.GV
 {
-    public partial class StudentsGVViewModel : ViewModelBase
+    public partial class StudentsPCTSVViewModel : ViewModelBase
     {
         public string Test { get; set; } = "Students";
     }

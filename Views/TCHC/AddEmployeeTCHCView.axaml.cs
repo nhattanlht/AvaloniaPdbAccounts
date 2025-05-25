@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace AvaloniaPdbAccounts.Views.TCHC;
 
-public partial class RegistrationsTCHCView : UserControl
+public partial class AddEmployeeTCHCView : UserControl
 {
-    public RegistrationsTCHCView()
+    public AddEmployeeTCHCView()
     {
         InitializeComponent();
     }

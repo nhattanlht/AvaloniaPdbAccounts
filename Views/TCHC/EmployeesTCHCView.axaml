@@ -25,18 +25,25 @@
 				<DataGridTextColumn Header="Full Name" Binding="{Binding FullName}" IsReadOnly="True"/>
 				<DataGridTextColumn Header="Gender" Binding="{Binding Gender}" IsReadOnly="True"/>
 				<DataGridTextColumn Header="Birth Date" Binding="{Binding BirthDate}" IsReadOnly="True"/>
-				<DataGridTextColumn Header="Salary" Binding="{Binding Salary}" IsReadOnly="True"/>
-				<DataGridTextColumn Header="Allowance" Binding="{Binding Allowance}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Salary" Binding="{Binding Salary}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Allowance" Binding="{Binding Allowance}" IsReadOnly="False"/>
 				<DataGridTextColumn Header="Phone" Binding="{Binding Phone}" IsReadOnly="False"/>
 				<DataGridTextColumn Header="Role" Binding="{Binding Role}" IsReadOnly="True"/>
-				<DataGridTextColumn Header="Department" Binding="{Binding Department}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Department" Binding="{Binding Department}" IsReadOnly="False"/>
 				<DataGridTemplateColumn Header="Actions">
 					<DataGridTemplateColumn.CellTemplate>
 						<DataTemplate>
+						<StackPanel Orientation="Horizontal" Spacing="8">
 							<Button Content="Edit"
 									Command="{Binding DataContext.EditCommand, ElementName=root}"
 									CommandParameter="{Binding}" />
-						</DataTemplate>
+							<Button Content="Delete"
+									Foreground="White"
+									Background="Red"
+									Command="{Binding DataContext.DeleteCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+						</StackPanel>
+					</DataTemplate>
 					</DataGridTemplateColumn.CellTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>

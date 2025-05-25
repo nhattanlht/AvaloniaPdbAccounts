@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj": {}
+    "D:\\Nam moi\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj": {
+    "D:\\Nam moi\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
+        "projectUniqueName": "D:\\Nam moi\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
         "projectName": "AvaloniaPdbAccounts",
-        "projectPath": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
-        "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ADMIN\\source\\repos\\nhattanlht\\AvaloniaPdbAccounts\\obj\\",
+        "projectPath": "D:\\Nam moi\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
+        "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
+        "outputPath": "D:\\Nam moi\\AvaloniaPdbAccounts\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -85,6 +85,10 @@
             "CommunityToolkit.Mvvm": {
               "target": "Package",
               "version": "[8.4.0, )"
+            },
+            "MessageBox.Avalonia": {
+              "target": "Package",
+              "version": "[3.2.0, )"
             },
             "Microsoft.Extensions.Configuration": {
               "target": "Package",

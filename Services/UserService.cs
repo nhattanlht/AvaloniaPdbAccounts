@@ -261,7 +261,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         {
             await conn.OpenAsync();
 
-            string query = "SELECT MANV, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN";
+            string query = "SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN";
 
             using (var cmd = new OracleCommand(query, conn))
             using (var reader = await cmd.ExecuteReaderAsync())
@@ -286,13 +286,258 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
 
         return employees;
     }
+    public async Task<List<StudentModel>> GetStudentModelDataAsync()
+    {
+        var students = new List<StudentModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = "SELECT MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA, TINHTRANG FROM ADMINPDB.SINHVIEN";
+
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    students.Add(new StudentModel
+                    {
+                        ID = reader.GetString(0),          
+                        NAME = reader.GetString(1),        
+                        GENDER = reader.GetString(2),       
+                        BIRTHDAY = reader.GetDateTime(3),   
+                        ADDRESS = reader.GetString(4),      
+                        PHONE = reader.GetString(5),        
+                        DEPARTMENT = reader.GetString(6),   
+                        STATUS = reader.IsDBNull(7) ? null : reader.GetString(7)       
+                    });
+                }
+            }
+        }
+
+        return students;
+    }
+
+    public async Task UpdateStudentAsync( string id, string address,string phone, string status )
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = @"UPDATE adminpdb.SINHVIEN
+                         SET DCHI = :address, DT = :phone, 
+                           TINHTRANG=:status
+                         WHERE MASV = :id";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("address", address));
+                cmd.Parameters.Add(new OracleParameter("phone", phone));
+                cmd.Parameters.Add(new OracleParameter("status", status));
+                cmd.Parameters.Add(new OracleParameter("id", id));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+
+
+
+    public async Task<bool> DeleteEmployeeAsync(string employeeId)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            using (var transaction = conn.BeginTransaction())
+            {
+                try
+                {
+                    var deleteEmpCmd = new OracleCommand("DELETE FROM adminpdb.NHANVIEN WHERE MANLD = :id", conn)
+                    {
+                        Transaction = transaction
+                    };
+                    deleteEmpCmd.Parameters.Add(new OracleParameter("id", employeeId));
+
+                    int rows = await deleteEmpCmd.ExecuteNonQueryAsync();
+
+                    transaction.Commit();
+                    return rows > 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine(" DeleteEmployeeAsync ERROR: " + ex.Message);
+                    return false;
+                }
+            }
+        }
+    }
+    public async Task<bool> DeleteStudentAsync(string employeeId)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            using (var transaction = conn.BeginTransaction())
+            {
+                try
+                {
+                    var deleteEmpCmd = new OracleCommand("DELETE FROM adminpdb.SINHVIEN WHERE MASV = :id", conn)
+                    {
+                        Transaction = transaction
+                    };
+                    deleteEmpCmd.Parameters.Add(new OracleParameter("id", employeeId));
+
+                    int rows = await deleteEmpCmd.ExecuteNonQueryAsync();
+
+                    if (rows == 0)
+                    {
+                     
+                       
+                        Console.WriteLine("Error do bị chặn bởi chính sách VPD ( Tinh trang must NULL");
+                    }
+
+                    transaction.Commit();
+                    return rows > 0;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    Console.WriteLine(" DeleteStudentAsync ERROR: " + ex.Message);
+                    return false;
+                }
+            }
+        }
+    }
+
+    public async Task<List<EmployeeModel>> PersonalEmployeeAsync()
+    {
+        var result = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            var cmd = new OracleCommand(@"
+            SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO,MADV
+            FROM AdminPdb.NHANVIEN_NVCB", conn); 
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    result.Add(new EmployeeModel
+                    {
+                        EmployeeID = reader.GetString(0),
+                        FullName = reader.GetString(1),
+                        Gender = reader.GetString(2),
+                        BirthDate = reader.GetDateTime(3),
+                        Salary = reader.GetDecimal(4),
+                        Allowance = reader.GetDecimal(5),
+                        Phone = reader.GetString(6),
+                        Role = reader.GetString(7),
+                        Department = reader.GetString(8)
+                    });
+                }
+            }
+        }
+
+        return result;
+    }
+
+
+
+    public async Task UpdateEmployeeAsync(string employeeId, decimal salary, decimal allowance, string phone, string departmentId)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            string query = @"UPDATE adminpdb.NHANVIEN 
+                         SET LUONG = :salary, PHUCAP = :allowance, 
+                             DT = :phone, MADV = :departmentId
+                         WHERE MANLD = :employeeId";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("salary", salary));
+                cmd.Parameters.Add(new OracleParameter("allowance", allowance));
+                cmd.Parameters.Add(new OracleParameter("phone", phone));
+                cmd.Parameters.Add(new OracleParameter("departmentId", departmentId));
+                cmd.Parameters.Add(new OracleParameter("employeeId", employeeId));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+    public async Task AddEmployeeAsync(EmployeeModel emp)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            var idCmd = new OracleCommand(
+              @"SELECT NVL(MAX(TO_NUMBER(SUBSTR(MANLD, 3))), 0)
+              FROM adminpdb.NHANVIEN
+              WHERE REGEXP_LIKE(SUBSTR(MANLD, 3), '^\d+$')", conn);
+
+            var scalar = await idCmd.ExecuteScalarAsync();
+            int maxId = Convert.ToInt32(scalar);
+            string newId = "NV" + (maxId+1).ToString("D5");
+            var cmd = new OracleCommand(@"
+            INSERT INTO adminpdb.NHANVIEN (MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV)
+            VALUES (:id, :name, :gender, :dob, :salary, :allowance, :phone, 'NV', :department)", conn);
+
+            cmd.Parameters.Add("id", OracleDbType.Varchar2).Value = newId; 
+            cmd.Parameters.Add("name", OracleDbType.Varchar2).Value = emp.FullName;   
+            cmd.Parameters.Add("gender", OracleDbType.Char).Value = emp.Gender;       
+            cmd.Parameters.Add("dob", OracleDbType.Date).Value = emp.BirthDate;       
+            cmd.Parameters.Add("salary", OracleDbType.Decimal).Value = emp.Salary;    
+            cmd.Parameters.Add("allowance", OracleDbType.Decimal).Value = emp.Allowance;
+            cmd.Parameters.Add("phone", OracleDbType.Decimal).Value = emp.Phone;
+            cmd.Parameters.Add("department", OracleDbType.Varchar2).Value = emp.Department; 
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
+    public async Task AddStudentAsync(StudentModel st)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            var idCmd = new OracleCommand(
+              @"SELECT NVL(MAX(TO_NUMBER(SUBSTR(MASV, 3))), 0)
+              FROM adminpdb.SINHVIEN
+              WHERE REGEXP_LIKE(SUBSTR(MASV, 3), '^\d+$')", conn);
+
+            var scalar = await idCmd.ExecuteScalarAsync();
+            int maxId = Convert.ToInt32(scalar);
+            string newId = "NV" + (maxId + 1).ToString("D5");
+            var cmd = new OracleCommand(@"
+            INSERT INTO adminpdb.SINHVIEN (MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA, TINHTRANG)
+            VALUES (:id, :name, :gender, :dob, :addr, :dt, :dp, NULL)", conn);
+
+            cmd.Parameters.Add("id", OracleDbType.Varchar2).Value = newId;
+            cmd.Parameters.Add("name", OracleDbType.Varchar2).Value = st.NAME;
+            cmd.Parameters.Add("gender", OracleDbType.Char).Value = st.GENDER;
+            cmd.Parameters.Add("dob", OracleDbType.Date).Value = st.BIRTHDAY;
+            cmd.Parameters.Add("addr", OracleDbType.Varchar2).Value = st.ADDRESS;
+            cmd.Parameters.Add("dt", OracleDbType.Varchar2).Value = st.PHONE;
+            cmd.Parameters.Add("dp", OracleDbType.Varchar2).Value = st.DEPARTMENT;
+
+            await cmd.ExecuteNonQueryAsync();
+        }
+    }
     public async Task UpdateEmployeePhoneNumberAsync(string employeeId, string newPhone)
     {
         using (var conn = new OracleConnection(_connectionString))
         {
             await conn.OpenAsync();
 
-            string query = "UPDATE adminpdb.NHANVIEN SET DT = :phone WHERE MANV = :id";
+            string query = "UPDATE adminpdb.NHANVIEN SET DT = :phone WHERE MANLD = :id";
 
             using (var cmd = new OracleCommand(query, conn))
             {

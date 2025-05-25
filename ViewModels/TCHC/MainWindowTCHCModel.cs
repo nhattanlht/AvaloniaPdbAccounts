@@ -16,19 +16,19 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
         [NotifyPropertyChangedFor(nameof(EmployeesButtonIsActive))]
         [NotifyPropertyChangedFor(nameof(StudentsButtonIsActive))]
         [NotifyPropertyChangedFor(nameof(CoursesButtonIsActive))]
-        [NotifyPropertyChangedFor(nameof(RegistrationsButtonIsActive))]
+        [NotifyPropertyChangedFor(nameof(AddEmployeeButtonIsActive))]
         private ViewModelBase _currentPage;
 
         public bool EmployeesButtonIsActive => CurrentPage == _employeesTCHC;
         public bool StudentsButtonIsActive => CurrentPage == _studentsTCHC;
         public bool CoursesButtonIsActive => CurrentPage == _coursesTCHC;
-        public bool RegistrationsButtonIsActive => CurrentPage == _registrationsTCHC;    
+        public bool AddEmployeeButtonIsActive => CurrentPage == _AddEmployeeTCHC;    
 
 
         private readonly EmployeesTCHCViewModel _employeesTCHC = new();
         private readonly StudentsTCHCViewModel _studentsTCHC = new();
         private readonly CoursesTCHCViewModel _coursesTCHC = new();
-        private readonly RegistrationsTCHCViewModel _registrationsTCHC = new();
+        private readonly AddEmployeeTCHCViewModel _AddEmployeeTCHC = new();
 
         public MainWindowTCHCModel()
         {
@@ -52,9 +52,9 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
             CurrentPage = _coursesTCHC;
         }
         [RelayCommand]
-        private void ShowRegistrationsPage()
+        private void ShowAddEmployeePage()
         {
-            CurrentPage = _registrationsTCHC;
+            CurrentPage = _AddEmployeeTCHC;
         }
     }
 }

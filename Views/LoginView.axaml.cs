@@ -78,6 +78,20 @@ namespace AvaloniaPdbAccounts.Views
                     tchcWindow.Show();
                     this.Close();
                 }
+                else if (DatabaseService.CurrentRoles != null &&
+              DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPCTSV", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var pctsvWindow = new PCTSV.PCTSVView();
+                    pctsvWindow.Show();
+                    this.Close();
+                }
+                else if (DatabaseService.CurrentRoles != null &&
+             DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVCB", StringComparison.OrdinalIgnoreCase)))
+                {
+                    var nvcbWindow = new NVCB.NVCBView();
+                    nvcbWindow.Show();
+                    this.Close();
+                }
             };
         }
 
