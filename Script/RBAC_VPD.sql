@@ -171,19 +171,6 @@ END;
 
 -- Apply VPD policies to SINHVIEN table
 BEGIN
-    -- Drop existing policies to avoid conflicts
-    DBMS_RLS.DROP_POLICY(
-        object_schema   => 'ADMINPDB',
-        object_name     => 'SINHVIEN',
-        policy_name     => 'SINHVIEN_SELECT_POLICY'
-    );
-    
-    DBMS_RLS.DROP_POLICY(
-        object_schema   => 'ADMINPDB',
-        object_name     => 'SINHVIEN',
-        policy_name     => 'SINHVIEN_MODIFY_POLICY'
-    );
-
     -- Policy for SELECT
     DBMS_RLS.ADD_POLICY(
         object_schema   => 'ADMINPDB',
