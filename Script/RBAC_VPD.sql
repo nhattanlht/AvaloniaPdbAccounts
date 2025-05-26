@@ -80,7 +80,8 @@ AUTHID CURRENT_USER AS
     v_predicate VARCHAR2(4000);
     v_student_count NUMBER;
 BEGIN
-    -- Check if user is a student
+    -- Check if user is a student (requires EXEMPT ACCESS POLICY to avoid recursive VPD trigger)
+    -- Assuming function runs with privileges to bypass VPD for this check
     SELECT COUNT(*) 
     INTO v_student_count 
     FROM ADMINPDB.SINHVIEN 
@@ -110,7 +111,7 @@ BEGIN
         -- GV can view SINHVIEN data for their department
         v_predicate := 'KHOA = (SELECT MADV FROM ADMINPDB.NHANVIEN WHERE MANLD = ''' || v_user || ''')';
     ELSE
-        -- Deny access for other users (including NV PĐT for SELECT, as not specified)
+        -- Deny access for other users (including NVPDT for SELECT, as not specified)
         v_predicate := '1=0';
     END IF;
 
@@ -129,7 +130,8 @@ AUTHID CURRENT_USER AS
     v_predicate VARCHAR2(4000);
     v_student_count NUMBER;
 BEGIN
-    -- Check if user is a student
+    -- Check if user is a student (requires EXEMPT ACCESS POLICY to avoid recursive VPD trigger)
+    -- Assuming function runs with privileges to bypass VPD for this check
     SELECT COUNT(*) 
     INTO v_student_count 
     FROM ADMINPDB.SINHVIEN 
@@ -156,7 +158,7 @@ BEGIN
         -- NV PCTSV can modify all SINHVIEN data, but TINHTRANG must be NULL
         v_predicate := 'TINHTRANG IS NULL';
     ELSIF v_role = 'NVPDT' THEN
-        -- NV PĐT can update TINHTRANG
+        -- NV PDT can update TINHTRANG
         v_predicate := '1=1';
     ELSE
         -- Deny modification for other users (including GV)
@@ -169,6 +171,19 @@ END;
 
 -- Apply VPD policies to SINHVIEN table
 BEGIN
+    -- Drop existing policies to avoid conflicts
+    DBMS_RLS.DROP_POLICY(
+        object_schema   => 'ADMINPDB',
+        object_name     => 'SINHVIEN',
+        policy_name     => 'SINHVIEN_SELECT_POLICY'
+    );
+    
+    DBMS_RLS.DROP_POLICY(
+        object_schema   => 'ADMINPDB',
+        object_name     => 'SINHVIEN',
+        policy_name     => 'SINHVIEN_MODIFY_POLICY'
+    );
+
     -- Policy for SELECT
     DBMS_RLS.ADD_POLICY(
         object_schema   => 'ADMINPDB',
@@ -188,13 +203,19 @@ BEGIN
         function_schema => 'ADMINPDB',
         policy_function => 'sinhvien_modify_policy',
         statement_types  => 'INSERT,UPDATE,DELETE',
-        update_check    => TRUE
+        update_check    => TRUE,
+        sec_relevant_cols => 'DCHI,DT,TINHTRANG',
+        sec_relevant_cols_opt => DBMS_RLS.ALL_ROWS
     );
 END;
 /
 
+-- Grant necessary privileges to roles
 -- Grant SELECT permission to students (SV)
 GRANT SELECT ON ADMINPDB.SINHVIEN TO SV;
+
+-- Grant UPDATE on specific columns (DCHI, DT) to students (SV)
+GRANT UPDATE (DCHI, DT) ON ADMINPDB.SINHVIEN TO SV;
 
 -- Grant SELECT, INSERT, UPDATE, DELETE permissions to NVPCTSV
 GRANT SELECT, INSERT, UPDATE, DELETE ON ADMINPDB.SINHVIEN TO NVPCTSV;
@@ -203,7 +224,11 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ADMINPDB.SINHVIEN TO NVPCTSV;
 GRANT SELECT ON ADMINPDB.SINHVIEN TO GV;
 
 -- Grant UPDATE permission to NVPDT (academic staff) for updating TINHTRANG
-GRANT UPDATE ON ADMINPDB.SINHVIEN TO NVPDT;
+GRANT UPDATE (TINHTRANG) ON ADMINPDB.SINHVIEN TO NVPDT;
+
+-- Grant EXEMPT ACCESS POLICY to the user executing the policy functions
+-- This ensures the policy function can access SINHVIEN without triggering VPD
+GRANT EXEMPT ACCESS POLICY TO ADMINPDB;
 
 --------------------------------
 -- CÂU 4
