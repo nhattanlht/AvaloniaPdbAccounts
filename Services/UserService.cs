@@ -669,6 +669,39 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         return courses;
     }
 
+        public async Task<List<EmployeeModel>> GetEmployeesForTRGDVAsync()
+    {
+        var employees = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            // Select from NHANVIEN_TRGDV view, excluding LUONG and PHUCAP
+            string query = @"SELECT MANLD, HOTEN, PHAI, NGSINH, DT, VAITRO, MADV FROM ADMINPDB.NHANVIEN_TRGDV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    employees.Add(new EmployeeModel
+                    {
+                        EmployeeID = reader.GetString(reader.GetOrdinal("MANLD")),
+                        FullName = reader.GetString(reader.GetOrdinal("HOTEN")),
+                        Gender = reader.GetString(reader.GetOrdinal("PHAI")),
+                        BirthDate = reader.GetDateTime(reader.GetOrdinal("NGSINH")),
+                        Phone = reader.GetString(reader.GetOrdinal("DT")),
+                        Role = reader.GetString(reader.GetOrdinal("VAITRO")),
+                        Department = reader.GetString(reader.GetOrdinal("MADV"))
+                    });
+                }
+            }
+        }
+
+        return employees;
+    }
+
     public async Task<List<CourseModel>> GetCoursesForGVAsync()
     {
         var courses = new List<CourseModel>();
