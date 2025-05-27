@@ -606,4 +606,35 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
             }
         }
     }
+
+    public async Task<List<CourseModel>> GetCoursesByStudentDepartmentAsync(string studentId)
+    {
+        var courses = new List<CourseModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            // Only select from MOMON_SV view
+            string query = @"SELECT MAMM, MAHP, MAGV, HK, NAM FROM ADMINPDB.MOMON_SV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    courses.Add(new CourseModel
+                    {
+                        CourseID = reader.GetString(reader.GetOrdinal("MAMM")),
+                        BaseCode = reader.GetString(reader.GetOrdinal("MAHP")),
+                        TeacherID = reader.GetString(reader.GetOrdinal("MAGV")),
+                        Semester = reader.GetInt32(reader.GetOrdinal("HK")),
+                        Year = reader.GetInt32(reader.GetOrdinal("NAM"))
+                    });
+                }
+            }
+        }
+
+        return courses;
+    }
 }
