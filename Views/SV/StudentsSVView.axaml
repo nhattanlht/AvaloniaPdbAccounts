@@ -24,7 +24,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Student ID" Binding="{Binding ID}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Name" Binding="{Binding NAME}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Gender" Binding="{Binding GENDER}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Gender" Binding="{Binding GenderDisplay}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Birthday" Binding="{Binding BIRTHDAY}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Address" Binding="{Binding ADDRESS}" IsReadOnly="False" />
                 <DataGridTextColumn Header="Phone" Binding="{Binding PHONE}" IsReadOnly="False" />

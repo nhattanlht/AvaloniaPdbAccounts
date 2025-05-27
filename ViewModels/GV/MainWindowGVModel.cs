@@ -23,10 +23,10 @@ namespace AvaloniaPdbAccounts.ViewModels.GV
         public bool RegistrationsButtonIsActive => CurrentPage == _registrationsGV;    
 
 
-        private readonly EmployeesPCTSVViewModel _employeesGV = new();
-        private readonly StudentsPCTSVViewModel _studentsGV = new();
+        private readonly EmployeesGVViewModel _employeesGV = new();
+        private readonly StudentsGVViewModel _studentsGV = new();
         private readonly CoursesGVViewModel _coursesGV = new();
-        private readonly RegistrationsPCTSVViewModel _registrationsGV = new();
+        private readonly RegistrationsGVViewModel _registrationsGV = new();
 
         public MainWindowGVModel()
         {

@@ -17,5 +17,7 @@ namespace AvaloniaPdbAccounts.Models
         public string DEPARTMENT { get; set; }     
         public string STATUS { get; set; }
 
+        // Hiển thị giới tính (1 → Nam, 0 → Nữ)
+        public string GenderDisplay => GENDER == "1" ? "Nam" : "Nữ";
     }
 }
