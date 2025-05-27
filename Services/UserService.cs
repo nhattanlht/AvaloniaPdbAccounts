@@ -585,6 +585,59 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
 
         return registrations;
     }
+    // Thêm
+    public async Task AddRegistrationAsync(RegistrationModel model)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "INSERT INTO adminpdb.DANGKY (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES (:masv, :mamm, :diemth, :diemqt, :diemck, :diemtk)";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    // Sửa
+    public async Task UpdateRegistrationAsync(RegistrationModel model)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :diemth, DIEMQT = :diemqt, DIEMCK = :diemck, DIEMTK = :diemtk WHERE MASV = :masv AND MAMM = :mamm";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    // Xóa
+    public async Task DeleteRegistrationAsync(string studentId, string courseId)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "DELETE FROM adminpdb.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("masv", studentId));
+        cmd.Parameters.Add(new OracleParameter("mamm", courseId));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
     public async Task UpdateRegistrationScoreAsync(string studentId, string courseId, decimal? practiceScore, decimal? processScore, decimal? finalScore, decimal? totalScore)
     {
         using (var conn = new OracleConnection(_connectionString))
