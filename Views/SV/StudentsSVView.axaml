@@ -3,6 +3,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.SV.StudentsSVView">
-  Welcome to Students Page for SV!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.SV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.SV.StudentsSVView"
+             x:DataType="vm:StudentsSVViewModel"
+             x:Name="root">
+
+    <UserControl.DataContext>
+        <vm:StudentsSVViewModel />
+    </UserControl.DataContext>
+
+    <Grid Margin="20" RowDefinitions="Auto,*">
+        <!-- Header -->
+        <StackPanel>
+            <TextBlock Text="Student Information" FontSize="24" FontWeight="Bold" Margin="0,0,0,20" />
+        </StackPanel>
+
+        <!-- Student Data -->
+        <DataGrid ItemsSource="{Binding Students}" AutoGenerateColumns="False" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Student ID" Binding="{Binding ID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding NAME}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Gender" Binding="{Binding GENDER}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Birthday" Binding="{Binding BIRTHDAY}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Address" Binding="{Binding ADDRESS}" IsReadOnly="False" />
+                <DataGridTextColumn Header="Phone" Binding="{Binding PHONE}" IsReadOnly="False" />
+                <DataGridTextColumn Header="Department" Binding="{Binding DEPARTMENT}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Status" Binding="{Binding STATUS}" IsReadOnly="True" />
+
+                <!-- Action column to save changes -->
+                <DataGridTemplateColumn Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Save"
+                                    Command="{Binding DataContext.EditCommand, ElementName=root}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

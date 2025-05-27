@@ -1,5 +1,3 @@
-
-
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -320,27 +318,36 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         return students;
     }
 
-    public async Task UpdateStudentAsync( string id, string address,string phone, string status )
+    public async Task UpdateStudentAsync(string id, string address, string phone, string? status = null)
     {
-        using (var conn = new OracleConnection(_connectionString))
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        // Nếu người gọi không truyền status (null hoặc chuỗi rỗng) thì chỉ update địa chỉ & điện thoại.
+        bool updateStatus = !string.IsNullOrWhiteSpace(status);
+
+        string query = updateStatus
+            ? @"UPDATE adminpdb.SINHVIEN
+                 SET DCHI = :address,
+                     DT   = :phone,
+                     TINHTRANG = :status
+               WHERE MASV = :id"
+            : @"UPDATE adminpdb.SINHVIEN
+                 SET DCHI = :address,
+                     DT   = :phone
+               WHERE MASV = :id";
+
+        using var cmd = new OracleCommand(query, conn);
+        cmd.Parameters.Add(new OracleParameter("address", address));
+        cmd.Parameters.Add(new OracleParameter("phone", phone));
+        cmd.Parameters.Add(new OracleParameter("id", id));
+
+        if (updateStatus)
         {
-            await conn.OpenAsync();
-
-            string query = @"UPDATE adminpdb.SINHVIEN
-                         SET DCHI = :address, DT = :phone, 
-                           TINHTRANG=:status
-                         WHERE MASV = :id";
-
-            using (var cmd = new OracleCommand(query, conn))
-            {
-                cmd.Parameters.Add(new OracleParameter("address", address));
-                cmd.Parameters.Add(new OracleParameter("phone", phone));
-                cmd.Parameters.Add(new OracleParameter("status", status));
-                cmd.Parameters.Add(new OracleParameter("id", id));
-
-                await cmd.ExecuteNonQueryAsync();
-            }
+            cmd.Parameters.Add(new OracleParameter("status", status));
         }
+
+        await cmd.ExecuteNonQueryAsync();
     }
 
 

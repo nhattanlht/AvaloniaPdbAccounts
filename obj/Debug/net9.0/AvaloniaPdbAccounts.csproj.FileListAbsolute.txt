@@ -319,3 +319,6 @@ D:\Nam moi\AvaloniaPdbAccounts\obj\Debug\net9.0\ref\AvaloniaPdbAccounts.dll
 D:\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\DialogHost.Avalonia.dll
 D:\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\MsBox.Avalonia.dll
 D:\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\RBAC_VPD.sql
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\RBAC_VPD.sql
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\DialogHost.Avalonia.dll
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\MsBox.Avalonia.dll
