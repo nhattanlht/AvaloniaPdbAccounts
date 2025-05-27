@@ -563,7 +563,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
         {
             await conn.OpenAsync();
 
-            string query = "SELECT MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK FROM adminpdb.DANGKY";
+            string query = "SELECT * FROM adminpdb.DANGKY";
 
             using (var cmd = new OracleCommand(query, conn))
             using (var reader = await cmd.ExecuteReaderAsync())
@@ -572,12 +572,12 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
                 {
                     registrations.Add(new RegistrationModel
                     {
-                        StudentID = reader.GetString(0),
-                        CourseID = reader.GetString(1),
-                        PracticeScore = reader.GetDecimal(2),
-                        ProcessScore = reader.GetDecimal(3),
-                        FinalScore = reader.GetDecimal(4),
-                        TotalScore = reader.GetDecimal(5),
+                        StudentID = reader.GetString(0),  // MASV
+                        CourseID = reader.GetString(1),   // MAMM
+                        PracticeScore = reader.IsDBNull(2) ? null : reader.GetDecimal(2),  // DIEMTH
+                        ProcessScore = reader.IsDBNull(3) ? null : reader.GetDecimal(3),   // DIEMQT
+                        FinalScore = reader.IsDBNull(4) ? null : reader.GetDecimal(4),     // DIEMCK
+                        TotalScore = reader.IsDBNull(5) ? null : reader.GetDecimal(5)      // DIEMTK
                     });
                 }
             }
@@ -585,7 +585,7 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
 
         return registrations;
     }
-    public async Task UpdateRegistrationScoreAsync(string studentId,string courseId, decimal practiceScore, decimal processScore, decimal finalScore, decimal totalScore)
+    public async Task UpdateRegistrationScoreAsync(string studentId, string courseId, decimal? practiceScore, decimal? processScore, decimal? finalScore, decimal? totalScore)
     {
         using (var conn = new OracleConnection(_connectionString))
         {
@@ -595,10 +595,10 @@ public async Task<List<Employee>> GetEmployeeDataAsync()
 
             using (var cmd = new OracleCommand(query, conn))
             {
-                cmd.Parameters.Add(new OracleParameter("practiceScore", practiceScore));
-                cmd.Parameters.Add(new OracleParameter("processScore", processScore));
-                cmd.Parameters.Add(new OracleParameter("finalScore", finalScore));
-                cmd.Parameters.Add(new OracleParameter("totalScore", totalScore));
+                cmd.Parameters.Add(new OracleParameter("practiceScore", practiceScore.HasValue ? (object)practiceScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("processScore", processScore.HasValue ? (object)processScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("finalScore", finalScore.HasValue ? (object)finalScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("totalScore", totalScore.HasValue ? (object)totalScore.Value : DBNull.Value));
                 cmd.Parameters.Add(new OracleParameter("studentId", studentId));
                 cmd.Parameters.Add(new OracleParameter("courseId", courseId));
 

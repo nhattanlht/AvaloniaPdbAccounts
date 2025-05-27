@@ -3,6 +3,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView">
-	Welcome to RegistrationsSV!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.SV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView"
+             x:DataType="vm:RegistrationsSVViewModel">
+
+    <!-- DataContext được gán tự động bởi ViewLocator -->
+
+    <Grid Margin="20" RowDefinitions="Auto,*">
+        <TextBlock Text="Danh sách đăng ký môn học" FontSize="24" FontWeight="Bold" />
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Registrations}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã SV" Binding="{Binding StudentID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Mã Môn" Binding="{Binding CourseID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Điểm TH" Binding="{Binding PracticeScoreDisplay}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Điểm QT" Binding="{Binding ProcessScoreDisplay}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Điểm CK" Binding="{Binding FinalScoreDisplay}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Điểm TK" Binding="{Binding TotalScoreDisplay}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>
