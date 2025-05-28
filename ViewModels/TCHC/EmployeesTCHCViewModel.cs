@@ -68,7 +68,7 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
             _ = LoadEmployeesAsync();
         }
 
-        private async Task LoadEmployeesAsync()
+        public async Task LoadEmployeesAsync()
         {
             var employees = await _userService.GetEmployeeModelDataAsync();
 

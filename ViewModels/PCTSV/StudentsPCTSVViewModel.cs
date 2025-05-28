@@ -74,7 +74,7 @@ namespace AvaloniaPdbAccounts.ViewModels.PCTSV
                 _ = LoadStudentsAsync();
         }
 
-        private async Task LoadStudentsAsync()
+        public async Task LoadStudentsAsync()
         {
             try
             {

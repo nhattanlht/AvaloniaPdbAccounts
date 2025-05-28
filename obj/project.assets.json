@@ -2866,23 +2866,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ADMIN\\.nuget\\packages\\": {},
+    "C:\\Users\\PC\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ADMIN\\source\\repos\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
+      "projectUniqueName": "D:\\NAM MOI MOI\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
       "projectName": "AvaloniaPdbAccounts",
-      "projectPath": "C:\\Users\\ADMIN\\source\\repos\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
-      "packagesPath": "C:\\Users\\ADMIN\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ADMIN\\source\\repos\\AvaloniaPdbAccounts\\obj\\",
+      "projectPath": "D:\\NAM MOI MOI\\AvaloniaPdbAccounts\\AvaloniaPdbAccounts.csproj",
+      "packagesPath": "C:\\Users\\PC\\.nuget\\packages\\",
+      "outputPath": "D:\\NAM MOI MOI\\AvaloniaPdbAccounts\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\ADMIN\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\PC\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

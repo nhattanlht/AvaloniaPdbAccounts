@@ -36,8 +36,9 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
         }
 
         [RelayCommand]
-        private void ShowEmployeesPage()
+        private async Task ShowEmployeesPage()
         {
+            await _employeesTCHC.LoadEmployeesAsync();
             CurrentPage = _employeesTCHC;
         }
 

@@ -40,8 +40,9 @@ namespace AvaloniaPdbAccounts.ViewModels.PCTSV
         }
 
         [RelayCommand]
-        private void ShowStudentsPage()
+        private async Task ShowStudentsPage()
         {
+            await _studentsPCTSV.LoadStudentsAsync();
             CurrentPage = _studentsPCTSV;
         }
         [RelayCommand]
