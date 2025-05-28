@@ -594,269 +594,381 @@ public class UserService
         }
     }
     //Xử lí cho trang registration
-    public class CourseService
+    public async Task<List<RegistrationModel>> GetRegistrationModelDataAsync()
     {
-        private readonly string _connectionString;
+        var registrations = new List<RegistrationModel>();
 
-        public CourseService(string connectionString)
+        using (var conn = new OracleConnection(_connectionString))
         {
-            _connectionString = connectionString;
-        }
+            await conn.OpenAsync();
+            string query = "SELECT * FROM adminpdb.DANGKY";
 
-        public async Task<List<RegistrationModel>> GetRegistrationModelDataAsync()
-        {
-            var registrations = new List<RegistrationModel>();
-
-            using (var conn = new OracleConnection(_connectionString))
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                await conn.OpenAsync();
-                string query = "SELECT * FROM adminpdb.DANGKY";
-
-                using (var cmd = new OracleCommand(query, conn))
-                using (var reader = await cmd.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
+                    registrations.Add(new RegistrationModel
                     {
-                        registrations.Add(new RegistrationModel
-                        {
-                            StudentID = reader.GetString(0),  // MASV
-                            CourseID = reader.GetString(1),   // MAMM
-                            PracticeScore = reader.IsDBNull(2) ? null : reader.GetDecimal(2),  // DIEMTH
-                            ProcessScore = reader.IsDBNull(3) ? null : reader.GetDecimal(3),   // DIEMQT
-                            FinalScore = reader.IsDBNull(4) ? null : reader.GetDecimal(4),     // DIEMCK
-                            TotalScore = reader.IsDBNull(5) ? null : reader.GetDecimal(5)      // DIEMTK
-                        });
-                    }
+                        StudentID = reader.GetString(0),  // MASV
+                        CourseID = reader.GetString(1),   // MAMM
+                        PracticeScore = reader.IsDBNull(2) ? null : reader.GetDecimal(2),  // DIEMTH
+                        ProcessScore = reader.IsDBNull(3) ? null : reader.GetDecimal(3),   // DIEMQT
+                        FinalScore = reader.IsDBNull(4) ? null : reader.GetDecimal(4),     // DIEMCK
+                        TotalScore = reader.IsDBNull(5) ? null : reader.GetDecimal(5)      // DIEMTK
+                    });
                 }
             }
-
-            return registrations;
         }
 
-        public async Task AddRegistrationAsync(RegistrationModel model)
+        return registrations;
+    }
+
+    public async Task AddRegistrationAsync(RegistrationModel model)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "INSERT INTO adminpdb.DANGKY (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES (:masv, :mamm, :diemth, :diemqt, :diemck, :diemtk)";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateRegistrationAsync(RegistrationModel model)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :diemth, DIEMQT = :diemqt, DIEMCK = :diemck, DIEMTK = :diemtk WHERE MASV = :masv AND MAMM = :mamm";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task DeleteRegistrationAsync(string studentId, string courseId)
+    {
+        using var conn = new OracleConnection(_connectionString);
+        await conn.OpenAsync();
+
+        string query = "DELETE FROM adminpdb.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
+        using var cmd = new OracleCommand(query, conn);
+
+        cmd.Parameters.Add(new OracleParameter("masv", studentId));
+        cmd.Parameters.Add(new OracleParameter("mamm", courseId));
+
+        await cmd.ExecuteNonQueryAsync();
+    }
+
+    public async Task UpdateRegistrationScoreAsync(string studentId, string courseId, decimal? practiceScore, decimal? processScore, decimal? finalScore, decimal? totalScore)
+    {
+        using (var conn = new OracleConnection(_connectionString))
         {
-            using var conn = new OracleConnection(_connectionString);
             await conn.OpenAsync();
 
-            string query = "INSERT INTO adminpdb.DANGKY (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES (:masv, :mamm, :diemth, :diemqt, :diemck, :diemtk)";
-            using var cmd = new OracleCommand(query, conn);
+            string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :practiceScore, DIEMQT = :processScore, DIEMCK = :finalScore, DIEMTK = :totalScore WHERE MASV = :studentId and MAMM = :courseId";
 
-            cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
-            cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
-            cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("practiceScore", practiceScore.HasValue ? (object)practiceScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("processScore", processScore.HasValue ? (object)processScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("finalScore", finalScore.HasValue ? (object)finalScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("totalScore", totalScore.HasValue ? (object)totalScore.Value : DBNull.Value));
+                cmd.Parameters.Add(new OracleParameter("studentId", studentId));
+                cmd.Parameters.Add(new OracleParameter("courseId", courseId));
 
-            await cmd.ExecuteNonQueryAsync();
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
+    }
 
-        public async Task UpdateRegistrationAsync(RegistrationModel model)
+    public async Task AddCourseOfferingNVPDTAsync(CourseOfferingModel course)
+    {
+        using (var conn = new OracleConnection(_connectionString))
         {
-            using var conn = new OracleConnection(_connectionString);
+            await conn.OpenAsync();
+            string query = "INSERT INTO adminpdb.MOMON_PDT (MAMM, MAHP, MAGV, HK, NAM) VALUES (:offeringID, :moduleId, :instructorId, :semester, :year)";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("offeringID", course.OfferingID));
+                cmd.Parameters.Add(new OracleParameter("moduleId", course.ModuleID));
+                cmd.Parameters.Add(new OracleParameter("instructorId", course.InstructorID));
+                cmd.Parameters.Add(new OracleParameter("semester", course.Semester));
+                cmd.Parameters.Add(new OracleParameter("year", course.Year));
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+
+    public async Task<List<CourseOfferingModel>> GetCourseOfferingNVPDTAsync()
+    {
+        var courses = new List<CourseOfferingModel>();
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "SELECT MAMM, MAHP, MAGV, HK, NAM FROM adminpdb.MOMON_PDT";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    courses.Add(new CourseOfferingModel
+                    {
+                        OfferingID = reader.GetString(0),
+                        ModuleID = reader.GetString(1),
+                        InstructorID = reader.GetString(2),
+                        Semester = reader.GetInt32(3),
+                        Year = reader.GetInt32(4)
+                    });
+                }
+            }
+        }
+        return courses;
+    }
+
+    public async Task UpdateCourseOfferingNVPDTAsync(CourseOfferingModel course)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "UPDATE adminpdb.MOMON_PDT SET MAHP = :moduleId, MAGV = :instructorId, HK = :semester, NAM = :year WHERE MAMM = :offeringId";
+
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("offeringId", OracleDbType.Varchar2) { Value = course.OfferingID });
+                cmd.Parameters.Add(new OracleParameter("moduleId", OracleDbType.Varchar2) { Value = course.ModuleID });
+                cmd.Parameters.Add(new OracleParameter("instructorId", OracleDbType.Varchar2) { Value = course.InstructorID });
+                cmd.Parameters.Add(new OracleParameter("semester", OracleDbType.Int32) { Value = course.Semester });
+                cmd.Parameters.Add(new OracleParameter("year", OracleDbType.Int32) { Value = course.Year });
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+    }
+
+    public async Task DeleteCourseOfferingNVPDTAsync(string offeringId)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
             await conn.OpenAsync();
 
-            string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :diemth, DIEMQT = :diemqt, DIEMCK = :diemck, DIEMTK = :diemtk WHERE MASV = :masv AND MAMM = :mamm";
-            using var cmd = new OracleCommand(query, conn);
+            using (var transaction = conn.BeginTransaction())
+            {
+                try
+                {
+                    string deleteRegistrationQuery = "ADMINPDB.force_delete_dangky_and_momon";
+                    using (var cmd1 = new OracleCommand(deleteRegistrationQuery, conn))
+                    {
+                        cmd1.CommandType = CommandType.StoredProcedure;
+                        cmd1.Parameters.Add("p_mamm", OracleDbType.Varchar2).Value = offeringId;
+                        await cmd1.ExecuteNonQueryAsync();
+                    }
 
-            cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
-            cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
-            cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Error deleting course offering: " + ex.Message);
+                }
+            }
+        }
+    }
 
-            await cmd.ExecuteNonQueryAsync();
+    public async Task<List<EmployeeModel>> GetInstructorsAsync()
+    {
+        var instructors = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        using (var cmd = new OracleCommand("adminpdb.get_instructors", conn))
+        {
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            var output = cmd.Parameters.Add("p_result", OracleDbType.RefCursor);
+            output.Direction = ParameterDirection.Output;
+
+            await conn.OpenAsync();
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    instructors.Add(new EmployeeModel
+                    {
+                        EmployeeID = reader.GetString(0),
+                        FullName = reader.GetString(1)
+                    });
+                }
+            }
         }
 
-        public async Task DeleteRegistrationAsync(string studentId, string courseId)
+        return instructors;
+    }
+
+    public async Task<List<ModuleModel>> GetModulesAsync()
+    {
+        var modules = new List<ModuleModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        using (var cmd = new OracleCommand("adminpdb.get_modules", conn))
         {
-            using var conn = new OracleConnection(_connectionString);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            var output = cmd.Parameters.Add("p_result", OracleDbType.RefCursor);
+            output.Direction = ParameterDirection.Output;
+
+            await conn.OpenAsync();
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    modules.Add(new ModuleModel
+                    {
+                        ModuleID = reader.GetString(0),
+                        ModuleName = reader.GetString(1)
+                    });
+                }
+            }
+        }
+
+        return modules;
+    }
+    public async Task<List<CourseModel>> GetCoursesByStudentDepartmentAsync(string studentId)
+    {
+        var courses = new List<CourseModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
             await conn.OpenAsync();
 
-            string query = "DELETE FROM adminpdb.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
-            using var cmd = new OracleCommand(query, conn);
+            // Only select from MOMON_SV view
+            string query = @"SELECT MAMM, MAHP, MAGV, HK, NAM FROM ADMINPDB.MOMON_SV";
 
-            cmd.Parameters.Add(new OracleParameter("masv", studentId));
-            cmd.Parameters.Add(new OracleParameter("mamm", courseId));
-
-            await cmd.ExecuteNonQueryAsync();
-        }
-
-        public async Task UpdateRegistrationScoreAsync(string studentId, string courseId, decimal? practiceScore, decimal? processScore, decimal? finalScore, decimal? totalScore)
-        {
-            using (var conn = new OracleConnection(_connectionString))
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                await conn.OpenAsync();
-
-                string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :practiceScore, DIEMQT = :processScore, DIEMCK = :finalScore, DIEMTK = :totalScore WHERE MASV = :studentId and MAMM = :courseId";
-
-                using (var cmd = new OracleCommand(query, conn))
+                while (await reader.ReadAsync())
                 {
-                    cmd.Parameters.Add(new OracleParameter("practiceScore", practiceScore.HasValue ? (object)practiceScore.Value : DBNull.Value));
-                    cmd.Parameters.Add(new OracleParameter("processScore", processScore.HasValue ? (object)processScore.Value : DBNull.Value));
-                    cmd.Parameters.Add(new OracleParameter("finalScore", finalScore.HasValue ? (object)finalScore.Value : DBNull.Value));
-                    cmd.Parameters.Add(new OracleParameter("totalScore", totalScore.HasValue ? (object)totalScore.Value : DBNull.Value));
-                    cmd.Parameters.Add(new OracleParameter("studentId", studentId));
-                    cmd.Parameters.Add(new OracleParameter("courseId", courseId));
-
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        public async Task AddCourseOfferingNVPDTAsync(CourseOfferingModel course)
-        {
-            using (var conn = new OracleConnection(_connectionString))
-            {
-                await conn.OpenAsync();
-                string query = "INSERT INTO adminpdb.MOMON_PDT (MAMM, MAHP, MAGV, HK, NAM) VALUES (:offeringID, :moduleId, :instructorId, :semester, :year)";
-
-                using (var cmd = new OracleCommand(query, conn))
-                {
-                    cmd.Parameters.Add(new OracleParameter("offeringID", course.OfferingID));
-                    cmd.Parameters.Add(new OracleParameter("moduleId", course.ModuleID));
-                    cmd.Parameters.Add(new OracleParameter("instructorId", course.InstructorID));
-                    cmd.Parameters.Add(new OracleParameter("semester", course.Semester));
-                    cmd.Parameters.Add(new OracleParameter("year", course.Year));
-
-                    await cmd.ExecuteNonQueryAsync();
-                }
-            }
-        }
-
-        public async Task<List<CourseOfferingModel>> GetCourseOfferingNVPDTAsync()
-        {
-            var courses = new List<CourseOfferingModel>();
-            using (var conn = new OracleConnection(_connectionString))
-            {
-                await conn.OpenAsync();
-                string query = "SELECT MAMM, MAHP, MAGV, HK, NAM FROM adminpdb.MOMON_PDT";
-
-                using (var cmd = new OracleCommand(query, conn))
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
+                    courses.Add(new CourseModel
                     {
-                        courses.Add(new CourseOfferingModel
-                        {
-                            OfferingID = reader.GetString(0),
-                            ModuleID = reader.GetString(1),
-                            InstructorID = reader.GetString(2),
-                            Semester = reader.GetInt32(3),
-                            Year = reader.GetInt32(4)
-                        });
-                    }
+                        CourseID = reader.GetString(reader.GetOrdinal("MAMM")),
+                        BaseCode = reader.GetString(reader.GetOrdinal("MAHP")),
+                        TeacherID = reader.GetString(reader.GetOrdinal("MAGV")),
+                        Semester = reader.GetInt32(reader.GetOrdinal("HK")),
+                        Year = reader.GetInt32(reader.GetOrdinal("NAM"))
+                    });
                 }
             }
-            return courses;
         }
 
-        public async Task UpdateCourseOfferingNVPDTAsync(CourseOfferingModel course)
+        return courses;
+    }
+    public async Task<List<CourseModel>> GetCoursesForTRGDVAsync()
+    {
+        var courses = new List<CourseModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
         {
-            using (var conn = new OracleConnection(_connectionString))
+            await conn.OpenAsync();
+
+            // Select from MOMON table
+            string query = @"SELECT MAMM, MAHP, MAGV, HK, NAM FROM ADMINPDB.MOMON_TRGDV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                await conn.OpenAsync();
-                string query = "UPDATE adminpdb.MOMON_PDT SET MAHP = :moduleId, MAGV = :instructorId, HK = :semester, NAM = :year WHERE MAMM = :offeringId";
-
-                using (var cmd = new OracleCommand(query, conn))
+                while (await reader.ReadAsync())
                 {
-                    cmd.Parameters.Add(new OracleParameter("offeringId", OracleDbType.Varchar2) { Value = course.OfferingID });
-                    cmd.Parameters.Add(new OracleParameter("moduleId", OracleDbType.Varchar2) { Value = course.ModuleID });
-                    cmd.Parameters.Add(new OracleParameter("instructorId", OracleDbType.Varchar2) { Value = course.InstructorID });
-                    cmd.Parameters.Add(new OracleParameter("semester", OracleDbType.Int32) { Value = course.Semester });
-                    cmd.Parameters.Add(new OracleParameter("year", OracleDbType.Int32) { Value = course.Year });
-
-                    await cmd.ExecuteNonQueryAsync();
+                    courses.Add(new CourseModel
+                    {
+                        CourseID = reader.GetString(reader.GetOrdinal("MAMM")),
+                        BaseCode = reader.GetString(reader.GetOrdinal("MAHP")),
+                        TeacherID = reader.GetString(reader.GetOrdinal("MAGV")),
+                        Semester = reader.GetInt32(reader.GetOrdinal("HK")),
+                        Year = reader.GetInt32(reader.GetOrdinal("NAM"))
+                    });
                 }
             }
         }
 
-        public async Task DeleteCourseOfferingNVPDTAsync(string offeringId)
+        return courses;
+    }
+    public async Task<List<CourseModel>> GetCoursesForGVAsync()
+    {
+        var courses = new List<CourseModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
         {
-            using (var conn = new OracleConnection(_connectionString))
+            await conn.OpenAsync();
+
+            // Select from MOMON_GV view
+            string query = @"SELECT MAMM, MAHP, MAGV, HK, NAM FROM ADMINPDB.MOMON_GV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                await conn.OpenAsync();
-
-                using (var transaction = conn.BeginTransaction())
+                while (await reader.ReadAsync())
                 {
-                    try
+                    courses.Add(new CourseModel
                     {
-                        string deleteRegistrationQuery = "ADMINPDB.force_delete_dangky_and_momon";
-                        using (var cmd1 = new OracleCommand(deleteRegistrationQuery, conn))
-                        {
-                            cmd1.CommandType = CommandType.StoredProcedure;
-                            cmd1.Parameters.Add("p_mamm", OracleDbType.Varchar2).Value = offeringId;
-                            await cmd1.ExecuteNonQueryAsync();
-                        }
-
-                        transaction.Commit();
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        throw new Exception("Error deleting course offering: " + ex.Message);
-                    }
+                        CourseID = reader.GetString(reader.GetOrdinal("MAMM")),
+                        BaseCode = reader.GetString(reader.GetOrdinal("MAHP")),
+                        TeacherID = reader.GetString(reader.GetOrdinal("MAGV")),
+                        Semester = reader.GetInt32(reader.GetOrdinal("HK")),
+                        Year = reader.GetInt32(reader.GetOrdinal("NAM"))
+                    });
                 }
             }
         }
 
-        public async Task<List<EmployeeModel>> GetInstructorsAsync()
+        return courses;
+    }
+    public async Task<List<EmployeeModel>> GetEmployeesForTRGDVAsync()
+    {
+        var employees = new List<EmployeeModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
         {
-            var instructors = new List<EmployeeModel>();
+            await conn.OpenAsync();
 
-            using (var conn = new OracleConnection(_connectionString))
-            using (var cmd = new OracleCommand("adminpdb.get_instructors", conn))
+            // Select from NHANVIEN_TRGDV view, excluding LUONG and PHUCAP
+            string query = @"SELECT MANLD, HOTEN, PHAI, NGSINH, DT, VAITRO, MADV FROM ADMINPDB.NHANVIEN_TRGDV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
             {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                var output = cmd.Parameters.Add("p_result", OracleDbType.RefCursor);
-                output.Direction = ParameterDirection.Output;
-
-                await conn.OpenAsync();
-                using (var reader = await cmd.ExecuteReaderAsync())
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
+                    employees.Add(new EmployeeModel
                     {
-                        instructors.Add(new EmployeeModel
-                        {
-                            EmployeeID = reader.GetString(0),
-                            FullName = reader.GetString(1)
-                        });
-                    }
+                        EmployeeID = reader.GetString(reader.GetOrdinal("MANLD")),
+                        FullName = reader.GetString(reader.GetOrdinal("HOTEN")),
+                        Gender = reader.GetString(reader.GetOrdinal("PHAI")),
+                        BirthDate = reader.GetDateTime(reader.GetOrdinal("NGSINH")),
+                        Phone = reader.GetString(reader.GetOrdinal("DT")),
+                        Role = reader.GetString(reader.GetOrdinal("VAITRO")),
+                        Department = reader.GetString(reader.GetOrdinal("MADV"))
+                    });
                 }
             }
-
-            return instructors;
         }
 
-        public async Task<List<ModuleModel>> GetModulesAsync()
-        {
-            var modules = new List<ModuleModel>();
-
-            using (var conn = new OracleConnection(_connectionString))
-            using (var cmd = new OracleCommand("adminpdb.get_modules", conn))
-            {
-                cmd.CommandType = CommandType.StoredProcedure;
-
-                var output = cmd.Parameters.Add("p_result", OracleDbType.RefCursor);
-                output.Direction = ParameterDirection.Output;
-
-                await conn.OpenAsync();
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        modules.Add(new ModuleModel
-                        {
-                            ModuleID = reader.GetString(0),
-                            ModuleName = reader.GetString(1)
-                        });
-                    }
-                }
-            }
-
-            return modules;
-        }
+        return employees;
     }
 }
