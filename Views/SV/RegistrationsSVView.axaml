@@ -3,6 +3,44 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView">
-	Welcome to RegistrationsSV!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.SV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView"
+             x:DataType="vm:RegistrationsSVViewModel">
+
+    <!-- DataContext được gán tự động bởi ViewLocator -->
+
+    <Grid Margin="20" RowDefinitions="Auto,Auto,*" RowSpacing="10">
+        <TextBlock Text="Danh sách đăng ký môn học" FontSize="24" FontWeight="Bold" />
+
+        <!-- Form nhập liệu -->
+        <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="1">
+            <TextBox Width="100" Watermark="Mã SV" Text="{Binding NewRegistration.StudentID}" />
+            <TextBox Width="100" Watermark="Mã Môn" Text="{Binding NewRegistration.CourseID}" />
+            <TextBox Width="80" Watermark="Điểm TH" Text="{Binding NewRegistration.PracticeScore}" />
+            <TextBox Width="80" Watermark="Điểm QT" Text="{Binding NewRegistration.ProcessScore}" />
+            <TextBox Width="80" Watermark="Điểm CK" Text="{Binding NewRegistration.FinalScore}" />
+            <TextBox Width="80" Watermark="Điểm TK" Text="{Binding NewRegistration.TotalScore}" />
+
+            <!-- Nút thao tác -->
+            <Button Content="Thêm" Command="{Binding AddCommand}" />
+            <Button Content="Sửa" Command="{Binding EditCommand}" />
+            <Button Content="Xóa" Command="{Binding DeleteCommand}" />
+        </StackPanel>
+
+        <!-- DataGrid hiển thị danh sách -->
+        <DataGrid Grid.Row="2"
+                ItemsSource="{Binding Registrations}"
+                SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}"
+                AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã SV" Binding="{Binding StudentID}" />
+                <DataGridTextColumn Header="Mã Môn" Binding="{Binding CourseID}" />
+                <DataGridTextColumn Header="Điểm TH" Binding="{Binding PracticeScore}" />
+                <DataGridTextColumn Header="Điểm QT" Binding="{Binding ProcessScore}" />
+                <DataGridTextColumn Header="Điểm CK" Binding="{Binding FinalScore}" />
+                <DataGridTextColumn Header="Điểm TK" Binding="{Binding TotalScore}" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

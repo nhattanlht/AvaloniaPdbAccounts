@@ -31,9 +31,15 @@ public static class RunSQLScriptUtility
             Console.WriteLine("✅ Database already initialized. Skipping script execution.");
             return;
         }
+<<<<<<< HEAD
         RunSqlScript("init_db.sql");
         RunSqlScript("database.sql");
         RunSqlScript("RBAC_VPD.sql");
+=======
+        // RunSqlScript("init_db.sql");
+        // RunSqlScript("database.sql");
+
+>>>>>>> origin/TanNew
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution

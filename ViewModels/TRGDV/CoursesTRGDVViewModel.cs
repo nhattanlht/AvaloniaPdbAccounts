@@ -1,13 +1,42 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Avalonia.Threading;
+using AvaloniaPdbAccounts.Models;
+using AvaloniaPdbAccounts.Services;
+using System.Linq;
 
 namespace AvaloniaPdbAccounts.ViewModels.TRGDV
 {
-    public partial class CoursesTRGDVViewModel : ViewModelBase
+    public class CoursesTRGDVViewModel : ViewModelBase
     {
-        public string Test { get; set; } = "Courses";
+        public ObservableCollection<CourseModel> Courses { get; } = new();
+        private readonly UserService _userService = new();
+
+        public CoursesTRGDVViewModel()
+        {
+            _ = LoadCoursesAsync();
+        }
+
+        private async Task LoadCoursesAsync()
+        {
+            try
+            {
+                var list = await _userService.GetCoursesForTRGDVAsync();
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    Courses.Clear();
+                    foreach (var course in list)
+                    {
+                        Courses.Add(course);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"LoadCoursesAsync ERROR: {ex.Message}");
+            }
+        }
     }
 } 

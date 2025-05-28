@@ -3,6 +3,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.SV.CoursesSVView">
-  Welcome to Course!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.SV"
+             x:Class="AvaloniaPdbAccounts.Views.SV.CoursesSVView"
+             x:DataType="vm:CoursesSVViewModel">
+
+    <Grid Margin="20" RowDefinitions="Auto,*">
+        <TextBlock Text="Danh sách môn học theo khoa" FontSize="24" FontWeight="Bold" />
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Courses}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã môn" Binding="{Binding CourseID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Mã học phần" Binding="{Binding BaseCode}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Mã GV" Binding="{Binding TeacherID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Học kỳ" Binding="{Binding Semester}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Năm" Binding="{Binding Year}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl>

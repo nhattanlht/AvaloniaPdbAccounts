@@ -3,6 +3,27 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.GV.StudentsGVView">
-  Welcome to Students Page for GV!
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.GV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.GV.StudentsGVView"
+             x:DataType="vm:StudentsGVViewModel">
+
+    <!-- DataContext được gán tự động bởi ViewLocator -->
+
+    <Grid Margin="20" RowDefinitions="Auto,*">
+        <TextBlock Text="Danh sách sinh viên" FontSize="24" FontWeight="Bold" />
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Students}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Mã SV" Binding="{Binding ID}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Họ Tên" Binding="{Binding NAME}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Phái" Binding="{Binding GenderDisplay}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Ngày Sinh" Binding="{Binding BIRTHDAY}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Địa Chỉ" Binding="{Binding ADDRESS}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Điện Thoại" Binding="{Binding PHONE}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Khoa" Binding="{Binding DEPARTMENT}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Tình Trạng" Binding="{Binding STATUS}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </UserControl> 

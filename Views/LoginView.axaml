@@ -24,14 +24,14 @@
                     <TextBlock Text="Username" FontSize="14" Foreground="#334155"/>
                     <TextBox Text="{Binding Username, Mode=TwoWay}" 
                              Watermark="Enter your username" Padding="10"
-                             Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
+                             Background="Black" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
                 </StackPanel>
 
                 <StackPanel Spacing="5">
                     <TextBlock Text="Password" FontSize="14" Foreground="#334155"/>
                     <TextBox Text="{Binding Password, Mode=TwoWay}" 
                              Watermark="Enter your password" PasswordChar="●" Padding="10"
-                             Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
+                             Background="Black" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8"/>
                 </StackPanel>
 
                 <Button Content="Login" Command="{Binding LoginCommand}" 
