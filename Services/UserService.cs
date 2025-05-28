@@ -752,11 +752,11 @@ public class UserService
 
             using (var cmd = new OracleCommand(query, conn))
             {
-                cmd.Parameters.Add(new OracleParameter("offeringId", OracleDbType.Varchar2) { Value = course.OfferingID });
-                cmd.Parameters.Add(new OracleParameter("moduleId", OracleDbType.Varchar2) { Value = course.ModuleID });
-                cmd.Parameters.Add(new OracleParameter("instructorId", OracleDbType.Varchar2) { Value = course.InstructorID });
-                cmd.Parameters.Add(new OracleParameter("semester", OracleDbType.Int32) { Value = course.Semester });
-                cmd.Parameters.Add(new OracleParameter("year", OracleDbType.Int32) { Value = course.Year });
+                cmd.Parameters.Add(new OracleParameter("moduleId",course.ModuleID));
+                cmd.Parameters.Add(new OracleParameter("instructorId",course.InstructorID));
+                cmd.Parameters.Add(new OracleParameter("semester",course.Semester));
+                cmd.Parameters.Add(new OracleParameter("year",course.Year ));
+                cmd.Parameters.Add(new OracleParameter("offeringId", course.OfferingID));
 
                 await cmd.ExecuteNonQueryAsync();
             }

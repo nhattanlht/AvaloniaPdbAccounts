@@ -160,7 +160,7 @@ namespace AvaloniaPdbAccounts.ViewModels.PDT
 
         // Semester options
         public List<int> Semesters { get; } = new() { 1, 2, 3 };
-        public List<int> Years { get; } = Enumerable.Range(DateTime.Now.Year, 10).ToList();
+        public List<int> Years { get; } = Enumerable.Range(DateTime.Now.Year-1, 10).ToList();
 
 
         // Commands
