@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AvaloniaPdbAccounts.ViewModels.GV
+namespace AvaloniaPdbAccounts.ViewModels.PCTSV
 {
     public partial class RegistrationsPCTSVViewModel : ViewModelBase
     {

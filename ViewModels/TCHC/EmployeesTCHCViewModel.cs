@@ -16,6 +16,8 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
     {
         public ObservableCollection<EmployeeModel> Employees { get; }
         public ReactiveCommand<EmployeeModel, Unit> EditCommand { get; }
+        public ReactiveCommand<EmployeeModel, Unit> DeleteCommand { get; }
+
         private readonly UserService _userService;
 
         public EmployeesTCHCViewModel()
@@ -28,8 +30,37 @@ namespace AvaloniaPdbAccounts.ViewModels.TCHC
             {
                 Dispatcher.UIThread.Post(async () =>
                 {
-                    await _userService.UpdateEmployeePhoneNumberAsync(employee.EmployeeID, employee.Phone);
-                    Console.WriteLine($"Updated phone number for {employee.FullName} to {employee.Phone}");
+                    await _userService.UpdateEmployeeAsync(
+                        employee.EmployeeID,
+                        employee.Salary,
+                        employee.Allowance,
+                        employee.Phone,
+                        employee.Department
+                    );
+
+                    Console.WriteLine($"Updated employee: {employee.EmployeeID} - {employee.FullName}");
+                });
+            });
+            DeleteCommand = ReactiveCommand.Create<EmployeeModel>(employee =>
+            {
+               
+                _ = Task.Run(async () =>
+                {
+                   
+
+                    bool success = await _userService.DeleteEmployeeAsync(employee.EmployeeID);
+                    if (success)
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            Employees.Remove(employee);
+                            Console.WriteLine("Deleted employee: " + employee.EmployeeID + " - " + employee.FullName);
+                        });
+                    }
+                    else
+                    {
+                        Console.WriteLine("Deleted falied employee " + employee.EmployeeID + " - " + employee.FullName);
+                    }
                 });
             });
 

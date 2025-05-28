@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AvaloniaPdbAccounts.ViewModels.GV
+namespace AvaloniaPdbAccounts.ViewModels.NVCB
 {
-    public partial class RegistrationsPCTSVViewModel : ViewModelBase
+    public partial class RegistrationsNVCBViewModel : ViewModelBase
     {
         public string Test { get; set; } = "Registrations";
     }
