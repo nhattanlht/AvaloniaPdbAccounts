@@ -36,6 +36,9 @@
     <Compile Update="MainWindow.axaml.cs">
       <DependentUpon>MainWindow.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PDT\AddRegistrationPopupView.axaml.cs">
+      <DependentUpon>AddRegistrationPopupView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\PDT\CoursesPDTView.axaml.cs">
       <DependentUpon>CoursesPDTView.axaml</DependentUpon>
     </Compile>

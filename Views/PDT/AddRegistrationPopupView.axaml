@@ -7,7 +7,7 @@
              x:Class="AvaloniaPdbAccounts.Views.PDT.AddRegistrationPopupView"
              x:DataType="vm:RegistrationsPDTViewModel">
 
-	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="20" ColumnDefinitions="Auto,*" Background="White">
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="20" ColumnDefinitions="Auto,*" Background="White">
 		<TextBlock Grid.Row="0" Text="Add New Registration" Grid.ColumnSpan="2" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
 
 		<TextBlock Text="Course:" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,10,10"/>
@@ -21,11 +21,11 @@
 			</ComboBox.ItemTemplate>
 		</ComboBox>
 
-		<TextBlock Text="Student ID:" Grid.Row="3" VerticalAlignment="Center" Margin="0,0,10,10"/>
-		<TextBox Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"
+		<TextBlock Text="Student ID:" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<TextBox Grid.Row="2" Grid.Column="1" Margin="0,0,0,10"
                  Text="{Binding InputStudentID}"/>
 
-		<StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+		<StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
 			<Button Content="Add" Command="{Binding AddRegistrationCommand}" Width="80"/>
 			<Button Content="Cancel" Command="{Binding CancelCommand}" Width="80"/>
 		</StackPanel>

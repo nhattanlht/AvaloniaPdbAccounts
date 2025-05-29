@@ -3,6 +3,31 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaPdbAccounts.Views.PDT.StudentsPDTView">
-  Welcome to Students Page for PDT!
+			 xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PDT"
+             x:Class="AvaloniaPdbAccounts.Views.PDT.StudentsPDTView"
+			 x:DataType="vm:StudentsPDTViewModel">
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto" Margin="20" ColumnDefinitions="Auto,*" Background="White">
+		<TextBlock Grid.Row="0" Text="Edit Student Status" Grid.ColumnSpan="2" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+
+
+		<TextBlock Text="Student ID:" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10"
+                 Text="{Binding InputStudentID}"/>
+
+		<TextBlock Text="Status:" Grid.Row="2" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<ComboBox Grid.Row="2" Grid.Column="1"
+                  ItemsSource="{Binding AvailableStatus}"
+                  SelectedItem="{Binding SelectedStatus}" Margin="0,0,0,10">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button Content="Edit" Command="{Binding EditCommand}" Width="80"/>
+		</StackPanel>
+	</Grid>
 </UserControl>

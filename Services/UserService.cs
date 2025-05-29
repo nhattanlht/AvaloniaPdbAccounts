@@ -6,6 +6,7 @@ using AvaloniaPdbAccounts.Models; // Import model
 using System.Data;
 using System;
 using Oracle.ManagedDataAccess.Client;
+using System.Linq.Expressions;
 
 namespace AvaloniaPdbAccounts.Services;
 
@@ -1078,6 +1079,38 @@ public class UserService
                     transaction.Rollback();
                     throw new Exception("Error deleting course offering: " + ex.Message);
                 }
+            }
+        }
+    }
+    public async Task UpdateStudentStatusForNVPDTAsync(string id, string status)
+    {
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+            string query = "UPDATE adminpdb.SINHVIEN SET TINHTRANG = :status WHERE MASV = :studentId";
+            switch (status)
+            {
+                case "Active":
+                    status = "Đang học";
+                    break;
+                case "Drop out":
+                    status = "Đã thôi học";
+                    break;
+                case "Graduated":
+                    status = "Đã tốt nghiệp";
+                    break;
+                case "Reservation":
+                    status = "Bảo lưu kết quả học tập";
+                    break;
+                default:
+                    throw new ArgumentException("Trạng thái không hợp lệ");
+            }
+            using (var cmd = new OracleCommand(query, conn))
+            {
+                cmd.Parameters.Add(new OracleParameter("status", status));
+                cmd.Parameters.Add(new OracleParameter("studentId", id));
+
+                await cmd.ExecuteNonQueryAsync();
             }
         }
     }

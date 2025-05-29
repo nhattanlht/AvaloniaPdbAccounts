@@ -968,8 +968,7 @@ BEGIN
         policy_function => 'sinhvien_modify_policy',
         statement_types  => 'INSERT,UPDATE,DELETE',
         update_check    => TRUE,
-        sec_relevant_cols => 'DCHI,DT,TINHTRANG',
-        sec_relevant_cols_opt => DBMS_RLS.ALL_ROWS
+        sec_relevant_cols => 'DCHI,DT,TINHTRANG'
     );
 END;
 /
@@ -988,7 +987,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ADMINPDB.SINHVIEN TO NVPCTSV;
 GRANT SELECT ON ADMINPDB.SINHVIEN TO GV;
 
 -- Grant UPDATE permission to NVPDT (academic staff) for updating TINHTRANG
-GRANT UPDATE (TINHTRANG) ON ADMINPDB.SINHVIEN TO NVPDT;
+GRANT SELECT, UPDATE (TINHTRANG) ON ADMINPDB.SINHVIEN TO NVPDT;
 
 -- Grant EXEMPT ACCESS POLICY to the user executing the policy functions
 -- This ensures the policy function can access SINHVIEN without triggering VPD
