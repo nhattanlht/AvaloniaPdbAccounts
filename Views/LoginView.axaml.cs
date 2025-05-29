@@ -10,6 +10,7 @@ using AvaloniaPdbAccounts.Models;
 using System.Collections.Generic;
 using static AvaloniaPdbAccounts.Utilities.RunSQLScriptUtility;
 using System.Linq;
+using AvaloniaPdbAccounts.Views;
 
 namespace AvaloniaPdbAccounts.Views
 {
@@ -21,8 +22,6 @@ namespace AvaloniaPdbAccounts.Views
             try
             {
                 RunAllSql();
-                Console.WriteLine("Runned script");
-
             }
             catch
             {
@@ -86,17 +85,23 @@ namespace AvaloniaPdbAccounts.Views
                     this.Close();
                 }
                 else if (DatabaseService.CurrentRoles != null &&
-              DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPCTSV", StringComparison.OrdinalIgnoreCase)))
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVPCTSV", StringComparison.OrdinalIgnoreCase)))
                 {
                     var pctsvWindow = new PCTSV.PCTSVView();
                     pctsvWindow.Show();
                     this.Close();
                 }
                 else if (DatabaseService.CurrentRoles != null &&
-             DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVCB", StringComparison.OrdinalIgnoreCase)))
+                DatabaseService.CurrentRoles.Any(r => string.Equals(r.RoleName, "NVCB", StringComparison.OrdinalIgnoreCase)))
                 {
                     var nvcbWindow = new NVCB.NVCBView();
                     nvcbWindow.Show();
+                    this.Close();
+                }
+                else
+                {
+                    var notificationWindow = new NotificationView();
+                    notificationWindow.Show();
                     this.Close();
                 }
             };
