@@ -543,3 +543,5 @@ D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\refint\AvaloniaPdbAccounts.d
 D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\AvaloniaPdbAccounts.pdb
 D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\AvaloniaPdbAccounts.genruntimeconfig.cache
 D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\ref\AvaloniaPdbAccounts.dll
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\Audit.sql
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\dangky.sql

@@ -1,10 +1,100 @@
-﻿conn AdminPdb/123@localhost:1521/PDB;
--- PHẦN 3 ( TẠO AUDIT TRUY VẾT )
--- XÓA BẢNG VÀ CHÍNH SAACHS NẾU TỒN TẠI
---3a)
+﻿-- PHẦN 3 (AUDIT)
 
--- 3b)
-GRANT SELECT ON DBA_ROLE_PRIVS TO ADMINPDB;
+--1. Kích hoạt việc ghi nhật ký hệ thống
+--kiểm tra unified đã bật chưa
+conn sys/123@localhost:1521/FREE as sysdba;
+SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing'; --True là đã bật
+
+--nếu chưa được bật
+-- -- Tắt database (ở chế độ SHUTDOWN IMMEDIATE)
+-- SHUTDOWN IMMEDIATE;
+-- -- Kích hoạt unified audit
+-- STARTUP UPGRADE;
+-- -- Thiết lập tham số init.ora hoặc spfile:
+-- ALTER SYSTEM SET UNIFIED_AUDIT_ENABLED = TRUE SCOPE=SPFILE;
+-- -- Khởi động lại database bình thường
+-- SHUTDOWN IMMEDIATE;
+-- STARTUP;
+-- ALTER SESSION SET CONTAINER = PDB;
+
+---- Kiểm tra còn policy nào đang bật
+-- conn AdminPdb/123@localhost:1521/PDB;
+-- SELECT * FROM AUDIT_UNIFIED_ENABLED_POLICIES;
+
+-- -- Tắt các chính sách mặc định (nếu có)
+-- NOAUDIT POLICY ORA_SECURECONFIG;
+-- NOAUDIT POLICY ORA_LOGON_FAILURES;
+-- NOAUDIT POLICY ORA_LOGIN_LOGOUT;
+-- NOAUDIT POLICY ORA_DV_SCHEMA_CHANGES;
+-- NOAUDIT POLICY ORA_DV_DEFAULT_PROTECTION;
+-- NOAUDIT POLICY ORA$DICTIONARY_SENS_COL_ACCESS;
+
+-- Nếu có policy audit tên AUDIT_NHANVIEN_TCHC_NV00018 thì hủy áp dụng và xóa trước khi tạo mới
+conn AdminPdb/123@localhost:1521/PDB;
+BEGIN
+   FOR rec IN (SELECT POLICY_NAME FROM AUDIT_UNIFIED_ENABLED_POLICIES WHERE POLICY_NAME = 'AUDIT_NHANVIEN_TCHC_NV00018') LOOP
+      EXECUTE IMMEDIATE 'NOAUDIT POLICY ' || rec.POLICY_NAME || ' BY NV00018';
+      EXECUTE IMMEDIATE 'DROP AUDIT POLICY ' || rec.POLICY_NAME;
+   END LOOP;
+END;
+/
+
+--Tạo Policy Ghi lại các thao tác DML (SELECT, INSERT, UPDATE, DELETE) trên bảng ADMINPDB.NHANVIEN
+conn AdminPdb/123@localhost:1521/PDB;
+CREATE AUDIT POLICY AUDIT_NHANVIEN_TCHC_NV00018
+ACTIONS
+  SELECT ON ADMINPDB.NHANVIEN,
+  INSERT ON ADMINPDB.NHANVIEN,
+  UPDATE ON ADMINPDB.NHANVIEN,
+  DELETE ON ADMINPDB.NHANVIEN;
+
+-- Gán policy cho user cụ thể
+AUDIT POLICY AUDIT_NHANVIEN_TCHC_NV00018
+  BY NV00018
+  WHENEVER SUCCESSFUL;
+AUDIT POLICY AUDIT_NHANVIEN_TCHC_NV00018
+  BY NV00018
+  WHENEVER NOT SUCCESSFUL;
+
+-- TEST TRƯỜNG HỢP BỊ GHI NHẬN AUDIT
+--NVTCHC update LUONG của NV00001 và thao tác đọc bảng nhân viên
+conn NV00018/123@localhost:1521/PDB;
+UPDATE ADMINPDB.NHANVIEN
+SET LUONG = LUONG + 1000000
+WHERE MANLD = 'NV00001';
+SELECT * FROM ADMINPDB.NHANVIEN;
+
+
+-- Đọc xuất dữ liệu nhật ký hệ thống.
+conn AdminPdb/123@localhost:1521/PDB;
+SELECT 
+  AUDIT_TYPE,
+  EVENT_TIMESTAMP,
+  DBUSERNAME,
+  OBJECT_SCHEMA,
+  OBJECT_NAME,
+  ACTION_NAME,
+  SQL_TEXT,
+  RETURN_CODE
+FROM 
+  UNIFIED_AUDIT_TRAIL
+WHERE 
+  OBJECT_NAME = 'NHANVIEN'
+ORDER BY 
+  EVENT_TIMESTAMP DESC;
+
+
+--3 Dùng Fine-grained Audit cho các tình huống
+conn sys/123@localhost:1521/FREE as sysdba;
+ALTER SESSION SET CONTAINER = PDB;
+GRANT SELECT ON DBA_ROLE_PRIVS TO AdminPdb;
+--3a) Hành vi cập nhật quan hệ ĐANGKY tại các trường liên quan đến điểm số nhưng 
+--người đó không thuộc vai trò “NV PKT”.
+
+
+-- 3b) Hành vi của người dùng (không thuộc vai trò “NV TCHC”) có thể đọc trên  
+--trường LUONG, PHUCAP của người khác hoặc cập nhật ở quan hệ NHANVIEN.
+conn AdminPdb/123@localhost:1521/PDB;
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE ADMINPDB.FGA_LOG_TABLE CASCADE CONSTRAINTS';
 EXCEPTION
@@ -151,3 +241,12 @@ BEGIN
 END;
 /
 --3c)
+
+--4. Đọc xuất dữ liệu nhật ký hệ thống.
+conn AdminPdb/123@localhost:1521/PDB;
+SELECT * FROM FGA_LOG_TABLE;
+
+-- TEST TRƯỜNG HỢP BỊ GHI LOG
+conn NV00022/123@localhost:1521/PDB;
+SELECT LUONG, PHUCAP FROM ADMINPDB.NHANVIEN;
+COMMIT;
