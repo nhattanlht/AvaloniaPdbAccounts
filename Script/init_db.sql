@@ -1012,8 +1012,12 @@ BEGIN
 END;
 /
 
+GRANT EXECUTE ON adminpdb.get_semester_start_date TO PUBLIC;
+
+conn sys/123@localhost:1521/PDB as sysdba;
+
 -- Policy function for DANGKY table
-CREATE OR REPLACE FUNCTION dangky_policy_function (
+CREATE OR REPLACE FUNCTION adminpdb.dangky_policy_function (
     p_schema IN VARCHAR2,
     p_object IN VARCHAR2
 ) RETURN VARCHAR2 
@@ -1048,13 +1052,13 @@ BEGIN
 
     IF v_role = 'NVPDT' THEN
         -- NVPDT can view DANGKY for MOMON within 14 days of semester start
-        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON WHERE SYSDATE <= get_semester_start_date(HK, NAM) + 14)';
+        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON_PDT WHERE SYSDATE <= adminpdb.get_semester_start_date(HK, NAM) + 40)';
     ELSIF v_role = 'NVPKT' THEN
         -- NV PKT can view all DANGKY data
         v_predicate := '1=1';
     ELSIF v_role = 'GV' THEN
         -- GV can view DANGKY for classes they teach (via MOMON.MAGV)
-        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON WHERE MAGV = ''' || v_user || ''')';
+        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON_GV WHERE MAGV = ''' || v_user || ''')';
     ELSE
         -- Deny access for other users
         v_predicate := '1=0';
@@ -1078,7 +1082,7 @@ END;
 /
 
 -- Policy function for INSERT, UPDATE, DELETE operations on DANGKY
-CREATE OR REPLACE FUNCTION dangky_modify_policy (
+CREATE OR REPLACE FUNCTION adminpdb.dangky_modify_policy (
     p_schema IN VARCHAR2,
     p_object IN VARCHAR2
 ) RETURN VARCHAR2 
@@ -1096,7 +1100,7 @@ BEGIN
     
     IF v_student_count > 0 THEN
         -- Students can modify their own DANGKY records within 14 days of semester start, where grades are NULL
-        v_predicate := 'MASV = ''' || v_user || ''' AND MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON WHERE SYSDATE <= get_semester_start_date(HK, NAM) + 14) AND DIEMTH IS NULL AND DIEMQT IS NULL AND DIEMCK IS NULL AND DIEMTK IS NULL';
+        v_predicate := 'MASV = ''' || v_user || ''' AND MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON_SV WHERE SYSDATE <= adminpdb.get_semester_start_date(HK, NAM) + 40) AND DIEMTH IS NULL AND DIEMQT IS NULL AND DIEMCK IS NULL AND DIEMTK IS NULL';
         RETURN v_predicate;
     END IF;
 
@@ -1113,7 +1117,7 @@ BEGIN
 
     IF v_role = 'NVPDT' THEN
         -- NV PĐT can modify DANGKY for MOMON within 14 days of semester start, where grades are NULL
-        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON WHERE SYSDATE <= get_semester_start_date(HK, NAM) + 14) AND DIEMTH IS NULL AND DIEMQT IS NULL AND DIEMCK IS NULL AND DIEMTK IS NULL';
+        v_predicate := 'MAMM IN (SELECT MAMM FROM ADMINPDB.MOMON_PDT WHERE SYSDATE <= adminpdb.get_semester_start_date(HK, NAM) + 40) AND DIEMTH IS NULL AND DIEMQT IS NULL AND DIEMCK IS NULL AND DIEMTK IS NULL';
     ELSIF v_role = 'NVPKT' THEN
         -- NV PKT can update grade fields (no restriction on time or grades)
         v_predicate := '1=1';
@@ -1153,34 +1157,61 @@ GRANT SELECT, UPDATE ON ADMINPDB.DANGKY TO NVPKT;
 -- Cấp quyền cho giảng viên (GV)
 GRANT SELECT ON ADMINPDB.DANGKY TO GV;
 
-QUIT;
-
-
-
--- conn AdminPdb/123@localhost:1521/PDB;
--- GRANT SELECT ON SINHVIEN TO SV;
-
--- conn AdminPdb/123@localhost:1521/PDB;
--- conn A536166/123@localhost:1521/PDB;
--- SELECT * FROM SINHVIEN;
+----------------------------
+-- Addition procedure to get MetaData
+----------------------------
+-- Force to delete Dangky (and also delete Momon to ensure consistency) for NVPDT
+GRANT EXECUTE ON DBMS_RLS TO ADMINPDB;
 
 conn AdminPdb/123@localhost:1521/PDB;
-GRANT SELECT ON ADMINPDB.SINHVIEN TO A536166;
-conn A536166/123@localhost:1521/PDB;
-SELECT * FROM ADMINPDB.SINHVIEN;
 
-SELECT owner, table_name FROM all_tables WHERE table_name = 'SINHVIEN';
-SELECT object_type FROM all_objects WHERE owner = 'ADMINPDB' AND object_name = 'SINHVIEN';
--- conn AdminPdb/123@localhost:1521/PDB;
--- conn A536166/123@localhost:1521/PDB;
+CREATE OR REPLACE PROCEDURE force_delete_dangky_and_momon(p_mamm VARCHAR2)
+AUTHID DEFINER
+IS
+BEGIN
+    -- Tạm tắt VPD policy
+    DBMS_RLS.ENABLE_POLICY(
+        object_schema  => 'ADMINPDB',
+        object_name    => 'DANGKY',
+        policy_name    => 'DANGKY_MODIFY_POLICY',
+        enable         => FALSE
+    );
 
--- conn AdminPdb/123@localhost:1521/PDB;
+    DELETE FROM ADMINPDB.DANGKY
+    WHERE MAMM = p_mamm;
+    
+    DELETE FROM ADMINPDB.MOMON
+    WHERE MAMM = p_mamm;
 
-conn A536166/123@localhost:1521/PDB;
-SELECT MASV, HOTEN, PHAI, NGSINH, DCHI, DT, KHOA, TINHTRANG FROM ADMINPDB.SINHVIEN;
+    -- Bật lại VPD policy
+    DBMS_RLS.ENABLE_POLICY(
+        object_schema  => 'ADMINPDB',
+        object_name    => 'DANGKY',
+        policy_name    => 'DANGKY_MODIFY_POLICY',
+        enable         => TRUE
+    );
+END;
+/
 
--- SELECT table_name FROM all_tables WHERE table_name = 'SINHVIEN';
--- GV: NV00001
---SV: A536166, A864352
---TRGDV: NV00071
---NVPKT: NV00041
+GRANT EXECUTE ON ADMINPDB.force_delete_dangky_and_momon TO NVPDT;
+
+CREATE OR REPLACE PROCEDURE get_modules(p_result OUT SYS_REFCURSOR) AUTHID DEFINER IS
+BEGIN
+  OPEN p_result FOR
+    SELECT MAHP, TENHP FROM adminpdb.HOCPHAN;
+END;
+/
+
+-- Procedure to get instructors
+CREATE OR REPLACE PROCEDURE get_instructors(p_result OUT SYS_REFCURSOR) AUTHID DEFINER IS
+BEGIN
+  OPEN p_result FOR
+    SELECT MANLD, HOTEN FROM adminpdb.NHANVIEN WHERE VAITRO = 'GV';
+END;
+/
+
+GRANT EXECUTE ON ADMINPDB.get_modules TO NVPDT;
+GRANT EXECUTE ON ADMINPDB.get_instructors TO NVPDT;
+
+
+QUIT;
