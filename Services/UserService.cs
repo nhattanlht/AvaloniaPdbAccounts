@@ -264,7 +264,7 @@ public class UserService
         {
             await conn.OpenAsync();
 
-            string query = "SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN_NVCB";
+            string query = "SELECT MANLD, HOTEN, PHAI, NGSINH, LUONG, PHUCAP, DT, VAITRO, MADV FROM adminpdb.NHANVIEN";
 
             using (var cmd = new OracleCommand(query, conn))
             using (var reader = await cmd.ExecuteReaderAsync())

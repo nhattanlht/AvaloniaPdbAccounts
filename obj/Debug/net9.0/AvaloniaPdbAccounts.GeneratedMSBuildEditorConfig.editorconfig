@@ -89,6 +89,9 @@ build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 [D:/NAM MOI MOI/AvaloniaPdbAccounts/Views/PDT/AddCoursePopupView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
+[D:/NAM MOI MOI/AvaloniaPdbAccounts/Views/PDT/AddRegistrationPopupView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
 [D:/NAM MOI MOI/AvaloniaPdbAccounts/Views/PDT/CoursesPDTView.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
