@@ -26,8 +26,9 @@ END;
 CREATE PLUGGABLE DATABASE PDB
   ADMIN USER AdminPdb IDENTIFIED BY 123
   ROLES = (DBA)
-  FILE_NAME_CONVERT = ('D:\Installed\app\oracle\oradata\ORCL21\pdbseed', 'D:\Installed\app\oracle\oradata\ORCL21\pdbseed\PDB');
+  FILE_NAME_CONVERT = ('D:\Oracle\oradata\ORCL21\pdbseed', 'D:\Oracle\oradata\ORCL21\pdbseed\PDB');
 );
+
 
 -- Mở PDB nếu chưa mở 
 CREATE OR REPLACE PROCEDURE Open_PDB_If_Closed(p_pdb_name IN VARCHAR2) 
