@@ -20,5 +20,7 @@ namespace AvaloniaPdbAccounts.Models
         public string ProcessScoreDisplay => ProcessScore.HasValue ? ProcessScore.Value.ToString() : "-";
         public string FinalScoreDisplay => FinalScore.HasValue ? FinalScore.Value.ToString() : "-";
         public string TotalScoreDisplay => TotalScore.HasValue ? TotalScore.Value.ToString() : "-";
+
+        public bool HasScore => PracticeScore.HasValue || ProcessScore.HasValue || FinalScore.HasValue || TotalScore.HasValue;
     }
 }

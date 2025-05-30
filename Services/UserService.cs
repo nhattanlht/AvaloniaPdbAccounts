@@ -624,54 +624,253 @@ public class UserService
         return registrations;
     }
 
+    public async Task<List<CourseModel>> GetAvailableCoursesForRegistrationAsync()
+    {
+        var courses = new List<CourseModel>();
+
+        using (var conn = new OracleConnection(_connectionString))
+        {
+            await conn.OpenAsync();
+
+            // Lấy danh sách môn học từ view MOMON_SV (view này đã được lọc theo khoa của sinh viên)
+            string query = @"SELECT MAMM, MAHP, MAGV, HK, NAM 
+                           FROM ADMINPDB.MOMON_SV";
+
+            using (var cmd = new OracleCommand(query, conn))
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                while (await reader.ReadAsync())
+                {
+                    courses.Add(new CourseModel
+                    {
+                        CourseID = reader.GetString(reader.GetOrdinal("MAMM")),
+                        BaseCode = reader.GetString(reader.GetOrdinal("MAHP")),
+                        TeacherID = reader.GetString(reader.GetOrdinal("MAGV")),
+                        Semester = reader.GetInt32(reader.GetOrdinal("HK")),
+                        Year = reader.GetInt32(reader.GetOrdinal("NAM"))
+                    });
+                }
+            }
+        }
+
+        return courses;
+    }
+
     public async Task AddRegistrationAsync(RegistrationModel model)
     {
         using var conn = new OracleConnection(_connectionString);
         await conn.OpenAsync();
 
-        string query = "INSERT INTO adminpdb.DANGKY (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) VALUES (:masv, :mamm, :diemth, :diemqt, :diemck, :diemtk)";
-        using var cmd = new OracleCommand(query, conn);
+        try
+        {
+            // 1. Kiểm tra session user và context
+            using (var userCmd = new OracleCommand(@"
+                SELECT 
+                    SYS_CONTEXT('USERENV','SESSION_USER') as SESSION_USER,
+                    SYS_CONTEXT('USERENV','CURRENT_USER') as CURRENT_USER,
+                    SYS_CONTEXT('SV_CTX','MASV') as MASV,
+                    SYS_CONTEXT('SV_CTX','MAKHOA') as MAKHOA
+                FROM DUAL", conn))
+            {
+                using var reader = await userCmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    var sessionUser = reader.GetString(0);
+                    var currentUser = reader.GetString(1);
+                    var ctxMaSV = reader.IsDBNull(2) ? null : reader.GetString(2);
+                    var ctxMaKhoa = reader.IsDBNull(3) ? null : reader.GetString(3);
+                    
+                    Console.WriteLine($"Session User: {sessionUser}");
+                    Console.WriteLine($"Current User: {currentUser}");
+                    Console.WriteLine($"Context MASV: {ctxMaSV}");
+                    Console.WriteLine($"Context MAKHOA: {ctxMaKhoa}");
+                    
+                    if (string.IsNullOrEmpty(ctxMaSV) || string.IsNullOrEmpty(ctxMaKhoa))
+                    {
+                        throw new Exception("Không tìm thấy thông tin sinh viên trong context. Vui lòng đăng nhập lại.");
+                    }
+                }
+            }
 
-        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
-        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
-        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
+            // 2. Kiểm tra môn học có thuộc khoa của sinh viên không
+            using (var courseCmd = new OracleCommand(@"
+                SELECT MM.MAMM, MM.MAHP, MM.HK, MM.NAM, K.MAKHOA
+                FROM ADMINPDB.MOMON MM
+                JOIN ADMINPDB.HOCPHAN HP ON MM.MAHP = HP.MAHP
+                JOIN ADMINPDB.KHOA K ON HP.MAKHOA = K.MAKHOA
+                WHERE MM.MAMM = :mamm", conn))
+            {
+                courseCmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+                using var reader = await courseCmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    var maKhoa = reader.GetString(4);
+                    var hocKy = reader.GetInt32(2);
+                    var nam = reader.GetInt32(3);
+                    Console.WriteLine($"Môn học thuộc khoa: {maKhoa}");
+                    Console.WriteLine($"Học kỳ: {hocKy}/{nam}");
+                }
+                else
+                {
+                    throw new Exception("Môn học không tồn tại");
+                }
+            }
 
-        await cmd.ExecuteNonQueryAsync();
+            // 3. Kiểm tra sinh viên đã đăng ký môn này chưa
+            using (var checkCmd = new OracleCommand(@"
+                SELECT COUNT(*) 
+                FROM ADMINPDB.DANGKY DK 
+                WHERE DK.MASV = :masv 
+                AND DK.MAMM = :mamm", conn))
+            {
+                checkCmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+                checkCmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+                var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
+                if (count > 0)
+                {
+                    throw new Exception("Bạn đã đăng ký môn học này rồi");
+                }
+            }
+
+            // 4. Thực hiện đăng ký
+            string query = @"
+                INSERT INTO ADMINPDB.DANGKY 
+                    (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) 
+                VALUES 
+                    (:masv, :mamm, NULL, NULL, NULL, NULL)";
+            using var cmd = new OracleCommand(query, conn);
+
+            cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+            cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+
+            try
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (OracleException ex)
+            {
+                Console.WriteLine($"Insert Error: {ex.Message}");
+                Console.WriteLine($"Error Code: {ex.Number}");
+                Console.WriteLine($"Error Source: {ex.Source}");
+                if (ex.Number == 28115)
+                {
+                    throw new Exception("Không thể đăng ký môn học này. Có thể do không thuộc khoa của bạn, không trong thời gian đăng ký, hoặc đã có điểm.");
+                }
+                throw;
+            }
+        }
+        catch (OracleException ex)
+        {
+            Console.WriteLine($"Oracle Error Number: {ex.Number}");
+            Console.WriteLine($"Oracle Error Message: {ex.Message}");
+            if (ex.Number == 942)
+            {
+                throw new Exception("Không có quyền truy cập bảng hoặc bảng không tồn tại. Vui lòng kiểm tra lại quyền của tài khoản.");
+            }
+            throw;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"AddRegistrationAsync ERROR: {ex.Message}");
+            throw;
+        }
     }
 
-    public async Task UpdateRegistrationAsync(RegistrationModel model)
+    public async Task<bool> DeleteRegistrationAsync(string studentId, string courseId)
     {
         using var conn = new OracleConnection(_connectionString);
-        await conn.OpenAsync();
+        try 
+        {
+            await conn.OpenAsync();
+            Console.WriteLine("Connection opened successfully");
 
-        string query = "UPDATE adminpdb.DANGKY SET DIEMTH = :diemth, DIEMQT = :diemqt, DIEMCK = :diemck, DIEMTK = :diemtk WHERE MASV = :masv AND MAMM = :mamm";
-        using var cmd = new OracleCommand(query, conn);
+            // Kiểm tra session user
+            using (var userCmd = new OracleCommand("SELECT SYS_CONTEXT('USERENV','SESSION_USER') FROM DUAL", conn))
+            {
+                var sessionUser = await userCmd.ExecuteScalarAsync() as string;
+                Console.WriteLine($"Current session user: {sessionUser}");
+            }
 
-        cmd.Parameters.Add(new OracleParameter("diemth", model.PracticeScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemqt", model.ProcessScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemck", model.FinalScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("diemtk", model.TotalScore ?? (object)DBNull.Value));
-        cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
-        cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
+            // Kiểm tra thông tin môn học
+            using (var courseCmd = new OracleCommand(@"
+                SELECT MM.HK, MM.NAM, 
+                       CASE 
+                           WHEN SYSDATE <= get_semester_start_date(MM.HK, MM.NAM) + 14 
+                           THEN 'TRUE' 
+                           ELSE 'FALSE' 
+                       END as IN_REGISTRATION_PERIOD
+                FROM MOMON MM 
+                WHERE MM.MAMM = :mamm", conn))
+            {
+                courseCmd.Parameters.Add(new OracleParameter("mamm", courseId));
+                try
+                {
+                    using var reader = await courseCmd.ExecuteReaderAsync();
+                    if (await reader.ReadAsync())
+                    {
+                        var semester = reader.GetInt32(0);
+                        var year = reader.GetInt32(1);
+                        var inRegistrationPeriod = reader.GetString(2) == "TRUE";
+                        Console.WriteLine($"Course info - Semester: {semester}, Year: {year}, In Registration Period: {inRegistrationPeriod}");
+                    }
+                }
+                catch (OracleException ex)
+                {
+                    Console.WriteLine($"Error checking course info: {ex.Message}");
+                    if (ex.Number == 942)
+                    {
+                        Console.WriteLine("No access to MOMON table or table doesn't exist");
+                    }
+                }
+            }
 
-        await cmd.ExecuteNonQueryAsync();
-    }
+            // Thực hiện xóa
+            string query = "DELETE FROM ADMINPDB.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
+            using var cmd = new OracleCommand(query, conn);
+            cmd.Parameters.Add(new OracleParameter("masv", studentId));
+            cmd.Parameters.Add(new OracleParameter("mamm", courseId));
 
-    public async Task DeleteRegistrationAsync(string studentId, string courseId)
-    {
-        using var conn = new OracleConnection(_connectionString);
-        await conn.OpenAsync();
+            try
+            {
+                int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                Console.WriteLine($"Rows affected by DELETE: {rowsAffected}");
+                
+                if (rowsAffected == 0)
+                {
+                    // Kiểm tra xem bản ghi có tồn tại không
+                    var checkQuery = "SELECT COUNT(*) FROM ADMINPDB.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
+                    using var checkCmd = new OracleCommand(checkQuery, conn);
+                    checkCmd.Parameters.Add(new OracleParameter("masv", studentId));
+                    checkCmd.Parameters.Add(new OracleParameter("mamm", courseId));
 
-        string query = "DELETE FROM adminpdb.DANGKY WHERE MASV = :masv AND MAMM = :mamm";
-        using var cmd = new OracleCommand(query, conn);
-
-        cmd.Parameters.Add(new OracleParameter("masv", studentId));
-        cmd.Parameters.Add(new OracleParameter("mamm", courseId));
-
-        await cmd.ExecuteNonQueryAsync();
+                    var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
+                    if (count > 0)
+                    {
+                        throw new Exception("Không thể xóa đăng ký. Có thể đã quá thời hạn cho phép (14 ngày từ đầu học kỳ) hoặc đã có điểm");
+                    }
+                    else
+                    {
+                        throw new Exception("Không tìm thấy đăng ký môn học này");
+                    }
+                }
+                return true;
+            }
+            catch (OracleException ex)
+            {
+                Console.WriteLine($"Oracle Error Number: {ex.Number}");
+                Console.WriteLine($"Oracle Error Message: {ex.Message}");
+                if (ex.Number == 942)
+                {
+                    throw new Exception("Không có quyền truy cập bảng DANGKY hoặc bảng không tồn tại");
+                }
+                throw;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"DeleteRegistrationAsync ERROR: {ex.Message}");
+            throw;
+        }
     }
 
     public async Task UpdateRegistrationScoreAsync(string studentId, string courseId, decimal? practiceScore, decimal? processScore, decimal? finalScore, decimal? totalScore)
