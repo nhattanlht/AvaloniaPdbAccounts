@@ -32,24 +32,29 @@
             get => _newRoleName;
             set => SetProperty(ref _newRoleName, value);
         }
-        public RoleManagementViewModel()
-        {
-            AddRoleCommand = new RelayCommand(
-                async () => 
-                {
-                    await AddRoleAsync(NewRoleName);
-                    NewRoleName = ""; // Reset sau khi tạo
-                },
-                () => !string.IsNullOrEmpty(NewRoleName) // Chỉ enable khi có tên role
-            );
-            LoadRolesCommand = new RelayCommand(async () => await LoadRolesAsync());
-            // AddRoleCommand = new RelayCommand(async () => await AddRoleAsync());
-            EditRolePrivilegesCommand = new RelayCommand(async () => await EditRolePrivilegesAsync());
-            DeleteRoleCommand = new RelayCommand(async () => await DeleteRoleAsync());
-        }
+        private readonly DialogService _dialogService = new();
+
+        public RoleManagementViewModel(IDialogService dialogService)
+    {
+        _dialogService = (DialogService)(dialogService ?? throw new ArgumentNullException(nameof(dialogService)));
+
+        AddRoleCommand = new RelayCommand(
+            async () =>
+            {
+                NewRoleName = await _dialogService.ShowInputDialogAsync("Tạo Role", $"Nhập tên role mới {NewRoleName}");
+                await AddRoleAsync(NewRoleName);
+                NewRoleName = ""; // Reset sau khi tạo
+            },
+            () => !string.IsNullOrEmpty(NewRoleName) // Chỉ enable khi có tên role
+        );
+        LoadRolesCommand = new RelayCommand(async () => await LoadRolesAsync());
+        // AddRoleCommand = new RelayCommand(async () => await AddRoleAsync());
+        EditRolePrivilegesCommand = new RelayCommand(async () => await EditRolePrivilegesAsync());
+        DeleteRoleCommand = new RelayCommand(async () => await DeleteRoleAsync());
+    }
 
         public async Task LoadRolesAsync()
-    {
+        {
         try
         {
             using var conn = new OracleConnection(connectionString);

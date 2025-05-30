@@ -18,7 +18,7 @@ namespace AvaloniaPdbAccounts
     {
         private readonly DialogService _dialogService;
         private readonly UserManagementViewModel _userManagementVM;
-        private readonly RoleManagementViewModel _roleManagementVM = new RoleManagementViewModel();
+        private readonly RoleManagementViewModel _roleManagementVM;
         private readonly PrivilegeManagementViewModel _privilegeManagementVM = new PrivilegeManagementViewModel();
         private readonly PrivilegeGrant _privilegeGrant = new PrivilegeGrant();
         private string _lastGrantee = "";
@@ -28,6 +28,7 @@ namespace AvaloniaPdbAccounts
         {
             _dialogService = new DialogService(this);
             _userManagementVM = new UserManagementViewModel(_dialogService);
+            _roleManagementVM = new RoleManagementViewModel(_dialogService);
             InitializeComponent();
             var vm = this.DataContext as PrivilegeGrant;
             if (vm != null)
