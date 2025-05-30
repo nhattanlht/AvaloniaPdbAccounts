@@ -10,6 +10,8 @@ using System.Linq;
 using System.Collections.Generic;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
+using ReactiveUI;
+using System.Reactive;
 
 namespace AvaloniaPdbAccounts.ViewModels.SV
 {
@@ -17,6 +19,8 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
     {
         public ObservableCollection<RegistrationModel> Registrations { get; } = new();
         public ObservableCollection<CourseModel> AvailableCourses { get; } = new();
+
+        public ReactiveCommand<Unit, Unit> AddRegistationCommand { get; }
 
         private readonly UserService _userService = new();
 
@@ -74,6 +78,14 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
 
         public RegistrationsSVViewModel()
         {
+            AddRegistationCommand = ReactiveCommand.CreateFromTask(async () =>
+            {
+                await Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    await AddRegistrationAsync(NewRegistration);
+                });
+            });
+
             AddCommand = new RelayCommand(async () => await AddRegistrationAsync(NewRegistration), () => SelectedCourse != null);
             DeleteCommand = new RelayCommand<RegistrationModel>(async (model) =>
             {
@@ -84,29 +96,6 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
             _ = LoadAvailableCoursesAsync();
         }
 
-        private async Task LoadAvailableCoursesAsync()
-        {
-            try
-            {
-                var courses = await _userService.GetAvailableCoursesForRegistrationAsync();
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    AvailableCourses.Clear();
-                    foreach (var course in courses)
-                    {
-                        AvailableCourses.Add(course);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                await MessageBoxManager.GetMessageBoxStandard(
-                    "Lỗi",
-                    "Không thể tải danh sách môn học: " + ex.Message,
-                    ButtonEnum.Ok,
-                    Icon.Error).ShowAsync();
-            }
-        }
 
         public async Task AddRegistrationAsync(RegistrationModel model)
         {
@@ -139,12 +128,12 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
                 model.StudentID = studentId;
                 model.CourseID = SelectedCourse.CourseID;
                 await _userService.AddRegistrationAsync(model);
-                
+
                 // Cập nhật UI
                 Registrations.Add(model);
                 OnPropertyChanged(nameof(RegistrationsWithoutScore));
                 OnPropertyChanged(nameof(RegistrationsWithScore));
-                
+
                 // Reset form
                 NewRegistration = new RegistrationModel();
                 SelectedCourse = null;
@@ -165,6 +154,31 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
                     Icon.Error).ShowAsync();
             }
         }
+
+        private async Task LoadAvailableCoursesAsync()
+        {
+            try
+            {
+                var courses = await _userService.GetAvailableCoursesForRegistrationAsync();
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    AvailableCourses.Clear();
+                    foreach (var course in courses)
+                    {
+                        AvailableCourses.Add(course);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                await MessageBoxManager.GetMessageBoxStandard(
+                    "Lỗi",
+                    "Không thể tải danh sách môn học: " + ex.Message,
+                    ButtonEnum.Ok,
+                    Icon.Error).ShowAsync();
+            }
+        }
+
 
         public async Task DeleteRegistrationAsync(RegistrationModel model)
         {
