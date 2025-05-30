@@ -8,39 +8,226 @@
              x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView"
              x:DataType="vm:RegistrationsSVViewModel">
 
+    <UserControl.Styles>
+        <!-- Custom Button Style -->
+        <Style Selector="Button.modern">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0.2"/>
+                    <BrushTransition Property="Background" Duration="0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.modern:pointerover">
+            <Setter Property="Background" Value="#1976D2"/>
+            <Setter Property="RenderTransform" Value="scale(1.05)"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.modern:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.98)"/>
+        </Style>
+        <Style Selector="Button.modern:disabled">
+            <Setter Property="Background" Value="#BDBDBD"/>
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Cursor" Value="No"/>
+        </Style>
+        
+        <!-- Custom ComboBox Style -->
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        </Style>
+
+        <!-- Custom DataGrid Style -->
+        <Style Selector="DataGrid">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+    </UserControl.Styles>
+
     <!-- DataContext được gán tự động bởi ViewLocator -->
 
-    <Grid Margin="20" RowDefinitions="Auto,Auto,*" RowSpacing="10">
-        <TextBlock Text="Danh sách đăng ký môn học" FontSize="24" FontWeight="Bold" />
+    <Grid RowDefinitions="Auto,*" Margin="24">
+        <!-- Header with gradient background -->
+        <Border Grid.Row="0" 
+                Margin="0,0,0,24" 
+                CornerRadius="12"
+                Padding="20">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#2196F3" Offset="0"/>
+                    <GradientStop Color="#1976D2" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <TextBlock Text="Quản lý đăng ký &amp; điểm số" 
+                      FontSize="32" 
+                      FontWeight="Bold" 
+                      Foreground="White"/>
+        </Border>
 
-        <!-- Form nhập liệu -->
-        <StackPanel Orientation="Horizontal" Spacing="10" Grid.Row="1">
-            <TextBox Width="100" Watermark="Mã SV" Text="{Binding NewRegistration.StudentID}" />
-            <TextBox Width="100" Watermark="Mã Môn" Text="{Binding NewRegistration.CourseID}" />
-            <TextBox Width="80" Watermark="Điểm TH" Text="{Binding NewRegistration.PracticeScore}" />
-            <TextBox Width="80" Watermark="Điểm QT" Text="{Binding NewRegistration.ProcessScore}" />
-            <TextBox Width="80" Watermark="Điểm CK" Text="{Binding NewRegistration.FinalScore}" />
-            <TextBox Width="80" Watermark="Điểm TK" Text="{Binding NewRegistration.TotalScore}" />
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="24">
+                <!-- Registration Section -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" 
+                                  Spacing="16" 
+                                  Margin="0,0,0,20">
+                            <TextBlock Text="Đăng ký môn học" 
+                                     FontSize="24" 
+                                     FontWeight="Bold" 
+                                     Foreground="#1976D2"/>
+                            <TextBlock Text="Chọn môn học bạn muốn đăng ký từ danh sách bên dưới"
+                                     Foreground="#666666"
+                                     FontSize="14"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <ComboBox Width="450"
+                                     Height="45"
+                                     VerticalAlignment="Center"
+                                     PlaceholderText="Chọn môn học"
+                                     ItemsSource="{Binding AvailableCourses}"
+                                     SelectedItem="{Binding SelectedCourse}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding CourseID}" FontWeight="SemiBold"/>
+                                            <Run Text=" - "/>
+                                            <Run Text="{Binding BaseCode}"/>
+                                            <Run Text=" (HK"/>
+                                            <Run Text="{Binding Semester}"/>
+                                            <Run Text="/"/>
+                                            <Run Text="{Binding Year}"/>
+                                            <Run Text=")"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Classes="modern"
+                                    Command="{Binding AddCommand}"
+                                    IsEnabled="{Binding SelectedCourse, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                    Width="160"
+                                    Height="45">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <PathIcon Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"
+                                             Width="20"
+                                             Height="20"/>
+                                    <TextBlock Text="Đăng ký môn học"
+                                             VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
 
-            <!-- Nút thao tác -->
-            <Button Content="Thêm" Command="{Binding AddCommand}" />
-            <Button Content="Sửa" Command="{Binding EditCommand}" />
-            <Button Content="Xóa" Command="{Binding DeleteCommand}" />
-        </StackPanel>
+                <!-- Pending Registrations -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Môn đã đăng ký (chưa có điểm)" 
+                                 FontWeight="SemiBold" 
+                                 FontSize="20" 
+                                 Foreground="#333"/>
+                        <DataGrid ItemsSource="{Binding RegistrationsWithoutScore}"
+                                AutoGenerateColumns="False"
+                                Height="160"
+                                IsReadOnly="True"
+                                GridLinesVisibility="All"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã sinh viên" 
+                                                  Binding="{Binding StudentID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Mã môn học" 
+                                                  Binding="{Binding CourseID}" 
+                                                  Width="140"/>
+                                <DataGridTemplateColumn Header="Thao tác" 
+                                                      Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Hủy đăng ký"
+                                                    Command="{Binding $parent[UserControl].DataContext.DeleteCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    Classes="modern"
+                                                    Background="#DC3545"
+                                                    HorizontalAlignment="Center"
+                                                    Width="100"
+                                                    Height="35"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
 
-        <!-- DataGrid hiển thị danh sách -->
-        <DataGrid Grid.Row="2"
-                ItemsSource="{Binding Registrations}"
-                SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}"
-                AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Mã SV" Binding="{Binding StudentID}" />
-                <DataGridTextColumn Header="Mã Môn" Binding="{Binding CourseID}" />
-                <DataGridTextColumn Header="Điểm TH" Binding="{Binding PracticeScore}" />
-                <DataGridTextColumn Header="Điểm QT" Binding="{Binding ProcessScore}" />
-                <DataGridTextColumn Header="Điểm CK" Binding="{Binding FinalScore}" />
-                <DataGridTextColumn Header="Điểm TK" Binding="{Binding TotalScore}" />
-            </DataGrid.Columns>
-        </DataGrid>
+                <!-- Scores Section -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Bảng điểm" 
+                                     FontWeight="SemiBold" 
+                                     FontSize="24" 
+                                     Foreground="#1976D2"/>
+                            <TextBlock Text="Xem điểm các môn học đã hoàn thành"
+                                     Foreground="#666666"
+                                     FontSize="14"/>
+                        </StackPanel>
+                        <DataGrid ItemsSource="{Binding RegistrationsWithScore}"
+                                SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}"
+                                AutoGenerateColumns="False"
+                                IsReadOnly="True"
+                                GridLinesVisibility="All"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã sinh viên" 
+                                                  Binding="{Binding StudentID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Mã môn học" 
+                                                  Binding="{Binding CourseID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Điểm thực hành" 
+                                                  Binding="{Binding PracticeScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm quá trình" 
+                                                  Binding="{Binding ProcessScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm cuối kỳ" 
+                                                  Binding="{Binding FinalScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm tổng kết" 
+                                                  Binding="{Binding TotalScore}" 
+                                                  Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </UserControl>

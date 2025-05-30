@@ -3,7 +3,7 @@
 --Lưu ý cần đổi FILE_NAME_CONVERT cho phù hợp trên máy để chạy local
 -- ---------------------------------------------------------
 
-
+conn sys/123@localhost:1521/FREE as sysdba;
 -- Chuyển về CDB$ROOT trước khi xóa PDB
 ALTER SESSION SET CONTAINER = CDB$ROOT;
 
@@ -26,7 +26,7 @@ END;
 CREATE PLUGGABLE DATABASE PDB
   ADMIN USER AdminPdb IDENTIFIED BY 123
   ROLES = (DBA)
-  FILE_NAME_CONVERT = ('D:\Oracle\oradata\ORCL21\pdbseed', 'D:\Oracle\oradata\ORCL21\pdbseed\PDB');
+  FILE_NAME_CONVERT = ('D:\Installed\app\oracle\oradata\ORCL21\pdbseed', 'D:\Installed\app\oracle\oradata\ORCL21\pdbseed\PDB');
 );
 
 
