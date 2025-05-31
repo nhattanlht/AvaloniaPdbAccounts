@@ -32,8 +32,10 @@ public static class RunSQLScriptUtility
             return;
         }
         RunSqlScript("init_db.sql");
-        //RunSqlScript("database.sql");
-        //RunSqlScript("RBAC_VPD.sql");
+        RunSqlScript("database.sql");
+        RunSqlScript("RBAC_VPD.sql");
+        RunSqlScript("temp.sql");
+
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution

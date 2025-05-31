@@ -167,19 +167,12 @@ public async Task<bool> CreateRoleAsync(string roleName)
                 using (var conn = new OracleConnection(_connectionString))
                 {
                     await conn.OpenAsync();
-                    
-                    // Tạo role mới
-                    using (var cmd = new OracleCommand($"CREATE ROLE \"{roleName}\"", conn))
-                    {
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                    
-                    // Cấp các quyền cơ bản
-                    using (var cmd = new OracleCommand($"GRANT CONNECT, RESOURCE TO \"{roleName}\"", conn))
-                    {
-                        await cmd.ExecuteNonQueryAsync();
-                    }
-                    
+
+                // Tạo role mới
+                using (var cmd = new OracleCommand($"CREATE ROLE \"{roleName}\"", conn))
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                }
                     return true;
                 }
             }
