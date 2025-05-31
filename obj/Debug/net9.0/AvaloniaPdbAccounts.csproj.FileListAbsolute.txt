@@ -545,3 +545,4 @@ D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\AvaloniaPdbAccounts.genrunti
 D:\NAM MOI MOI\AvaloniaPdbAccounts\obj\Debug\net9.0\ref\AvaloniaPdbAccounts.dll
 C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\Audit.sql
 C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\dangky.sql
+C:\Users\admin\Desktop\Nam moi\AvaloniaPdbAccounts\bin\Debug\net9.0\Script\Backup.sql
