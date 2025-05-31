@@ -202,12 +202,7 @@ ORDER BY
 conn sys/123@localhost:1521/FREE as sysdba;
 ALTER SESSION SET CONTAINER = PDB;
 GRANT SELECT ON DBA_ROLE_PRIVS TO AdminPdb;
---3a) Hành vi cập nhật quan hệ ĐANGKY tại các trường liên quan đến điểm số nhưng 
---người đó không thuộc vai trò “NV PKT”.
 
-
--- 3b) Hành vi của người dùng (không thuộc vai trò “NV TCHC”) có thể đọc trên  
---trường LUONG, PHUCAP của người khác hoặc cập nhật ở quan hệ NHANVIEN.
 conn AdminPdb/123@localhost:1521/PDB;
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE ADMINPDB.FGA_LOG_TABLE CASCADE CONSTRAINTS';
@@ -300,8 +295,8 @@ CREATE TABLE ADMINPDB.FGA_LOG_TABLE (
     violation_reason VARCHAR2(200)
     
 );
---3A
-
+--3a) Hành vi cập nhật quan hệ ĐANGKY tại các trường liên quan đến điểm số nhưng 
+--người đó không thuộc vai trò “NV PKT”.
 CREATE OR REPLACE PROCEDURE ADMINPDB.FGA_NOT_NVPKT (
     object_schema  VARCHAR2,
     object_name    VARCHAR2,
@@ -346,8 +341,10 @@ BEGIN
     handler_module     => 'FGA_NOT_NVPKT'
   );
 END;
+/
 
--- 3B
+-- 3b) Hành vi của người dùng (không thuộc vai trò “NV TCHC”) có thể đọc trên  
+--trường LUONG, PHUCAP của người khác hoặc cập nhật ở quan hệ NHANVIEN.
 CREATE OR REPLACE PROCEDURE ADMINPDB.FGA_NOT_TCHC (
     object_schema  VARCHAR2,
     object_name    VARCHAR2,
@@ -389,7 +386,7 @@ BEGIN
         INSERT INTO ADMINPDB.FGA_LOG_TABLE (
             object_schema, object_name, policy_name, triggered_by, user_roles, action_type, violation_reason
         ) VALUES (
-            object_schema, object_name, policy_name, v_user, v_roles, v_action, NULL
+            object_schema, object_name, policy_name, v_user, v_roles, v_action, 'Hành vi ' || v_action || ' trên bảng NHANVIEN'
         );
         COMMIT;
     END IF;
@@ -425,7 +422,7 @@ BEGIN
 END;
 /
 
---3C 
+--3C Hành vi thêm, xóa, sửa trên quan hệ DANGKY của sinh viên trên dòng dữ liệu của sinh viên khác
 CREATE OR REPLACE PROCEDURE ADMINPDB.FGA_NOT_STUDENT_HIMSELF (
     object_schema  VARCHAR2,
     object_name    VARCHAR2,
@@ -490,7 +487,7 @@ BEGIN
     object_name        => 'DANGKY',
     policy_name        => 'AUDIT_DANGKY_UPDATE_OTHER',
     audit_condition    => 'MASV != SYS_CONTEXT(''USERENV'', ''SESSION_USER'')',
-    audit_column       => NULL, -- tất cả cột
+    audit_column       => NULL, 
     statement_types    => 'INSERT,UPDATE,DELETE',
     audit_column_opts  => DBMS_FGA.ALL_COLUMNS,
     handler_schema     => 'ADMINPDB',
@@ -499,6 +496,78 @@ BEGIN
   );
 END;
 /
+--Dang ky qua thoi gian cho phep
+BEGIN
+  DBMS_FGA.DROP_POLICY('ADMINPDB','DANGKY','AUDIT_LATE_MODIFY');
+EXCEPTION WHEN OTHERS THEN NULL; END;
+/
+
+CREATE OR REPLACE PROCEDURE ADMINPDB.FGA_LATE_MODIFY (
+  p_object_schema VARCHAR2,
+  p_object_name   VARCHAR2,
+  p_policy_name   VARCHAR2
+)
+IS
+  PRAGMA AUTONOMOUS_TRANSACTION;  
+  v_user  VARCHAR2(50)  := SYS_CONTEXT('USERENV','SESSION_USER');
+  v_roles VARCHAR2(1000);
+BEGIN
+  v_roles := 'N/A';
+  BEGIN
+    SELECT LISTAGG(GRANTED_ROLE, ',') 
+           WITHIN GROUP (ORDER BY GRANTED_ROLE)
+    INTO v_roles
+    FROM USER_ROLE_PRIVS
+    WHERE USERNAME = UPPER(v_user);
+   
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      v_roles := '';        
+    WHEN OTHERS THEN
+      v_roles := 'ERROR';   
+  END;
+
+  BEGIN
+      INSERT INTO ADMINPDB.FGA_LOG_TABLE (
+            event_time, object_schema, object_name, policy_name,
+            triggered_by, user_roles, action_type, violation_reason
+        ) VALUES (
+            SYSTIMESTAMP, p_object_schema, p_object_name, p_policy_name,
+            v_user, v_roles, ORA_SYSEVENT, 'Hiệu chỉnh ngoài thời gian cho phép'
+        );
+    COMMIT;
+  EXCEPTION
+    WHEN OTHERS THEN
+
+      NULL;
+  END;
+END FGA_LATE_MODIFY;
+/
+
+
+
+BEGIN
+  DBMS_FGA.ADD_POLICY(
+    object_schema     => 'ADMINPDB',
+    object_name       => 'DANGKY',
+    policy_name       => 'AUDIT_LATE_MODIFY',
+     audit_condition   => q'[
+      EXISTS (
+        SELECT 1
+          FROM ADMINPDB.MOMON m
+         WHERE m.MAMM = MAMM
+           AND SYSDATE > ADMINPDB.get_semester_start_date(m.HK, m.NAM) + 14
+      )
+    ]',
+    statement_types   => 'INSERT,DELETE',
+    audit_column      => 'MAMM',
+    audit_column_opts => DBMS_FGA.ALL_COLUMNS,
+    handler_schema    => 'ADMINPDB',
+    handler_module    => 'FGA_LATE_MODIFY'
+  );
+END;
+/
+
 
 
 --TẮT POLICY ĐỂ TEST
@@ -517,23 +586,37 @@ END;
 --NV00640: NVCB
 --NV00076: TRDV
 
-SELECT * FROM ADMINPDB.FGA_LOG_TABLE;
 --LOGIN VÀO VÀ TEST
 
---Login vào NHÂN VIÊN PĐT TEST
+--A) Login vào NHÂN VIÊN PĐT TEST
 conn NV00029/123@localhost:1521/PDB;
 UPDATE ADMINPDB.DANGKY
 SET
-DIEMQT = 6.0,
+DIEMQT = 5.0,
 DIEMCK = 9.0,
 DIEMTK = 7.5
 WHERE MASV = '20A536166' AND MAMM = 'MTH00003_2_2024';
+--B) 
+--LOGIN VÀO NVCB UPDATE TRÊN BẢNG NHANVIEN
+CONN NV00640/123@LOCALHOST:1521/PDB;
+UPDATE ADMINPDB.NHANVIEN_NVCB
+SET DT='0911000300'
+WHERE MANLD='NV00640';
+SELECT *FROM ADMINPDB.NHANVIEN;
+--TẠO CONNECT MỚI , LOGIN VÀO ROLE TRDV THỰC THI CÂU LỆNH SELECT TRÊN BẢNG NHANIEN 
+-- NV00075/123@LOCALHOST:1521/PDB;
+GRANT SELECT  ON ADMINPDB.NHANVIEN TO TRGDV;
+SELECT *from ADMINPDB.NHANVIEN;
 
--- Login vào sinh viên và test
+--3C) Login vào sinh viên và test
+--TEST UPDATE ĐIỂM CỦA SINHVIEN KHAC
 conn 20A536166/123@localhost:1521/PDB;
 UPDATE ADMINPDB.DANGKY
 SET DIEMTK = 4
 WHERE MASV = '20A921624' AND MAMM = 'MTH00003_2_2024';
+--3C) TEST DANGKY MÔN QUÁ HẠN 14NG
+--Test trên UI đăng ký môn học
+
 
 
 -- XUẤT FILE LƯU THÔNG TIN AUDIT
