@@ -96,6 +96,7 @@
                         <StackPanel Orientation="Horizontal" Spacing="16">
                             <ComboBox Width="450"
                                      Height="45"
+									 Foreground="Black"
                                      VerticalAlignment="Center"
                                      PlaceholderText="Chọn môn học"
                                      ItemsSource="{Binding AvailableCourses}"
@@ -115,19 +116,7 @@
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Button Classes="modern"
-                                    Command="{Binding AddCommand}"
-                                    IsEnabled="{Binding SelectedCourse, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                    Width="160"
-                                    Height="45">
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <PathIcon Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z"
-                                             Width="20"
-                                             Height="20"/>
-                                    <TextBlock Text="Đăng ký môn học"
-                                             VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </Button>
+						<Button Command="{Binding AddRegistationCommand}" Content="Đăng ký môn học" HorizontalAlignment="Right" Margin="0,0,0,20"/>
                         </StackPanel>
                     </DockPanel>
                 </Border>

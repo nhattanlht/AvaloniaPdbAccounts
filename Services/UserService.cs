@@ -656,83 +656,27 @@ public class UserService
         return courses;
     }
 
-    public async Task AddRegistrationAsync(RegistrationModel model)
+        public async Task AddRegistrationAsync(RegistrationModel model)
     {
         using var conn = new OracleConnection(_connectionString);
         await conn.OpenAsync();
 
         try
         {
-            // 1. Kiểm tra session user và context
+            string sessionUser = null;
             using (var userCmd = new OracleCommand(@"
                 SELECT 
-                    SYS_CONTEXT('USERENV','SESSION_USER') as SESSION_USER,
-                    SYS_CONTEXT('USERENV','CURRENT_USER') as CURRENT_USER,
-                    SYS_CONTEXT('SV_CTX','MASV') as MASV,
-                    SYS_CONTEXT('SV_CTX','MAKHOA') as MAKHOA
+                    SYS_CONTEXT('USERENV','SESSION_USER') as SESSION_USER
                 FROM DUAL", conn))
             {
                 using var reader = await userCmd.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    var sessionUser = reader.GetString(0);
-                    var currentUser = reader.GetString(1);
-                    var ctxMaSV = reader.IsDBNull(2) ? null : reader.GetString(2);
-                    var ctxMaKhoa = reader.IsDBNull(3) ? null : reader.GetString(3);
-                    
-                    Console.WriteLine($"Session User: {sessionUser}");
-                    Console.WriteLine($"Current User: {currentUser}");
-                    Console.WriteLine($"Context MASV: {ctxMaSV}");
-                    Console.WriteLine($"Context MAKHOA: {ctxMaKhoa}");
-                    
-                    if (string.IsNullOrEmpty(ctxMaSV) || string.IsNullOrEmpty(ctxMaKhoa))
-                    {
-                        throw new Exception("Không tìm thấy thông tin sinh viên trong context. Vui lòng đăng nhập lại.");
-                    }
+                    sessionUser = reader.GetString(0);
                 }
             }
 
-            // 2. Kiểm tra môn học có thuộc khoa của sinh viên không
-            using (var courseCmd = new OracleCommand(@"
-                SELECT MM.MAMM, MM.MAHP, MM.HK, MM.NAM, K.MAKHOA
-                FROM ADMINPDB.MOMON MM
-                JOIN ADMINPDB.HOCPHAN HP ON MM.MAHP = HP.MAHP
-                JOIN ADMINPDB.KHOA K ON HP.MAKHOA = K.MAKHOA
-                WHERE MM.MAMM = :mamm", conn))
-            {
-                courseCmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
-                using var reader = await courseCmd.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
-                {
-                    var maKhoa = reader.GetString(4);
-                    var hocKy = reader.GetInt32(2);
-                    var nam = reader.GetInt32(3);
-                    Console.WriteLine($"Môn học thuộc khoa: {maKhoa}");
-                    Console.WriteLine($"Học kỳ: {hocKy}/{nam}");
-                }
-                else
-                {
-                    throw new Exception("Môn học không tồn tại");
-                }
-            }
-
-            // 3. Kiểm tra sinh viên đã đăng ký môn này chưa
-            using (var checkCmd = new OracleCommand(@"
-                SELECT COUNT(*) 
-                FROM ADMINPDB.DANGKY DK 
-                WHERE DK.MASV = :masv 
-                AND DK.MAMM = :mamm", conn))
-            {
-                checkCmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
-                checkCmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
-                var count = Convert.ToInt32(await checkCmd.ExecuteScalarAsync());
-                if (count > 0)
-                {
-                    throw new Exception("Bạn đã đăng ký môn học này rồi");
-                }
-            }
-
-            // 4. Thực hiện đăng ký
+            // Thực hiện đăng ký
             string query = @"
                 INSERT INTO ADMINPDB.DANGKY 
                     (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) 
@@ -740,7 +684,7 @@ public class UserService
                     (:masv, :mamm, NULL, NULL, NULL, NULL)";
             using var cmd = new OracleCommand(query, conn);
 
-            cmd.Parameters.Add(new OracleParameter("masv", model.StudentID));
+            cmd.Parameters.Add(new OracleParameter("masv", sessionUser));
             cmd.Parameters.Add(new OracleParameter("mamm", model.CourseID));
 
             try
