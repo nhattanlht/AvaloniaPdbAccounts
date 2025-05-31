@@ -26,15 +26,15 @@ public static class RunSQLScriptUtility
 {
     public static void RunAllSql()
     {
-        if (CheckIfDatabaseInitialized())
-        {
-            Console.WriteLine("✅ Database already initialized. Skipping script execution.");
-            return;
-        }
+        // if (CheckIfDatabaseInitialized())
+        // {
+        //     Console.WriteLine("✅ Database already initialized. Skipping script execution.");
+        //     return;
+        // }
         RunSqlScript("init_db.sql");
         RunSqlScript("database.sql");
         RunSqlScript("RBAC_VPD.sql");
-        RunSqlScript("temp.sql");
+        // RunSqlScript("temp.sql");
 
         // RunSqlScript("sinhvien.sql");
 
@@ -204,3 +204,5 @@ public static class RunSQLScriptUtility
             Console.WriteLine($"Python Error:\n{error}");
     }
 }
+
+

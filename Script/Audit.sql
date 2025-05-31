@@ -3,7 +3,7 @@
 --1. Kích hoạt việc ghi nhật ký hệ thống
 --kiểm tra unified đã bật chưa
 ALTER SESSION SET CONTAINER = PDB;
-conn sys/123@localhost:1521/FREE as sysdba;
+conn sys/123@localhost:1521/FREEPDB1 as sysdba;
 SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing'; --True là đã bật
 
 --nếu chưa được bật

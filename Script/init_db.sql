@@ -3,7 +3,6 @@
 --Lưu ý cần đổi FILE_NAME_CONVERT cho phù hợp trên máy để chạy local
 -- ---------------------------------------------------------
 
-conn sys/123@localhost:1521/ORCL21 as sysdba;
 -- Chuyển về CDB$ROOT trước khi xóa PDB
 ALTER SESSION SET CONTAINER = CDB$ROOT;
 
