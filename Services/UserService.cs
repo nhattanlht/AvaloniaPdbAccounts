@@ -657,7 +657,7 @@ public class UserService
         return courses;
     }
 
-    public async Task AddRegistrationAsync(RegistrationModel model)
+        public async Task AddRegistrationAsync(RegistrationModel model)
     {
         using var conn = new OracleConnection(_connectionString);
         await conn.OpenAsync();
@@ -677,7 +677,7 @@ public class UserService
                 }
             }
 
-            // 4. Thực hiện đăng ký
+            // Thực hiện đăng ký
             string query = @"
                 INSERT INTO ADMINPDB.DANGKY 
                     (MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK) 

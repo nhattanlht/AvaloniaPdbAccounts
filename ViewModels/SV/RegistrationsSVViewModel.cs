@@ -134,6 +134,8 @@ namespace AvaloniaPdbAccounts.ViewModels.SV
                 OnPropertyChanged(nameof(RegistrationsWithoutScore));
                 OnPropertyChanged(nameof(RegistrationsWithScore));
 
+                await LoadRegistrationsAsync();
+                
                 // Reset form
                 NewRegistration = new RegistrationModel();
                 SelectedCourse = null;

@@ -2,6 +2,7 @@
 
 --1. Kích hoạt việc ghi nhật ký hệ thống
 --kiểm tra unified đã bật chưa
+ALTER SESSION SET CONTAINER = PDB;
 conn sys/123@localhost:1521/FREE as sysdba;
 SELECT VALUE FROM V$OPTION WHERE PARAMETER = 'Unified Auditing'; --True là đã bật
 
@@ -88,7 +89,7 @@ ACTIONS
   UPDATE ON ADMINPDB.SINHVIEN,
   DELETE ON ADMINPDB.SINHVIEN;
 
--- Tạo policy audit các thao tác DML trên bảng DANGKY
+-- Tạo policy audit các thao tác DML trên bảng MOMON
 CREATE AUDIT POLICY AUDIT_MOMON
 ACTIONS
   SELECT ON ADMINPDB.MOMON,
@@ -127,23 +128,7 @@ AUDIT POLICY AUDIT_SINHVIEN
 AUDIT POLICY AUDIT_SINHVIEN
   BY NV00020
   WHENEVER NOT SUCCESSFUL;
-
--- ===========================================TEST TRƯỜNG HỢP BỊ GHI NHẬN AUDIT==========================================
--- nhân viên PDT NV00016 thực hiện INSERT và sau đó DELETE trên bảng MOMON
-conn NV00024/123@localhost:1521/PDB;
--- INSERT INTO ADMINPDB.MOMON_PDT (MAMM, MAHP, MAGV, HK, NAM) 
--- VALUES ('MTH00003_1_2024', 'MTH00003', 'NV00001', 1, 2024);
-SELECT * FROM ADMINPDB.MOMON_PDT;
-
---NVTCHC update LUONG của NV00001 và thao tác đọc bảng nhân viên
-conn NV00018/123@localhost:1521/PDB;
-UPDATE ADMINPDB.NHANVIEN
-SET LUONG = LUONG + 1000000
-WHERE MANLD = 'NV00001';
-SELECT * FROM ADMINPDB.NHANVIEN;
-
-
--- Đọc xuất dữ liệu nhật ký hệ thống.
+-- Đọc dữ liệu nhật ký hệ thống.
 --BANG NHANVIEN
 conn AdminPdb/123@localhost:1521/PDB;
 SELECT 
@@ -212,7 +197,6 @@ WHERE
   OBJECT_NAME = 'DANGKY'
 ORDER BY 
   EVENT_TIMESTAMP DESC;
-
 
 --3 Dùng Fine-grained Audit cho các tình huống
 conn sys/123@localhost:1521/FREE as sysdba;
@@ -604,11 +588,11 @@ HOST del D:/fga_log_table_final.csv
 EXIT
 --3c)
 
---Đọc xuất dữ liệu nhật ký hệ thống.
-conn AdminPdb/123@localhost:1521/PDB;
-SELECT * FROM FGA_LOG_TABLE;
+-- --Đọc xuất dữ liệu nhật ký hệ thống.
+-- conn AdminPdb/123@localhost:1521/PDB;
+-- SELECT * FROM FGA_LOG_TABLE;
 
--- TEST TRƯỜNG HỢP BỊ GHI LOG
-conn NV00022/123@localhost:1521/PDB;
-SELECT LUONG, PHUCAP FROM ADMINPDB.NHANVIEN;
+-- -- TEST TRƯỜNG HỢP BỊ GHI LOG
+-- conn NV00022/123@localhost:1521/PDB;
+-- SELECT LUONG, PHUCAP FROM ADMINPDB.NHANVIEN;
 COMMIT;
