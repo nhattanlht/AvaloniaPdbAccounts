@@ -1,9 +1,11 @@
 ALTER SESSION SET CONTAINER = PDB;
 conn sys/123@localhost:1521/FREE as sysdba;
+-- --kiểm tra thời gian Flashback
+-- SHOW PARAMETER UNDO_RETENTION;
 -- Đặt thời gian giữ undo là 3600 giây (1 giờ)
 ALTER SYSTEM SET UNDO_RETENTION = 3600 SCOPE=BOTH;
 -- ===============TRƯỜNG HỢP BỊ GHI NHẬN AUDIT VÀ KHÔI PHỤC LẠI DỮ LIỆU BẰNG FLASHBACK===============
--- ***************Ví dụ trường hợp cập nhật điểm cuối kỳ sai qui định của PKT NV00016***********************
+-- ***************Ví dụ trường hợp cập nhật điểm sai qui định của PKT NV00016***********************
 
 -- Kiểm tra dữ liệu hiện tại
 conn AdminPdb/123@localhost:1521/PDB;
@@ -11,7 +13,7 @@ SELECT MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK
 FROM ADMINPDB.DANGKY 
 WHERE MASV = 'A536166';
 
---Cập nhật điểm CK trên UI =====> dotnet run
+--Cập nhật điểm trên UI =====> dotnet run
 
 -- Kiểm tra dữ liệu tại thời điểm trong quá khứ (điền thời gian vào)
 SELECT MASV, MAMM, DIEMTH, DIEMQT, DIEMCK, DIEMTK 
@@ -67,7 +69,7 @@ END;
 BEGIN
   UNDO_DIEM_FROMTIME(
     'A536166',
-    TO_TIMESTAMP('2025-05-31 20:18:41', 'YYYY-MM-DD HH24:MI:SS')
+    TO_TIMESTAMP('2025-05-31 22:09:49', 'YYYY-MM-DD HH24:MI:SS')
   );
 END;
 /

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AvaloniaPdbAccounts")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dc077aff56ea9e5c8669b5c43a290df0d5cc2ccc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed5a1338e768a0ada01218443cbbcab50ab45748")]
 [assembly: System.Reflection.AssemblyProductAttribute("AvaloniaPdbAccounts")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AvaloniaPdbAccounts")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
