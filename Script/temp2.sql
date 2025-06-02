@@ -25,7 +25,7 @@ BEGIN
     job_name        => l_job_name,
     job_type        => 'EXECUTABLE', -- Loại job sẽ chạy một file thực thi hoặc script từ OS
     job_action      => '/tmp/run_pdb_backup.sh', -- ĐÂY LÀ SCRIPT SHELL SẼ ĐƯỢC CHẠY (đường dẫn bên trong container)
-    -- job_action      => 'D:\OracleScripts\run_rman_backup_windows.bat', -- << THAY THẾ BẰNG ĐƯỜNG DẪN THỰC TẾ ĐẾN SCRIPT WINDOWS CỦA BẠN
+    -- job_action      => 'your_path\Script\run_rman_backup_windows.bat', -- << THAY THẾ BẰNG ĐƯỜNG DẪN THỰC TẾ ĐẾN SCRIPT WINDOWS CỦA BẠN
     -- thay đổi file sh thành file bat chạy thực thi được bên windows 
     start_date      => TRUNC(SYSTIMESTAMP AT TIME ZONE 'UTC') + INTERVAL '2' HOUR, -- Bắt đầu từ 2h sáng UTC (điều chỉnh múi giờ nếu cần)
                                                                               -- Hoặc dùng SYSTIMESTAMP nếu CSDL và OS cùng múi giờ với mong muốn của bạn

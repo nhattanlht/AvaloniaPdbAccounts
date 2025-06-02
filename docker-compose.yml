@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/free:latest # Hoặc một phiên bản cụ thể
+    container_name: oracle_db_container
+    ports:
+      - "1521:1521" # Host:Container
+      - "5500:5500" # Oracle EM Express (nếu có)
+    environment:
+      - ORACLE_PWD=123456 # Mật khẩu cho SYS, SYSTEM, PDBADMIN
+      # - ORACLE_CHARACTERSET=AL32UTF8 # Nếu cần thiết
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+      # Mount script init_db.sql vào thư mục tự động chạy khi Oracle khởi tạo
+      # Oracle Free image thường tìm script trong /opt/oracle/scripts/startup
+      - ./Script/03-Database/init_db.sql:/opt/oracle/scripts/startup/01_init_db.sql
+    healthcheck:
+      test: ["CMD", "sqlplus", "sys/123456@//localhost:1521/FREEPDB1 as sysdba", "@ORACLE_HOME/rdbms/admin/utlstrt.sql"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 90s # Cho Oracle thời gian khởi động lần đầu
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: avalonia_app_container
+    depends_on:
+      oracle-db:
+        condition: service_healthy # Chờ Oracle DB healthy trước khi khởi động app
+    environment:
+      - DISPLAY=${DISPLAY} # For X11 forwarding
+      # Biến môi trường cho Connection String (cách khác thay vì sửa appSettings.json trực tiếp)
+      # - ConnectionStrings__Database=AdminPdb/123@oracle-db:1521/PDB
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix # For X11 forwarding
+      # Nếu bạn muốn ghi log hoặc file ra ngoài
+      # - ./app_logs:/app/logs
+    # restart: unless-stopped # Tùy chọn khởi động lại
+
+volumes:
+  oracle_data: # Named volume để lưu trữ dữ liệu Oracle

@@ -24,22 +24,22 @@ public static class AppConfig
 
 public static class RunSQLScriptUtility
 {
-    public static void RunAllSql()
-    {
+    // public static void RunAllSql()
+    // {
         // if (CheckIfDatabaseInitialized())
         // {
         //     Console.WriteLine("✅ Database already initialized. Skipping script execution.");
         //     return;
         // }
-        RunSqlScript("init_db.sql");
-        RunSqlScript("database.sql");
-        RunSqlScript("RBAC_VPD.sql");
+        // RunSqlScript("init_db.sql");
+        // RunSqlScript("database.sql");
+        // RunSqlScript("RBAC_VPD.sql");
         // RunSqlScript("temp.sql");
 
         // RunSqlScript("sinhvien.sql");
 
         // RunPythonScript("run_csv.py"); // Add Python script execution
-    }
+    // }
     private static bool CheckIfDatabaseInitialized()
     {
         string connectionString = AppConfig.GetConnectionString();
