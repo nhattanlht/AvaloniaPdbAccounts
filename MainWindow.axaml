@@ -1,0 +1,292 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:dg="clr-namespace:Avalonia.Controls;assembly=Avalonia.Controls.DataGrid"
+        xmlns:ViewModels="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+        x:Class="AvaloniaPdbAccounts.MainWindow"
+        Width="1200" Height="800"
+        FontFamily="Segoe UI"
+        Background="#F5F7FA"
+        x:DataType="ViewModels:PrivilegeGrant"
+		xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+        Title="PDB Account Management">
+
+    <Grid Margin="15">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/> <!-- Left sidebar -->
+            <ColumnDefinition Width="*"/>    <!-- Main content -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Sidebar -->
+        <Border Grid.Column="0"
+                Background="#2C3E50"
+                CornerRadius="8"
+                Margin="0,0,10,0">
+            <StackPanel Margin="10" Spacing="15">
+                <!-- User Management Section -->
+                <Border Background="#34495E" CornerRadius="6" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="User Management" 
+                                   FontSize="16" 
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Margin="0,0,0,10"/>
+                        
+                        <Button Name="LoadAccountsButton" 
+                                Click="LoadAccounts_Click" 
+                                Content="Load Users"
+                                Background="#3498DB"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="AddAccountsButton" 
+                                Click="AddUser_Click" 
+                                Content="Add User"
+                                Background="#2ECC71"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="DeleteAccountsButton" 
+                                Click="DeleteAccount_Click" 
+                                Content="Delete Selected"
+                                Background="#E74C3C"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="EditAccountsButton" 
+                                Click="EditAccount_Click" 
+                                Content="Edit Selected"
+                                Background="#F39C12"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="CheckPermission" 
+                                Click="CheckPermission_Click" 
+                                Content="Check Permission"
+                                Background="#9B59B6"
+                                Foreground="White"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Role Management Section -->
+                <Border Background="#34495E" CornerRadius="6" Padding="10">
+                    <StackPanel>
+                        <TextBlock Text="Role Management" 
+                                   FontSize="16" 
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Margin="0,0,0,10"/>
+                        
+                        <Button Name="LoadRolesButton" 
+                                Click="LoadRoles_Click" 
+                                Content="Load Roles"
+                                Background="#3498DB"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="AddRoleButton" 
+                                Click="AddRole_Click" 
+                                Content="Add Role"
+                                Background="#2ECC71"
+                                Foreground="White"
+                                Margin="0,0,0,5"/>
+                                
+                        <Button Name="DeleteRoleButton" 
+                                Click="DeleteRole_Click" 
+                                Content="Delete Selected Role"
+                                Background="#E74C3C"
+                                Foreground="White"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- User/Role Selection Area -->
+                <RowDefinition Height="*"/>    <!-- Accounts ListBox -->
+                <RowDefinition Height="*"/>    <!-- Permissions ListBox -->
+            </Grid.RowDefinitions>
+
+            <!-- User/Role Selection Area -->
+            <Border Grid.Row="0" 
+                    Background="Black" 
+                    CornerRadius="8"
+                    Margin="0,0,0,10"
+                    Padding="15">
+                <StackPanel Orientation="Vertical" x:Name="CheckArea" IsVisible="False">
+                    <!-- User/Role + Privilege Type -->
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                        <TextBlock Text="Select User/Role:" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Width="120"/>
+                        <ComboBox x:Name="UserRoleComboBox" Width="200" Background="White"/>
+
+                        <TextBlock Text="Privilege Type:" 
+                                   VerticalAlignment="Center" 
+                                   Margin="20,0,0,0"
+                                   FontWeight="SemiBold"
+                                   Width="100"/>
+                        <ComboBox x:Name="PrivilegeTypeComboBox" Width="150" Background="White">
+                            <ComboBoxItem Content="ROLE"/>
+                            <ComboBoxItem Content="SYSTEM"/>
+                            <ComboBoxItem Content="TABLE"/>
+                            <ComboBoxItem Content="COL"/>
+                        </ComboBox>
+
+                        <Button Name="ConfirmCheckButton"
+                                Width="100"
+                                Content="Check"
+                                Click="ConfirmCheckButton_Click"
+                                Margin="20,0,0,0"
+                                Background="#3498DB"
+                                Foreground="Black"/>
+                                
+                        <Button Name="RevokeButton" 
+                                Width="100" 
+                                Content="Revoke" 
+                                Click="Revoke_Click" 
+                                Margin="20,0,0,0"
+                                Background="#E74C3C"
+                                Foreground="White"/>
+                    </StackPanel>
+
+                    <!-- Grant Privilege Area -->
+                    <Border x:Name="GrantArea" 
+                            IsVisible="False" 
+                            Background="#F8F9FA" 
+                            CornerRadius="6"
+                            Padding="10"
+                            Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Object Type:" 
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       Width="100"/>
+                            <ComboBox x:Name="ObjectTypeComboBox"
+                                      Width="150"
+                                      Background="White"
+                                      ItemsSource="{Binding ObjectTypes}"  
+                                      SelectionChanged="ObjectTypeComboBox_SelectionChanged">
+                                <ComboBoxItem Content="TABLE"/>
+                                <ComboBoxItem Content="VIEW"/>
+                                <ComboBoxItem Content="PROCEDURE"/>
+                                <ComboBoxItem Content="FUNCTION"/>
+                            </ComboBox>
+
+                            <TextBlock Text="Object Name:" 
+                                       VerticalAlignment="Center" 
+                                       Margin="20,0,0,0"
+                                       FontWeight="SemiBold"
+                                       Width="100"/>
+                            <ComboBox x:Name="ObjectNameComboBox"
+                                      Width="200"
+                                      Background="White"
+                                      ItemsSource="{Binding ObjectNames}"
+                                      SelectionChanged="ObjectNameComboBox_SelectionChanged"/>
+
+                            <TextBlock Text="Column:" 
+                                       VerticalAlignment="Center" 
+                                       Margin="20,0,0,0"
+                                       FontWeight="SemiBold"
+                                       Width="60"/>
+                            <ComboBox x:Name="ColumnNameComboBox" Width="150" Background="White"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Privilege Selection -->
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+                        <TextBlock Text="Privilege:" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="SemiBold"
+                                   Width="100"/>
+                        <ComboBox x:Name="PrivilegeComboBox" 
+                                   Width="150" 
+                                   Background="White"
+                                   ItemsSource="{Binding ColumnNames}"  
+                                   IsVisible="{Binding IsColumnComboBoxVisible}"
+                                   SelectionChanged="PrivilegeComboBox_SelectionChanged">
+                            <ComboBoxItem Content="SELECT"/>
+                            <ComboBoxItem Content="INSERT"/>
+                            <ComboBoxItem Content="UPDATE"/>
+                            <ComboBoxItem Content="DELETE"/>
+                        </ComboBox>
+
+                        <CheckBox x:Name="WithGrantOptionCheckBox"
+                                  Content="WITH GRANT OPTION"
+                                  VerticalAlignment="Center"
+                                  Margin="20,0,0,0"/>
+
+                        <Button Name="GrantPrivilegeButton"
+                                Width="100"
+                                Content="Grant"
+                                Click="GrantPrivilege_Click"
+                                Margin="20,0,0,0"
+                                Background="#2ECC71"
+                                Foreground="White"/>
+                    </StackPanel>
+
+                    <!-- Grant Role Area -->
+                    <Border x:Name="GrantRoleArea" 
+                            IsVisible="False" 
+                            Background="#F8F9FA" 
+                            CornerRadius="6"
+                            Padding="10">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="Role:" 
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       Width="100"/>
+                            <ComboBox x:Name="RoleComboBox" Width="200" Background="White"/>
+
+                            <Button Name="GrantRoleButton"
+                                    Width="150"
+                                    Content="Grant Role to User"
+                                    Click="GrantRoleToUser_Click"
+                                    Margin="20,0,0,0"
+                                    Background="#9B59B6"
+                                    Foreground="White"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Accounts ListBox -->
+            <Border Grid.Row="1" 
+                    Background="White" 
+                    CornerRadius="8"
+                    Margin="0,0,0,10">
+                <ListBox x:Name="AccountsListBox" 
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F8F9FA" CornerRadius="4" Margin="2" Padding="8">
+                                <TextBlock Text="{Binding}" FontSize="14" Foreground="Black"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- Permissions ListBox -->
+            <Border Grid.Row="2" 
+                    Background="White" 
+                    CornerRadius="8">
+                <ListBox x:Name="PermissionListBox"
+                         MinHeight="200"
+                         ScrollViewer.VerticalScrollBarVisibility="Auto"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#F8F9FA" CornerRadius="4" Margin="2" Padding="8">
+                                <TextBlock Text="{Binding}" Foreground="Black" FontSize="14"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,222 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.SV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.SV.RegistrationsSVView"
+             x:DataType="vm:RegistrationsSVViewModel">
+
+    <UserControl.Styles>
+        <!-- Custom Button Style -->
+        <Style Selector="Button.modern">
+            <Setter Property="Background" Value="#2196F3"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <TransformOperationsTransition Property="RenderTransform" Duration="0.2"/>
+                    <BrushTransition Property="Background" Duration="0.2"/>
+                </Transitions>
+            </Setter>
+        </Style>
+        <Style Selector="Button.modern:pointerover">
+            <Setter Property="Background" Value="#1976D2"/>
+            <Setter Property="RenderTransform" Value="scale(1.05)"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="Button.modern:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.98)"/>
+        </Style>
+        <Style Selector="Button.modern:disabled">
+            <Setter Property="Background" Value="#BDBDBD"/>
+            <Setter Property="Opacity" Value="0.7"/>
+            <Setter Property="Cursor" Value="No"/>
+        </Style>
+        
+        <!-- Custom ComboBox Style -->
+        <Style Selector="ComboBox">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+        </Style>
+
+        <!-- Custom DataGrid Style -->
+        <Style Selector="DataGrid">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+        </Style>
+    </UserControl.Styles>
+
+    <!-- DataContext được gán tự động bởi ViewLocator -->
+
+    <Grid RowDefinitions="Auto,*" Margin="24">
+        <!-- Header with gradient background -->
+        <Border Grid.Row="0" 
+                Margin="0,0,0,24" 
+                CornerRadius="12"
+                Padding="20">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#2196F3" Offset="0"/>
+                    <GradientStop Color="#1976D2" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <TextBlock Text="Quản lý đăng ký &amp; điểm số" 
+                      FontSize="32" 
+                      FontWeight="Bold" 
+                      Foreground="White"/>
+        </Border>
+
+        <!-- Main Content -->
+        <ScrollViewer Grid.Row="1">
+            <StackPanel Spacing="24">
+                <!-- Registration Section -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top" 
+                                  Spacing="16" 
+                                  Margin="0,0,0,20">
+                            <TextBlock Text="Đăng ký môn học" 
+                                     FontSize="24" 
+                                     FontWeight="Bold" 
+                                     Foreground="#1976D2"/>
+                            <TextBlock Text="Chọn môn học bạn muốn đăng ký từ danh sách bên dưới"
+                                     Foreground="#666666"
+                                     FontSize="14"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="16">
+                            <ComboBox Width="450"
+                                     Height="45"
+									 Foreground="Black"
+                                     VerticalAlignment="Center"
+                                     PlaceholderText="Chọn môn học"
+                                     ItemsSource="{Binding AvailableCourses}"
+                                     SelectedItem="{Binding SelectedCourse}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock>
+                                            <Run Text="{Binding CourseID}" FontWeight="SemiBold"/>
+                                            <Run Text=" - "/>
+                                            <Run Text="{Binding BaseCode}"/>
+                                            <Run Text=" (HK"/>
+                                            <Run Text="{Binding Semester}"/>
+                                            <Run Text="/"/>
+                                            <Run Text="{Binding Year}"/>
+                                            <Run Text=")"/>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+						<Button Command="{Binding AddRegistationCommand}" Content="Đăng ký môn học" HorizontalAlignment="Right" Margin="0,0,0,20"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Pending Registrations -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <StackPanel Spacing="16">
+                        <TextBlock Text="Môn đã đăng ký (chưa có điểm)" 
+                                 FontWeight="SemiBold" 
+                                 FontSize="20" 
+                                 Foreground="#333"/>
+                        <DataGrid ItemsSource="{Binding RegistrationsWithoutScore}"
+                                AutoGenerateColumns="False"
+                                Height="160"
+                                IsReadOnly="True"
+                                GridLinesVisibility="All"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã sinh viên" 
+                                                  Binding="{Binding StudentID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Mã môn học" 
+                                                  Binding="{Binding CourseID}" 
+                                                  Width="140"/>
+                                <DataGridTemplateColumn Header="Thao tác" 
+                                                      Width="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="Hủy đăng ký"
+                                                    Command="{Binding $parent[UserControl].DataContext.DeleteCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    Classes="modern"
+                                                    Background="#DC3545"
+                                                    HorizontalAlignment="Center"
+                                                    Width="100"
+                                                    Height="35"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Scores Section -->
+                <Border Background="White" 
+                        BoxShadow="0 2 8 0 #20000000"
+                        BorderBrush="#E0E0E0" 
+                        BorderThickness="1" 
+                        CornerRadius="12" 
+                        Padding="24">
+                    <StackPanel Spacing="16">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Bảng điểm" 
+                                     FontWeight="SemiBold" 
+                                     FontSize="24" 
+                                     Foreground="#1976D2"/>
+                            <TextBlock Text="Xem điểm các môn học đã hoàn thành"
+                                     Foreground="#666666"
+                                     FontSize="14"/>
+                        </StackPanel>
+                        <DataGrid ItemsSource="{Binding RegistrationsWithScore}"
+                                SelectedItem="{Binding SelectedRegistration, Mode=TwoWay}"
+                                AutoGenerateColumns="False"
+                                IsReadOnly="True"
+                                GridLinesVisibility="All"
+                                BorderThickness="1"
+                                BorderBrush="#E0E0E0"
+                                Background="White">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Mã sinh viên" 
+                                                  Binding="{Binding StudentID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Mã môn học" 
+                                                  Binding="{Binding CourseID}" 
+                                                  Width="140"/>
+                                <DataGridTextColumn Header="Điểm thực hành" 
+                                                  Binding="{Binding PracticeScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm quá trình" 
+                                                  Binding="{Binding ProcessScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm cuối kỳ" 
+                                                  Binding="{Binding FinalScore}" 
+                                                  Width="120"/>
+                                <DataGridTextColumn Header="Điểm tổng kết" 
+                                                  Binding="{Binding TotalScore}" 
+                                                  Width="120"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
