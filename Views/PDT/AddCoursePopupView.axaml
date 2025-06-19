@@ -1,0 +1,52 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
+			 xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PDT"
+             x:Class="AvaloniaPdbAccounts.Views.PDT.AddCoursePopupView"
+			 x:DataType="vm:CoursesPDTViewModel">
+
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="20" ColumnDefinitions="Auto,*" Background="White">
+		<TextBlock Grid.Row="0" Text="Add New Course" Grid.ColumnSpan="2" FontSize="18" FontWeight="Bold" Margin="0,0,0,20"/>
+
+		<TextBlock Text="Module:" Grid.Row="1" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<ComboBox Grid.Row="1" Grid.Column="1"
+				  ItemsSource="{Binding AvailableModules}"
+				  SelectedItem="{Binding SelectedModule}" Margin="0,0,0,10">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding ModuleName}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<TextBlock Text="Instructor:" Grid.Row="3" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<ComboBox ItemsSource="{Binding AvailableInstructors}" Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"
+				  SelectedItem="{Binding SelectedInstructor}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding FullName}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
+
+		<TextBlock Text="Semester:" Grid.Row="4" VerticalAlignment="Center" Margin="0,0,10,10"/>
+		<ComboBox Grid.Row="4" Grid.Column="1"
+				  ItemsSource="{Binding Semesters}"
+				  SelectedItem="{Binding SelectedSemester}"
+				  Margin="0,0,0,20" />
+				 
+
+		<TextBlock Text="Year:" Grid.Row="5" VerticalAlignment="Center" Margin="0,0,10,20"/>
+		<ComboBox Grid.Row="5" Grid.Column="1"
+				  ItemsSource="{Binding Years}"
+				  SelectedItem="{Binding SelectedYear}"
+				  Margin="0,0,0,20" />
+
+		<StackPanel Grid.Row="6" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+			<Button Content="Add" Command="{Binding AddCourseCommand}" Width="80"/>
+			<Button Content="Cancel" Command="{Binding CancelCommand}" Width="80"/>
+		</StackPanel>
+	</Grid>
+</UserControl>

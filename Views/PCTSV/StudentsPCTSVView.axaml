@@ -1,0 +1,53 @@
+
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PCTSV"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.PCTSV.StudentsPCTSVView"
+             x:DataType="vm:StudentsPCTSVViewModel"
+			 x:Name="root">
+
+	<UserControl.DataContext>
+		<vm:StudentsPCTSVViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20" RowDefinitions="Auto,*">
+		<StackPanel>
+			<Grid ColumnDefinitions="*,*">
+		<TextBlock Grid.Column="0" Text="Students" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+			</Grid>
+			</StackPanel>
+		<DataGrid ItemsSource="{Binding Students}" AutoGenerateColumns="False" Grid.Row="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Employee ID" Binding="{Binding ID}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Full Name" Binding="{Binding NAME}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Gender" Binding="{Binding GENDER}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Birth Date" Binding="{Binding BIRTHDAY}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="Address" Binding="{Binding ADDRESS}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Phone" Binding="{Binding PHONE}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Department" Binding="{Binding DEPARTMENT}" IsReadOnly="False"/>
+				<DataGridTextColumn Header="Status" Binding="{Binding STATUS}" IsReadOnly="True"/>
+				
+				<DataGridTemplateColumn Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Button Content="Edit"
+									Command="{Binding DataContext.EditCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+							<Button Content="Delete"
+									Foreground="White"
+									Background="Red"
+									Command="{Binding DataContext.DeleteCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+						</StackPanel>
+					</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

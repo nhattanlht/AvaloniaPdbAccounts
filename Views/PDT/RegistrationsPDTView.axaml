@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PDT"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.PDT.RegistrationsPDTView"
+             x:DataType="vm:RegistrationsPDTViewModel"
+			 x:Name="root">
+	<UserControl.DataContext>
+		<vm:RegistrationsPDTViewModel />
+	</UserControl.DataContext>
+
+	<Grid Margin="20" RowDefinitions="Auto,*">
+		<StackPanel>
+			<Grid ColumnDefinitions="*,*">
+				<TextBlock Grid.Column="0" Text="Registrations" FontSize="24" FontWeight="Bold" HorizontalAlignment="Left" Margin="0,0,0,20"/>
+				<Button Grid.Column="1" Content="Add registration"
+                        Command="{Binding ShowAddPopupCommand}" HorizontalAlignment="Right" Margin="0,0,0,20"/>
+			</Grid>
+		</StackPanel>
+
+		<DataGrid ItemsSource="{Binding Registrations}" AutoGenerateColumns="False" Grid.Row="1">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="Student ID" Binding="{Binding StudentID}"/>
+				<DataGridTextColumn Header="Course ID" Binding="{Binding CourseID}"/>
+				<DataGridTemplateColumn Header="Practice Score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock  Margin="10" Text="NULL"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Process Score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock  Margin="10" Text="NULL"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Final Score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock  Margin="10" Text="NULL"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+
+				<DataGridTemplateColumn Header="Total Score">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<TextBlock Margin="10" Text="NULL"/>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTemplateColumn Header="Actions">
+					<DataGridTemplateColumn.CellTemplate>
+						<DataTemplate>
+							<StackPanel Orientation="Horizontal" Spacing="5">
+								<Button Content="Edit"
+										Command="{Binding DataContext.EditCommand, ElementName=root}"
+										CommandParameter="{Binding}" />
+								<Button Content="Delete"
+									Foreground="White"
+									Background="Red"
+									Command="{Binding DataContext.DeleteCommand, ElementName=root}"
+									CommandParameter="{Binding}" />
+							</StackPanel>
+						</DataTemplate>
+					</DataGridTemplateColumn.CellTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+
+		<Border Background="White" IsVisible="{Binding IsPopupVisible}" ZIndex="10">
+			<ContentControl Content="{Binding PopupContent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		</Border>
+
+	</Grid>
+</UserControl>

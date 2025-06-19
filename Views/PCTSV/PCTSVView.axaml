@@ -1,0 +1,30 @@
+<!-- Views/PCTSV/PCTSVView.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.PCTSV"
+		xmlns:view="clr-namespace:AvaloniaPdbAccounts.Views.PCTSV"
+		xmlns:local="clr-namespace:AvaloniaPdbAccounts.Utilities"
+        x:Class="AvaloniaPdbAccounts.Views.PCTSV.PCTSVView"
+		x:DataType="vm:MainWindowPCTSVModel"
+        Title="PCTSV Window" Width="800" Height="600" Foreground="Black">
+
+	<Design.DataContext>
+		<vm:MainWindowPCTSVModel></vm:MainWindowPCTSVModel>
+	</Design.DataContext>
+	
+	<Grid RowDefinitions="70,*" Background="White">
+
+		<ContentControl Grid.Row="1" Content="{Binding CurrentPage}" Margin="10" />
+
+		<Border Grid.Row="0" Background="#F2EFEF">
+			<StackPanel Background="#F2EFEF" Orientation="Horizontal" Spacing="10" Grid.Row="0" HorizontalAlignment="Center">
+				
+				<Button Classes.active="{Binding AddStudentButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="AddStudent" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowAddStudentPageCommand}"></Button>
+				<Button Classes.active="{Binding StudentsButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Students" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowStudentsPageCommand}"></Button>
+				<Button Classes.active="{Binding CoursesButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Courses" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowCoursesPageCommand}"></Button>
+				
+				<Button Classes.active="{Binding RegistrationsButtonIsActive}" Background="#F2EFEF" Foreground="Black" Content="Registrations" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Command="{Binding ShowRegistrationsPageCommand}"></Button>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window> 

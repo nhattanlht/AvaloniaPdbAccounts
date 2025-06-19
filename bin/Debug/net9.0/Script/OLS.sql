@@ -1,0 +1,300 @@
+
+-- 1. Connect as SYS and prepare environment
+-- CONNECT sys/123456@localhost:1521/PDB AS SYSDBA;
+ALTER SESSION SET CONTAINER = PDB;
+@?/rdbms/admin/catols.sql
+
+
+-- Enable OLS if not already done
+EXEC LBACSYS.CONFIGURE_OLS;
+COMMIT;
+EXEC LBACSYS.OLS_ENFORCEMENT.ENABLE_OLS;
+COMMIT;
+
+
+-- 2. Clean up existing setup (if any)
+DROP USER ols_admin CASCADE;
+
+-- Drop existing users U1-U8 if they exist
+DECLARE
+  v_sql VARCHAR2(200);
+BEGIN
+  FOR i IN 1..8 LOOP
+    BEGIN
+      v_sql := 'DROP USER U' || i || ' CASCADE';
+      EXECUTE IMMEDIATE v_sql;
+      DBMS_OUTPUT.PUT_LINE('Dropped user U' || i);
+    EXCEPTION
+      WHEN OTHERS THEN 
+        DBMS_OUTPUT.PUT_LINE('User U' || i || ' does not exist or error: ' || SQLERRM);
+    END;
+  END LOOP;
+END;
+/
+
+-- 3. Create OLS admin account with proper privileges
+CREATE USER ols_admin IDENTIFIED BY 123;
+GRANT UNLIMITED TABLESPACE TO ols_admin;
+GRANT CREATE SESSION, CREATE TABLE, CREATE PROCEDURE, CREATE TRIGGER TO ols_admin;
+GRANT LBAC_DBA TO ols_admin;
+GRANT EXECUTE ON sa_components TO ols_admin;
+GRANT EXECUTE ON sa_label_admin TO ols_admin;
+GRANT EXECUTE ON sa_policy_admin TO ols_admin;
+GRANT EXECUTE ON sa_user_admin TO ols_admin;
+GRANT EXECUTE ON sa_sysdba TO ols_admin;
+GRANT EXECUTE ON sa_session TO ols_admin;
+GRANT ADMINISTER DATABASE TRIGGER TO ols_admin;
+
+-- 4. Create test users (U1-U8)
+BEGIN
+  FOR i IN 1..8 LOOP
+    EXECUTE IMMEDIATE 'CREATE USER U' || i || ' IDENTIFIED BY 123';
+    EXECUTE IMMEDIATE 'GRANT CREATE SESSION TO U' || i;
+    EXECUTE IMMEDIATE 'GRANT EXECUTE ON LBACSYS.SA_SESSION TO U' || i;
+    DBMS_OUTPUT.PUT_LINE('Created user U' || i);
+  END LOOP;
+END;
+/
+
+
+
+
+-- 5. Connect as OLS_ADMIN and create policy components
+CONNECT ols_admin/123@localhost:1521/PDB;
+
+-- Drop existing policy if exists
+BEGIN
+  EXECUTE IMMEDIATE 'DROP TABLE THONGBAO CASCADE CONSTRAINTS';
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END;
+/
+BEGIN
+
+  SA_SYSDBA.DROP_POLICY('THONGBAO_POLICY');
+END;
+/
+
+
+-- Create new policy
+CONNECT ols_admin/123@localhost:1521/PDB;
+
+BEGIN
+  SA_SYSDBA.CREATE_POLICY(
+    policy_name     => 'THONGBAO_POLICY',
+    column_name     => 'OLS_LABEL',
+    default_options => 'NO_CONTROL'
+  );
+END;
+/
+
+CONNECT ols_admin/123@localhost:1521/PDB;
+
+-- 6. Create security components
+BEGIN
+  -- Levels (hierarchical: TRGDV > NV > SV)
+  SA_COMPONENTS.CREATE_LEVEL('THONGBAO_POLICY', 100, 'SV', 'Sinh viên');
+  SA_COMPONENTS.CREATE_LEVEL('THONGBAO_POLICY', 200, 'NV', 'Nhân viên');  
+  SA_COMPONENTS.CREATE_LEVEL('THONGBAO_POLICY', 300, 'TRGDV', 'Trưởng đơn vị');
+  
+  -- Compartments (departments)
+  SA_COMPONENTS.CREATE_COMPARTMENT('THONGBAO_POLICY', 10, 'TOAN', 'Toán');
+  SA_COMPONENTS.CREATE_COMPARTMENT('THONGBAO_POLICY', 20, 'LY', 'Lý');
+  SA_COMPONENTS.CREATE_COMPARTMENT('THONGBAO_POLICY', 30, 'HOA', 'Hóa');
+  SA_COMPONENTS.CREATE_COMPARTMENT('THONGBAO_POLICY', 40, 'TCHC', 'Hành chính');
+  
+  -- Groups (locations)
+  SA_COMPONENTS.CREATE_GROUP('THONGBAO_POLICY', 1, 'CS1', 'Cơ sở 1');
+  SA_COMPONENTS.CREATE_GROUP('THONGBAO_POLICY', 2, 'CS2', 'Cơ sở 2');
+  
+  END;
+/
+
+CONN ols_admin/123@localhost:1521/PDB;
+
+-- 7. Create and populate THONGBAO table
+
+CREATE TABLE THONGBAO (
+  MATB      VARCHAR2(10) PRIMARY KEY,
+  TIEUDE    VARCHAR2(100) NOT NULL,
+  NOIDUNG   VARCHAR2(4000) NOT NULL,
+  NGAYTB    DATE DEFAULT SYSDATE,
+  OLS_LABEL NUMBER
+);
+
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T1', 'Hop toan truong', 'Moi tat ca truong don vi hop');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T2', 'Thong bao chung', 'Thay doi gio lam viec cho nhan vien');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T3', 'Lich thi hoc ky', 'Lich thi hoc ky 2 cho sinh vien');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T4', 'Thong bao khoa hoa CS1', 'Lich thuc hanh hoa hoc CS1');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T5', 'Thong bao khoa hoa CS2', 'Phong thi nghiem moi CS2');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T6', 'Hoi thao khoa hoc hoa', 'Hoi thao ngay 15/5 khoa Hoa');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T7', 'Le tot nghiep', 'Thong tin le tot nghiep cho SV');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T8', 'Hop truong khoa hoa CS1', 'Ke hoach nam hoc khoa Hoa CS1');
+INSERT INTO THONGBAO (MATB, TIEUDE, NOIDUNG) VALUES 
+('T9', 'Danh gia chat luong hoa', 'Bao cao chat luong khoa Hoa');
+
+
+BEGIN
+  -- Label cho trưởng đơn vị
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1000, 'TRGDV');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1010, 'TRGDV:HOA');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1020, 'TRGDV:HOA:CS1');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1030, 'TRGDV:HOA:CS2');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1040, 'TRGDV:LY:CS2');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 1050, 'TRGDV:TCHC');
+  
+
+  -- Label cho nhân viên
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 2000, 'NV');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 2010, 'NV:HOA:CS2');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 2020, 'NV:TCHC:CS1');
+  
+  -- Label cho sinh viên
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 3000, 'SV');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 3010, 'SV:HOA:CS1');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 3020, 'SV:HOA:CS2');
+  SA_LABEL_ADMIN.CREATE_LABEL('THONGBAO_POLICY', 3030, 'SV:HOA');
+END;
+/
+
+-- 8. Apply policy to table (READ_CONTROL first)
+BEGIN
+  SA_POLICY_ADMIN.APPLY_TABLE_POLICY(
+    policy_name   => 'THONGBAO_POLICY',
+    schema_name   => 'OLS_ADMIN',
+    table_name    => 'THONGBAO',
+    table_options => 'READ_CONTROL'
+  );
+  -- DBMS_OUTPUT.PUT_LINE('Applied READ_CONTROL to table');
+END;
+/
+
+conn SYS/123456@localhost:1521/PDB AS SYSDBA;
+-- 9. Set labels for notifications
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'TRGDV') WHERE MATB = 'T1';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'NV') WHERE MATB = 'T2';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'SV') WHERE MATB = 'T3';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'SV:HOA:CS1') WHERE MATB = 'T4';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'SV:HOA:CS2') WHERE MATB = 'T5';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'SV:HOA') WHERE MATB = 'T6';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'SV') WHERE MATB = 'T7';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'TRGDV:HOA:CS1') WHERE MATB = 'T8';
+UPDATE OLS_ADMIN.THONGBAO SET OLS_LABEL = CHAR_TO_LABEL('THONGBAO_POLICY', 'TRGDV:HOA') WHERE MATB = 'T9';
+
+
+conn OLS_ADMIN/123@localhost:1521/PDB;
+-- 10. Set user labels (authorization)
+BEGIN
+  -- U1: Trưởng đơn vị toàn quyền
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U1', 'TRGDV:TOAN,LY,HOA,TCHC:CS1,CS2');
+  
+  -- U2: Trưởng khoa Hóa CS2
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U2', 'TRGDV:HOA:CS2');
+  
+  -- U3: Trưởng khoa Lý CS2
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U3', 'TRGDV:LY:CS2');
+  
+  -- U4: Nhân viên Hóa CS2
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U4', 'NV:HOA:CS2');
+  
+  -- U5: Sinh viên Hóa CS2
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U5', 'SV:HOA:CS2');
+  
+  -- U6: Trưởng đơn vị hành chính
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U6', 'TRGDV:TCHC:CS1,CS2');
+  
+  -- U7: Nhân viên toàn quyền
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U7', 'NV:TOAN,LY,HOA,TCHC:CS1,CS2');
+  
+  -- U8: Nhân viên hành chính CS1
+  SA_USER_ADMIN.SET_USER_LABELS('THONGBAO_POLICY', 'U8', 'NV:TCHC:CS1');
+  
+  COMMIT;
+END;
+/
+-- 11. Apply full policy enforcement
+BEGIN
+  SA_POLICY_ADMIN.REMOVE_TABLE_POLICY(
+    policy_name   => 'THONGBAO_POLICY',
+    schema_name   => 'OLS_ADMIN', 
+    table_name    => 'THONGBAO',
+    drop_column   => FALSE
+  );
+  
+  SA_POLICY_ADMIN.APPLY_TABLE_POLICY(
+    policy_name   => 'THONGBAO_POLICY',
+    schema_name   => 'OLS_ADMIN',
+    table_name    => 'THONGBAO', 
+    table_options => 'READ_CONTROL,WRITE_CONTROL,CHECK_CONTROL'
+  );
+  
+  -- DBMS_OUTPUT.PUT_LINE('Applied full policy enforcement');
+END;
+/
+
+-- 12. Enable and subscribe policy
+BEGIN
+  SA_SYSDBA.ALTER_POLICY(
+    policy_name     => 'THONGBAO_POLICY',
+    default_options => 'READ_CONTROL,WRITE_CONTROL,CHECK_CONTROL'
+  );
+  
+  SA_SYSDBA.ENABLE_POLICY('THONGBAO_POLICY');
+  -- DBMS_OUTPUT.PUT_LINE('Policy enabled and subscribed');
+END;
+/
+
+-- Grant SELECT permission to all test users
+GRANT SELECT ON THONGBAO TO U1,U2,U3,U4,U5,U6,U7,U8;
+
+
+
+conn U6/123@localhost:1521/PDB;
+select MATB from ols_admin.THONGBAO;
+
+
+-- Khi write control, chỉ có thể cập nhật các thông báo mà người dùng có quyền (grant update)
+-- vi du: u1 có thể đọc hết thông báo nên cho nó quyền update tất cả | ols_admin cũng có quyền update tất cả
+
+CONNECT ols_admin/123@localhost:1521/PDB;
+
+
+GRANT INSERT ON ols_admin.THONGBAO TO U1;
+
+conn U1/123@localhost:1521/PDB;
+
+INSERT INTO ols_admin.THONGBAO (MATB, TIEUDE, NOIDUNG, OLS_LABEL)
+VALUES 
+(
+    'T16', -- Dùng mã khác để không bị trùng khóa chính
+    'Thong bao tu U1', 
+    'Day la thong bao do U1 tao ra.',
+    -- phải set label đúng các label đã thiết lập
+    -- 1000: TRGDV
+    -- 1010: TRGDV:HOA
+    CHAR_TO_LABEL('THONGBAO_POLICY', 'NV:HOA:CS2')
+);
+COMMIT;
+
+
+-- Kiểm tra quyền đọc thông báo
+conn u4/123@localhost:1521/PDB;
+SELECT MATB, TIEUDE, NOIDUNG FROM ols_admin.THONGBAO;
+
+
+conn U4/123@localhost:1521/PDB;
+SELECT 
+  MATB, 
+  TIEUDE, 
+  NOIDUNG, 
+  LABEL_TO_CHAR(OLS_LABEL) AS NHAN_KY_TU -- Sử dụng LABEL_TO_CHAR để chuyển đổi
+FROM 
+  ols_admin.THONGBAO;

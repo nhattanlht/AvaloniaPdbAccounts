@@ -1,0 +1,72 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels"
+        xmlns:models="clr-namespace:AvaloniaPdbAccounts.Models"
+        mc:Ignorable="d"
+        d:DesignWidth="800"
+        d:DesignHeight="600"
+        x:Class="AvaloniaPdbAccounts.Views.NotificationView"
+        x:DataType="vm:NotificationViewModel"
+        Title="Hệ thống thông báo">
+
+    <Design.DataContext>
+        <vm:NotificationViewModel/>
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto,*" ColumnDefinitions="*">
+        <!-- Header -->
+        <Border Grid.Row="0" Grid.Column="0" Background="#1976D2" Height="50">
+            <TextBlock Text="DANH SÁCH THÔNG BÁO" 
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"/>
+        </Border>
+        
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Grid.Column="0" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Notification List -->
+            <Border Grid.Column="0" BorderBrush="LightGray" BorderThickness="0 0 1 0">
+                <ListBox ItemsSource="{Binding Notifications}" 
+                         SelectedItem="{Binding SelectedNotification}">
+                    <ListBox.DataTemplates>
+                        <DataTemplate x:DataType="models:Notification">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="{Binding Title}" FontWeight="Bold" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding DateDisplay}" FontSize="10" Foreground="Gray"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.DataTemplates>
+                </ListBox>
+            </Border>
+            
+            <!-- Notification Detail -->
+            <ScrollViewer Grid.Column="1" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="{Binding SelectedNotification.Title}" 
+                               FontSize="18" 
+                               FontWeight="Bold"
+                               Margin="0 0 0 10"/>
+                               
+                    <TextBlock Text="{Binding SelectedNotification.DateDisplay}" 
+                               FontSize="12"
+                               Foreground="Gray"
+                               Margin="0 0 0 10"/>
+                               
+                    <TextBlock Text="{Binding SelectedNotification.Content}" 
+                               TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding SelectedNotification.OLS_LABEL}" 
+                               TextWrapping="Wrap"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

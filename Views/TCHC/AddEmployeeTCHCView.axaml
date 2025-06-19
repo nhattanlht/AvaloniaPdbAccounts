@@ -1,0 +1,62 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="800"
+             xmlns:vm="clr-namespace:AvaloniaPdbAccounts.ViewModels.TCHC"
+             xmlns:model="clr-namespace:AvaloniaPdbAccounts.Models"
+             x:Class="AvaloniaPdbAccounts.Views.TCHC.AddEmployeeTCHCView"
+             x:DataType="vm:AddEmployeeTCHCViewModel"
+			 x:Name="root">
+
+	        <UserControl.DataContext>
+		        <vm:AddEmployeeTCHCViewModel />
+	        </UserControl.DataContext>
+
+	        <Grid Margin="20" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"  RowSpacing="8">
+            <TextBlock Text="Add New Employee" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Full Name:" Width="100"/>
+                <TextBox Width="200" Text="{Binding NewEmployee.FullName}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Gender (0/1):" Width="100"/>
+                <TextBox Width="50" Text="{Binding NewEmployee.Gender}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Birth Date:" Width="170"/>
+                <DatePicker
+                SelectedDate="{Binding UIBirthDate, Mode=TwoWay}"
+                Width="200"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Salary:" Width="100"/>
+                <TextBox Width="300" Text="{Binding NewEmployee.Salary}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Allowance:" Width="100"/>
+                <TextBox Width="150" Text="{Binding NewEmployee.Allowance}" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="6" Orientation="Horizontal" Spacing="10">
+                <TextBlock Text="Phone:" Width="100"/>
+                <TextBox Width="100" Text="{Binding NewEmployee.Phone }" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="7" Orientation="Horizontal" Spacing="10" >
+                <TextBlock Text="Department:" Width="100"/>
+                <TextBox Width="200" Text="{Binding NewEmployee.Department}" />
+            </StackPanel>
+
+            <Button Grid.Row="8" Content="➕ Add Employee" Width="150"
+                    HorizontalAlignment="Left"
+                    Command="{Binding AddCommand}" />
+        </Grid>
+</UserControl>

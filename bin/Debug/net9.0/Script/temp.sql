@@ -1,0 +1,4 @@
+conn nv00017/123@localhost:1521/PDB;
+UPDATE adminpdb.NHANVIEN_NVCB
+SET DT = '0987654321' 
+WHERE MANLD = 'nv00017';

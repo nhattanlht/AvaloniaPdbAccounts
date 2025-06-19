@@ -1,0 +1,92 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework> <!-- net9.0 chưa chính thức, dùng net8.0 để ổn định -->
+    <Nullable>enable</Nullable>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+
+    <!-- Tối ưu build -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>false</SelfContained>
+    <PublishTrimmed>false</PublishTrimmed> <!-- Để tránh lỗi Avalonia runtime -->
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.0" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.0" />
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.0">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Avalonia.Xaml.Interactivity" Version="11.3.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="3.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
+    <PackageReference Include="ReactiveUI" Version="20.2.45" />
+  </ItemGroup>
+  <ItemGroup>
+  <None Update="Script\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="MainWindow.axaml.cs">
+      <DependentUpon>MainWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\AddRegistrationPopupView.axaml.cs">
+      <DependentUpon>AddRegistrationPopupView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\CoursesPDTView.axaml.cs">
+      <DependentUpon>CoursesPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\EmployeesPDTView.axaml.cs">
+      <DependentUpon>EmployeesPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\RegistrationsPDTView.axaml.cs">
+      <DependentUpon>RegistrationsPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\StudentsPDTView.axaml.cs">
+      <DependentUpon>StudentsPDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PDT\PDTView.axaml.cs">
+      <DependentUpon>PDTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PKT\StudentsPKTView.axaml.cs">
+      <DependentUpon>StudentsPKTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\PKT\EmployeesPKTView.axaml.cs">
+      <DependentUpon>EmployeesPKTView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\CoursesTCHCView.axaml.cs">
+      <DependentUpon>CoursesTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\EmployeesTCHCView.axaml.cs">
+      <DependentUpon>EmployeesTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\AddEmployeeTCHCView.axaml.cs">
+      <DependentUpon>AddEmployeeTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\StudentsTCHCView.axaml.cs">
+      <DependentUpon>StudentsTCHCView.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\TCHC\TCHCView.axaml.cs">
+      <DependentUpon>TCHCView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+  <None Update="appSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

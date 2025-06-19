@@ -1,0 +1,163 @@
+is_global = true
+build_property.EnableAotAnalyzer = 
+build_property.EnableSingleFileAnalyzer = true
+build_property.EnableTrimAnalyzer = 
+build_property.IncludeAllContentForSelfExtract = 
+build_property.AvaloniaNameGeneratorIsEnabled = true
+build_property.AvaloniaNameGeneratorBehavior = InitializeComponent
+build_property.AvaloniaNameGeneratorDefaultFieldModifier = internal
+build_property.AvaloniaNameGeneratorFilterByPath = *
+build_property.AvaloniaNameGeneratorFilterByNamespace = *
+build_property.AvaloniaNameGeneratorViewFileNamingStrategy = NamespaceAndClassName
+build_property.AvaloniaNameGeneratorAttachDevTools = true
+build_property.MvvmToolkitEnableINotifyPropertyChangingSupport = true
+build_property._MvvmToolkitIsUsingWindowsRuntimePack = false
+build_property.CsWinRTComponent = 
+build_property.CsWinRTAotOptimizerEnabled = 
+build_property.CsWinRTAotWarningLevel = 
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = true
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = AvaloniaPdbAccounts
+build_property.ProjectDir = /Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/App.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/MainWindow.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Styles/AppDefaultStyles.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/GV/CoursesGVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/GV/EmployeesGVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/GV/GVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/GV/RegistrationsGVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/GV/StudentsGVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/LoginView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NotificationView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NVCB/CoursesNVCBView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NVCB/EmployeesNVCBView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NVCB/NVCBView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NVCB/RegistrationsNVCBView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/NVCB/StudentsNVCBView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PCTSV/AddStudentPCTSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PCTSV/CoursesPCTSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PCTSV/PCTSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PCTSV/RegistrationsPCTSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PCTSV/StudentsPCTSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/AddCoursePopupView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/AddRegistrationPopupView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/CoursesPDTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/EmployeesPDTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/PDTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/RegistrationsPDTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PDT/StudentsPDTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PKT/CoursesPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PKT/EmployeesPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PKT/PKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PKT/RegistrationsPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/PKT/StudentsPKTView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/SV/CoursesSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/SV/RegistrationsSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/SV/StudentsSVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/SV/SVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TCHC/AddEmployeeTCHCView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TCHC/CoursesTCHCView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TCHC/EmployeesTCHCView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TCHC/StudentsTCHCView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TCHC/TCHCView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TRGDV/CoursesTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TRGDV/EmployeesTRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
+
+[/Users/jakepham/Downloads/ATBM-2025-atbmcq-07/01-atbmcq-07-SourceCode/Views/TRGDV/TRGDVView.axaml]
+build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
